@@ -11,6 +11,10 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <title>Materials Atlas</title>
+<!-- MAP: single-file app. The style element = all CSS · body = header, 4 tab views
+     (BROWSE · COMPARE · CHECK A CERT · LEARN), footer · one script element at the end
+     (read its SCRIPT MAP header first). README.md documents architecture,
+     provenance and the publish workflow; selftest/run.js is the pre-publish gate. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -294,6 +298,11 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
       <p class="count" id="qualCount" aria-live="polite" style="margin:0">0 of 7 checked</p>
       <button class="copybtn" id="qualReset" type="button" style="margin-top:0">Reset checklist</button>
     </div>
+<!-- ==== BEGIN DATA (markup): qualify checklist ====
+     What: the 7 qualification checks; qualSync() counts .qual-check boxes (session-only, nothing stored).
+     Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+     Edit data only via a verified data change — never by hand-tuning numbers.
+     Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). -->
     <ul class="checklist" id="qualList">
       <li><label class="check-item"><input type="checkbox" class="qual-check"><span><strong>1 · Identity &amp; traceability.</strong> Mill name, heat/lot number, PO and spec callout (standard + edition + grade + condition) all present and matching the material marking. A cert that doesn't name the governing standard and condition certifies nothing specific. <span class="flag">Red flags: heat number that doesn't match the material tag; one cert covering multiple heats with single values.</span></span></label></li>
       <li><label class="check-item"><input type="checkbox" class="qual-check"><span><strong>2 · Cert type.</strong> EN 10204 <strong>3.1</strong> (or an MTR reporting actual heat test results) is qualified evidence. <span class="flag">Red flag: a 2.2 “test report” or a certificate of conformance with no numbers is a claim, not evidence.</span></span></label></li>
@@ -303,6 +312,7 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
       <li><label class="check-item"><input type="checkbox" class="qual-check"><span><strong>6 · Test methods named.</strong> Tensile per A370/E8; hardness with scale and method (E10/E18); yield by 0.2% offset vs 0.5% extension-under-load — B505/B16 copper yields are 0.5% EUL and read <em>lower</em> than 0.2%-offset typicals for the same metal. Comparing across methods manufactures fake failures and fake passes. <span class="flag">Red flag: yield reported without its method.</span></span></label></li>
       <li><label class="check-item"><input type="checkbox" class="qual-check"><span><strong>7 · Spec-minimum vs typical discipline.</strong> Compare a cert only against SPEC MIN rows. A cert value below a <em>typical</em> is not a nonconformance; a cert at typical level proves nothing about the minimum. A519 is the trap: its table is typicals, so a “meets A519” claim with mechanicals is only as good as the PO's supplementary requirements. <span class="flag">Red flags: typical values presented as guarantees; mechanical values identical to the spec minimums (or suspiciously round) — transcription of the standard, not testing of the heat; “equivalent to ASTM/GB/EN…” with no standard named for the tests actually performed.</span></span></label></li>
     </ul>
+<!-- ==== END DATA (markup): qualify checklist ==== -->
     <h3>What “qualified” looks like</h3>
     <p>Every box ticked: PO/callout naming standard + grade + condition + form; an EN 10204 3.1 / MTR with heat-matched <em>actual</em> chemistry and mechanicals; test methods and yield basis named; values clearing the SPEC MIN row for the delivered thickness band; and, for substitutions, a written deviation approval referencing the element-by-element and condition-by-condition comparison.</p>
     <p class="src">Guidance built from the standards map and the verified data in this atlas — review against your own QMS procedures before treating it as a work instruction.</p>
@@ -325,18 +335,29 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
     <h2>Heat treatment — the condition <em>is</em> the material</h2>
     <p><strong>Anneal</strong> — soften, improve machinability, relieve stress; the normal supply state for 4130/4140 bar before machining. <strong>Normalize</strong> — grain refinement and uniform properties (compare the A519 normalized rows against cold-worked). <strong>Quench</strong> — form martensite; the medium matters (the sourced rows show 4130 water-quenched, 4140/4340 oil-quenched). <strong>Temper</strong> — trade hardness for toughness. <strong>Carburize</strong> — hard case, tough core: 8620 and 20CrMo core properties are <em>not</em> case properties. <strong>Age</strong> — precipitation hardening: 17-4 PH H900, aluminium T6.</p>
     <h3>Tempering temperature vs hardness — the sourced trend (Alro, 1-in bars)</h3>
+<!-- ==== BEGIN DATA (markup): 4140 tempering-vs-hardness table ====
+     What: sourced trend table (Alro, 1-in bars), Learn › Heat treatment.
+     Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+     Edit data only via a verified data change — never by hand-tuning numbers.
+     Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). -->
     <table>
       <tr><th>4140, oil-quenched, tempered at</th><th class="num">Hardness</th></tr>
       <tr><td>1000 °F (540 °C)</td><td class="num">HB 311 · ≈ HRC 33</td></tr>
       <tr><td>1100 °F (595 °C)</td><td class="num">HB 285 · ≈ HRC 30</td></tr>
       <tr><td>1200 °F (650 °C)</td><td class="num">HB 269 · ≈ HRC 28</td></tr>
     </table>
+<!-- ==== END DATA (markup): 4140 tempering-vs-hardness table ==== -->
     <p>Hotter temper → softer, tougher. All three Q&amp;T grades in the atlas (4130, 4140, 4340) show the same trend in the same source table. That is why a Q&amp;T row without a tempering temperature is not a condition at all.</p>
     <h3>Flame-cut plate — the edge is no longer the grade you bought</h3>
     <p>Oxy-fuel cutting leaves a heat-affected zone: a thin hardened, sometimes micro-cracked edge layer on hardenable grades — and a <em>softened</em> band in Q&amp;T plate (A514 class), where the cut heat over-tempers the edge. Higher carbon equivalent → deeper HAZ hardening and crack risk; thicker plate self-quenches the cut edge faster → harder HAZ. Check the PO/drawing for edge-condition requirements (grind or machine back the HAZ for fatigue or weld prep), and never certify a flame-cut edge's hardness as the plate's hardness.</p>
     <h3>The E355 lesson</h3>
     <p>EN 10305-1 delivery condition changes everything: <strong>+N</strong> (normalized) guarantees ReH ≥ 355 MPa, but <strong>+SR</strong> (stress relieved — the workhorse honed-barrel condition) guarantees ≥ 450 MPa. Online datasheets almost always quote the +N number and understate the steel by ~25%. Always match the cert's delivery condition to the row before comparing.</p>
   </div>
+<!-- ==== BEGIN DATA (markup): conditions glossary ====
+     What: the sixteen condition terms panel (Learn › Conditions glossary).
+     Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+     Edit data only via a verified data change — never by hand-tuning numbers.
+     Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). -->
   <div class="panel">
     <h2>Conditions glossary — the condition word is half the spec</h2>
     <p class="hint">Sixteen condition terms that land on certs and POs — what each one means, and the check it demands.</p>
@@ -362,6 +383,12 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
     </table>
     <p class="src">Glossary basis: ASTM A519 condition suffix definitions; ASTM B505 §6/Table 2 (HT, temper anneal, TQ30); EN designation practice (+A/+N/+QT); AS 1444 condition letters; bar-trade HTSR/PH usage per Vanguard Steel and Richmond Steel. HTSR has NO governing standard — no HTSR row anywhere can be a spec minimum.</p>
   </div>
+<!-- ==== END DATA (markup): conditions glossary ==== -->
+<!-- ==== BEGIN DATA (markup): standards map ====
+     What: "Which standard can actually give you a number?" panel (Learn).
+     Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+     Edit data only via a verified data change — never by hand-tuning numbers.
+     Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). -->
   <div class="panel">
     <h2>Which standard can actually give you a number?</h2>
     <p>The most useful qualification skill is knowing which documents <em>cannot</em>. SAE J403/J404 set chemistry only — no strength values exist in them. ASTM A519's mechanical table is headed “typical.” A GB/T 3077 mechanical value exists only for the standard's own reference-bar heat treatment.</p>
@@ -383,8 +410,11 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
     </table>
     <p class="src">* Edition is the current register entry; some row data was reproduced from the immediately preceding edition and is flagged as such in the research notes. The licensed current edition always governs over any summary — including this one.</p>
   </div>
+<!-- ==== END DATA (markup): standards map ==== -->
 </section>
 
+<!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
+     constant in the script; the © line and maker's mark stay verbatim. -->
 <footer>
   <p>Materials Atlas — 96 verified grade-condition rows. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
   <p class="tuesday">Below a spec minimum is a rejection. Below a typical is just a Tuesday.</p>
@@ -396,6 +426,84 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
 
 <script>
 "use strict";
+/* ===========================================================================
+   MATERIALS ATLAS — SCRIPT MAP (code-organisation pass on live v60)
+   ===========================================================================
+   One classic (non-module) script, run once at load, top to bottom. There is
+   no framework and no build step: every view is rebuilt as an HTML string and
+   assigned to innerHTML. Top-level const/let are script-scoped globals.
+
+   DATA STRUCTURES (all fenced BEGIN DATA / END DATA below; hashes pinned in
+   selftest/golden.json)
+     DATA[96]       one object per grade-condition row (Browse/Compare source)
+                    f family · g grade · s standard · eq near-equivalents ·
+                    form · c condition · chem (display string) · ym/tm MPa
+                    (string where a range) · yk/tk ksi · yb yield basis ·
+                    el elongation · hd hardness · st SPEC|TYP|MFR · n note ·
+                    src source · optional flag/tag. r.chemMap is DERIVED at
+                    load by parseChem(r.chem) — display/search/compare only.
+     ELEMENTS       Learn-tab element explainers {sym,name,body}
+     EDITIONS       "grade|standard" → edition string (J404ED shared value)
+     DATAREV        the data-revision line (mirrors the footer)
+     ALIASES        grade → [UNS, EN number, EN name, JIS, confidence]
+     CHEMROWS       "grade|standard" → [[el,min,max,flag?]] — the CHECKER's
+                    own dataset (flag "R" = remainder, "NS" = not specified)
+     CHEMSTD        checker key → short standard label
+     CHEMALIAS      DATA key → CHEMROWS key, for rows sharing a dataset
+     CHEMMAP        DERIVED at load from CHEMROWS: key → {std, els:{el:{min,
+                    max,rem}}, ns}; duplicate rows merge first-wins
+     STDCAPS        checker key → scored standard-wide caps [el,min,max,label]
+                    (added only for elements the grade does not itself limit)
+     SUMMIN         checker key → ASTM B505 "Cu + named elements" floor
+     AANOTE/STDNOTES/STD_LABEL_BY_S  note text per standard label; Browse
+                    resolves r.s → label → note
+     CE_FAMS · CE_IIW · CHK_EXAMPLE  CE family gate, IIW element list, demo
+                    values in the paste placeholder
+
+   RENDER FLOW
+     load → selects/chips populated from DATA → render() [Browse: filter →
+     sort → group by family → cardHTML per row → re-bind copy/compare
+     buttons] → cmpRender() [Compare, empty until two slots chosen] →
+     chkSetup() [Checker, placeholder grade] → qualSync() → Learn grid.
+
+   CHECKER PIPELINE (Check a Cert tab)
+     chkGrade change → chkSetup(): row → chemEntryFor() (CHEMALIAS → CHEMMAP)
+       ├─ no dataset entry → "NOT EVALUATED" panel, nothing checkable
+       ├─ ent.ns (cast irons) → "NOT SPECIFIED" panel, nothing checkable
+       └─ else Verify grid = chkFields() = grade limits + STDCAPS caps
+     type / paste (fillFromText — fills fields, NEVER runs the check)
+     any edit → invalidateCheck() (a stale verdict can never be copied)
+     chkRun → per-field verdict (PASS/FAIL/NOT CHECKED/REPORTED) + SUMMIN
+       sum rule + demo detection → lastCheck → banner + table
+     buildQualReport() reads lastCheck: CONFORMS only if every field entered
+       and passed; otherwise DOES NOT CONFORM / NOT FULLY CHECKED / NOT EVALUATED
+     Identify mode: identify() scans every CHEMMAP entry (see SECTION 7)
+     CE: ceAuto() re-runs after every relevant change (see SECTION 8)
+
+   EVENT INDEX (listeners are bound next to the code they drive)
+     nav tabs, start-here routes ....... SECTION 5
+     Browse inputs/selects, card buttons  SECTION 4 (render + wiring below it)
+     Compare selects, "+ Compare" ....... SECTION 4 (compare)
+     chkGrade/chkBasis/paste/file/run ... SECTION 6
+     mode toggle, idRun, "Verify →" ..... SECTION 7
+     chkInputs / ceExtra input .......... SECTION 9
+     qualify checklist .................. SECTION 10
+
+   INVARIANTS: user-visible strings, IDs and classes are load-bearing (tests,
+   the footer audit, users' muscle memory) — do not rename. Behaviour of this
+   file must match selftest/golden.json exactly.
+   =========================================================================== */
+/* ###########################################################################
+   SECTION 1 — DATA
+   Browse rows, Learn explainers, editions, aliases + the small helpers that
+   read them (parseChem, aliasOf, search matching). Nothing here touches the DOM
+   except the two one-line helpers $ and esc.
+   ########################################################################### */
+/* ==== BEGIN DATA: DATA ======================================================
+   What: the 96 grade-condition rows shown in Browse/Compare (display + search source; NOT the checker's data).
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* ================= DATA =================
    One object per grade-condition row, transcribed from the verified research
    files (starter-data.csv round 1 + starter-data-round2.csv + chemistry-ranges.csv
@@ -506,7 +614,13 @@ const DATA=[
 {f:"Carbon steel bar",g:"C45E",s:"EN ISO 683-1:2018",eq:"Steel number 1.1191 · AISI 1045 near (not identical) · JIS S45C near",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section 40 < d ≤ 100 mm",chem:"C 0.42–0.50; Si ≤0.40; Mn 0.50–0.80; P ≤0.030; S ≤0.035; Cr ≤0.40; Mo ≤0.10; Ni ≤0.40",ym:370,yk:null,yb:"min-spec (Rp0.2)",tm:"630–780",tk:null,el:"17%",hd:"—",n:"Reduction of area Z ≥ 45%. No +QT requirements above 100 mm ruling section in the standard table. Impact (KV) not carried — see research log D27.",src:"EN ISO 683-1:2018 +QT table as reproduced (Bimeks C45E card + Lucefin EN 10083-2 grade card, round 4) — two agreeing; values identical in withdrawn EN 10083-2:2006",st:"SPEC"},
 {f:"Aluminium (cast)",g:"A356.0",s:"ASTM B26 (sand castings)",eq:"UNS A13560 · EN AC-42100 (AlSi7Mg0.3) near · JIS AC4C near",form:"Sand castings",c:"T6 (solution heat treated, artificially aged) — separately cast test bars",chem:"Si 6.5–7.5; Mg 0.25–0.45; Fe ≤0.20; Cu ≤0.20; Mn ≤0.10; Zn ≤0.10; Ti ≤0.20",ym:165,yk:24,yb:"min-spec",tm:228,tk:33,el:"3.5%",hd:"—",n:"B26 minimums are for SEPARATELY CAST TEST BARS — properties machined from production castings run lower. Hardness ≈75 HB is a typical, not a spec value. B26M rounds the SI minimums to 230/165 MPa. Permanent-mold (ASTM B108) minimums WITHHELD round 4 — no second independent reproduction obtained (research log D28).",src:"ASTM B26 Table 3 minimums (33 ksi TS / 24 ksi YS / 3.5% elong) as carried in published B26 datasheets incl. MatWeb A356.0-T6 sand-cast entry (round 4)",st:"SPEC"}
 ];
+/* ==== END DATA: DATA ======================================================== */
 
+/* ==== BEGIN DATA: ELEMENTS ==================================================
+   What: Learn-tab element explainers, rendered by SECTION 10 into #elGrid.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* Element explainers — qualitative, tied to sourced rows */
 const ELEMENTS=[
 {sym:"C",name:"Carbon — the master variable",body:"Raises strength, hardness and hardenability; lowers weldability and ductility. Compare 1018 (0.15–0.20% C, weld freely) with 1045 (0.43–0.50% C, check CE and preheat). Around 0.40% C is the practical weld-with-precautions line — check it under Check a cert → Step 2, where the carbon equivalent is computed from the same chemistry."},
@@ -520,11 +634,19 @@ const ELEMENTS=[
 {sym:"Cu",name:"Copper — precipitates & patina",body:"In 17-4 PH, copper IS the ageing element: Cu-rich precipitates deliver the H900 row's 1,172 MPa minimum yield. Elsewhere Cu appears in weathering steels and as a CE term (Ni+Cu)/15."},
 {sym:"Al",name:"Aluminium — deoxidizer turned hardener",body:"A trace deoxidizer/grain refiner in steels — but the principal hardener in aluminium bronzes: C95400 at 10.0–11.5% Al reaches 586 MPa minimum tensile, steel-class strength in a copper alloy."}
 ];
+/* ==== END DATA: ELEMENTS ==================================================== */
 
+/* ---- DATA › helpers: $ (getElementById), esc (HTML-escape), BADGE (status-chip
+     markup; presentational, hashed in golden.json but not a data fence) ---- */
 /* ============ helpers ============ */
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
 const BADGE={SPEC:'<span class="badge b-spec">SPEC MIN</span>',TYP:'<span class="badge b-typ">TYPICAL</span>',MFR:'<span class="badge b-mfr">MANUFACTURER</span>'};
+/* ==== BEGIN DATA: J404ED + EDITIONS =========================================
+   What: edition string per "grade|standard" key, shown on source lines and in the check summary.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* Standard edition per grade+standard, transcribed from the standard_edition
    column of chemistry-ranges.csv (+ additions-round3-chemistry.csv for A681).
    Shown on each row's source line and on the qualification report. */
@@ -584,8 +706,18 @@ const EDITIONS={
 "42CrMo4|EN ISO 683-2:2018":"EN ISO 683-2:2018 (successor to withdrawn EN 10083-3:2006; cast-analysis values identical)",
 "C45E|EN ISO 683-1:2018":"EN ISO 683-1:2018 (successor to withdrawn EN 10083-2:2006; cast-analysis values identical)",
 "A356.0|ASTM B26 (sand castings)":"AA registered limits (ANSI H35.1) as carried in ASTM B26/B108 — B26 edition year unconfirmed openly"};
+/* ==== END DATA: J404ED + EDITIONS =========================================== */
 function editionOf(r){return EDITIONS[r.g+"|"+r.s]||"";}
+/* ==== BEGIN DATA: DATAREV ===================================================
+   What: the data-revision line; must equal the footer's .datarev text.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 const DATAREV="DATA REV 2026-11-14 R6 · 96 GRADE-CONDITION ROWS · 285 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63";
+/* ==== END DATA: DATAREV ===================================================== */
+/* Intent: parseChem turns DATA's DISPLAY chemistry string into r.chemMap, which
+   feeds the Browse chemistry table, the element filter and Compare only. The
+   checker never reads it (it uses CHEMMAP, built from CHEMROWS in SECTION 2). */
 /* Parse "C 0.38–0.43; Mn ≤2.0; Cu ≥83 (balance); Zn remainder" into {C:{min,max},...} */
 function parseChem(chem){
   const out={};
@@ -602,6 +734,11 @@ function parseChem(chem){
   return out;
 }
 DATA.forEach(r=>r.chemMap=parseChem(r.chem));
+/* ==== BEGIN DATA: ALIASES ===================================================
+   What: cross-reference designations + confidence rating per grade.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* ================= CROSS-REFERENCE ALIASES =================
    Transcribed from aliases-round4.csv (57 grade/spec rows; rows that differ
    only by spec variant — A276/A582, the two B221/B152 listings — carry
@@ -681,6 +818,7 @@ const ALIASES={
 "C45E":["","1.1191","C45E","S45C","OFFICIAL"],
 "A356.0":["A13560","","AC-42100 (AlSi7Mg0.3)","AC4C","NEAR"]
 };
+/* ==== END DATA: ALIASES ===================================================== */
 function aliasOf(r){return ALIASES[r.g]||null;}
 function confBadge(conf){
   if(conf==="NEAR")return '<span class="badge b-near">NEAR — NOT INTERCHANGEABLE</span>';
@@ -711,6 +849,10 @@ function lev(a,b){
     const t=prev;prev=cur;cur=t;}
   return prev[n];
 }
+/* Intent: matchRow tries, in order — (1) plain substring over the row's prose
+   fields (via:""), (2) exact/containment match on grade + alias designation
+   tokens with punctuation stripped (via:token), (3) bounded Levenshtein on the
+   same tokens only (fuzzy:true → "(APPROX)" badge). null = row filtered out. */
 function matchRow(r,qRaw){
   const q=qRaw.trim().toLowerCase(); if(!q)return null;
   const hay=(r.g+" "+r.s+" "+r.eq+" "+r.f+" "+r.c+" "+r.chem+" "+r.n).toLowerCase();
@@ -727,6 +869,16 @@ function matchRow(r,qRaw){
     if(nt.length>=3&&lev(nq,nt)<=maxD)return{via:t,conf:conf,fuzzy:true};}
   return null;
 }
+/* ###########################################################################
+   SECTION 2 — CHEMISTRY
+   The checker's own verified dataset (CHEMROWS) + its labels/aliases, and the
+   derived per-grade map CHEMMAP that every checker/identify path reads.
+   ########################################################################### */
+/* ==== BEGIN DATA: CHEMROWS ==================================================
+   What: the checker's element limits per "grade|standard" key — 58 keys, 285 limit tuples (= CHEMROWCOUNT, the footer's "285 CHEMISTRY LIMITS"; incl. 5 cast-iron NS rows and 4 identical A519 4140 duplicates → 276 distinct checkable element limits in CHEMMAP).
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* ================= CHECKER CHEMISTRY DATASET ================= */
 /* The Chemistry Checker's OWN data source: every row of the verified
    datasets — chemistry-ranges.csv (193 rows) + additions-round3-chemistry.csv
@@ -804,6 +956,12 @@ const CHEMROWS={
 "C95800|ASTM B505 (continuous castings)":[["Cu",79,null],["Al",8.5,9.5],["Fe",3.5,4.5],["Ni",4.0,5.0],["Mn",0.8,1.5],["Si",null,0.1],["Pb",null,0.03]],
 "C95900|ASTM B505 (continuous castings)":[["Cu",null,null,"R"],["Al",12.0,13.5],["Fe",3.0,5.0],["Ni",null,0.5],["Mn",null,1.5]],
 };
+/* ==== END DATA: CHEMROWS ==================================================== */
+/* ==== BEGIN DATA: CHEMSTD ===================================================
+   What: short standard label per checker key (limit-count line, STDNOTES lookup).
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* Short standard label per checker key, for the limit-count line. */
 const CHEMSTD={
 "1018|SAE J403 chemistry — no mechanical spec for bar":"SAE J403",
@@ -865,12 +1023,23 @@ const CHEMSTD={
 "C45E|EN ISO 683-1:2018":"EN ISO 683-1",
 "A356.0|ASTM B26 (sand castings)":"ASTM B26 / AA",
 };
+/* ==== END DATA: CHEMSTD ===================================================== */
+/* ==== BEGIN DATA: CHEMALIAS =================================================
+   What: DATA key → CHEMROWS key for Browse rows that share one verified dataset entry.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* DATA keys that share another key's dataset entry (2024 has two Browse
    rows — sheet and typical-quoted — over one verified chemistry entry). */
 const CHEMALIAS={"2024|ASTM B209 (sheet)":"2024|ASTM B209 basis (typical quoted)",
 /* The 4140 HTSR row is a trade condition whose chemistry is specified per
    SAE J404 — it checks against the J404 dataset, like 2024 above. */
 "4140|TRADE CONDITION — no governing standard (chemistry per SAE J404)":"4140|SAE J404 chemistry — no mechanical spec for bar"};
+/* ==== END DATA: CHEMALIAS =================================================== */
+/* Intent: merge is FIRST-WINS (`in` test) — later duplicate rows for the same
+   element are ignored, which is safe only because duplicates carry identical
+   limits. CHEMROWCOUNT counts raw tuples (285 — the footer's figure, which is
+   hardcoded in DATAREV and the footer); the variable itself is never read. */
 /* Build the per-grade checker map from CHEMROWS, merging duplicate rows
    whose limits are identical (verified at build time — none conflict). */
 const CHEMMAP={};
@@ -890,6 +1059,16 @@ function chemEntryFor(r){
   return CHEMMAP[k]||null;
 }
 function chemLimitCount(ent){return ent?Object.keys(ent.els).length:0;}
+/* ###########################################################################
+   SECTION 3 — STANDARDS NOTES
+   Standard-wide caps the checker SCORES (STDCAPS), the B505 sum rule (SUMMIN),
+   note-only text (STDNOTES) and the lookups that attach them to a row.
+   ########################################################################### */
+/* ==== BEGIN DATA: STDCAPS ===================================================
+   What: scored standard-wide residual caps per checker key.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* ============ ROUND 5: standard-wide residual caps, sum rules, notes ====
    Recorded decision (2026-11-14): the checker SCORES the SAE J403/J404 P/S
    caps and the ASTM A29 incidental caps (real hard limits that appear on
@@ -906,6 +1085,12 @@ const STDCAPS={
 "4340|SAE J404 chemistry — no mechanical spec for bar":[["P",null,0.030,"SAE J404 standard-wide cap"],["S",null,0.04,"SAE J404 standard-wide cap"],["Cu",null,0.35,"ASTM A29 incidental cap"]],
 "8620|SAE J404 chemistry — no mechanical spec for bar":[["P",null,0.030,"SAE J404 standard-wide cap"],["S",null,0.04,"SAE J404 standard-wide cap"],["Cu",null,0.35,"ASTM A29 incidental cap"]]
 };
+/* ==== END DATA: STDCAPS ===================================================== */
+/* ==== BEGIN DATA: SUMMIN ====================================================
+   What: ASTM B505 Table 11 "Cu + named elements" minimum per grade.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* B505 sum rule (Table 11): Cu + sum of named elements floor, per grade. */
 const SUMMIN={
 "C93200|ASTM B505 (continuous castings)":99.5,
@@ -918,6 +1103,12 @@ const SUMMIN={
 "C95700|ASTM B505 (continuous castings)":99.5,
 "C95800|ASTM B505 (continuous castings)":99.5,
 "C95900|ASTM B505 (continuous castings)":99.5};
+/* ==== END DATA: SUMMIN ====================================================== */
+/* ==== BEGIN DATA: AANOTE + STDNOTES =========================================
+   What: note-only standard-wide context per standard label (Checker + Browse cards).
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* Per-standard default-cap notes (note-only caps + honest no-cap context).
    Shown in the Checker for the selected grade and on Browse cards. */
 const AANOTE="Aluminium Association catch-all on every registered composition: \u201cOthers\u201d — each \u2264 0.05%, total \u2264 0.15%, aluminium remainder. Note only — \u201cothers\u201d are not scored as element rows.";
@@ -930,7 +1121,14 @@ const STDNOTES={
 "GB/T 3077":"GB/T 3077 caps residuals per grade rather than in one blanket clause (standard quality: P \u2264 0.035% · S \u2264 0.035%; A-suffix high-quality grades: 0.025%; non-alloying residuals typically Ni \u2264 0.30% · Cu \u2264 0.30%). The checker scores the grade rows carried in its dataset.",
 "ASTM A36":"ASTM A36/A36M-19 Table 3: limits vary by product form, thickness and (plates) width. Scored here: C ≤ 0.25% (plate to 1-1/2 in; 0.26% to 2-1/2 in, 0.27% to 4 in, 0.29% over), Mn ≤ 1.20% cap (no Mn requirement to 3/4 in; 0.80–1.20% over 3/4 to 2-1/2 in; 0.85–1.20% above), Si ≤ 0.40% (0.15–0.40% over 1-1/2 in), P ≤ 0.040% · S ≤ 0.050% — except plates over 15 in [380 mm] wide: P ≤ 0.030% · S ≤ 0.030%. Verify band-specific minimums against Table 3 for thick or wide plate.",
 "ASTM A572":"ASTM A572 alloy content is set by TYPE — exactly one type applies per order and the mill reports it. Type 1: Nb 0.005–0.05% only. Type 2: V 0.01–0.15% only. Type 3: Nb and V, combined Nb+V 0.02–0.15%. Type 5: Ti 0.006–0.04% + N 0.003–0.015%, V ≤ 0.06%. The checker scores Nb ≤ 0.05% and V ≤ 0.15% as caps so a compliant heat of any type is not failed on another type's element — confirm the minimums for the cert's stated type."};
+/* ==== END DATA: AANOTE + STDNOTES =========================================== */
+/* ==== BEGIN DATA: STD_LABEL_BY_S ============================================
+   What: DATA standard string (r.s) → STDNOTES label, for Browse cards.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 const STD_LABEL_BY_S={"SAE J403 chemistry — no mechanical spec for bar":"SAE J403","SAE J403 chemistry (leaded)":"SAE J403","SAE J404 chemistry — no mechanical spec for bar":"SAE J404","ASTM B209 (sheet/plate)":"ASTM B209","ASTM B209 (sheet)":"ASTM B209","ASTM B209 basis (typical quoted)":"ASTM B209","ASTM B221 (extrusions)":"ASTM B221","ASTM B26 (sand castings)":"ASTM B26 / AA","ASTM B16 (rod/bar)":"ASTM B16","ASTM B505 (continuous castings)":"ASTM B505","GB/T 3077-2015":"GB/T 3077","ASTM A36/A36M-19":"ASTM A36","ASTM A572":"ASTM A572"};
+/* ==== END DATA: STD_LABEL_BY_S ============================================== */
 function stdNoteFor(r){const l=r?STD_LABEL_BY_S[r.s]:null;return l?(STDNOTES[l]||""):"";}
 /* The dataset key a Browse row resolves to (CHEMALIAS-aware). */
 function chkKeyOf(r){if(!r)return"";const k=r.g+"|"+r.s;return CHEMALIAS[k]||k;}
@@ -942,6 +1140,12 @@ function chkFields(){
   (STDCAPS[chkKeyOf(chkRow)]||[]).forEach(c=>{if(!(c[0] in chkEnt.els))F.push({e:c[0],min:c[1],max:c[2],rem:false,cap:c[3]});});
   return F;
 }
+/* ###########################################################################
+   SECTION 4 — RENDER
+   Shared formatting/copy helpers, then Browse (filter → sort → group → cards)
+   and Compare. Each view is a string assigned to innerHTML; buttons inside it
+   are re-bound after every render.
+   ########################################################################### */
 function fmtRange(r){
   if(r.rem)return "remainder";
   if(r.min!=null&&r.max!=null)return r.min+" – "+r.max+" %";
@@ -961,13 +1165,17 @@ function fallbackCopy(txt,done){
 }
 function rowSummary(r){
   const lines=[r.g+" — "+r.c,r.f+" · "+r.form,r.s+" · "+r.eq,
-  "Yield: "+(r.ym==null?"not specified":r.ym+" MPa"+(r.yk!=null?" / "+r.yk+" ksi":""))+" ("+r.yb+")",
-  "Tensile: "+(r.tm==null?"not specified":r.tm+" MPa"+(r.tk!=null?" / "+r.tk+" ksi":"")),
-  "Elongation: "+r.el+" · Hardness: "+r.hd,"Chemistry: "+r.chem,"Note: "+r.n,
-  "Status: "+({SPEC:"SPEC MINIMUM",TYP:"TYPICAL-PUBLISHED",MFR:"MANUFACTURER"})[r.st]+" · Source: "+(editionOf(r)?editionOf(r)+" · ":"")+r.src];
+    "Yield: "+(r.ym==null?"not specified":r.ym+" MPa"+(r.yk!=null?" / "+r.yk+" ksi":""))+" ("+r.yb+")",
+    "Tensile: "+(r.tm==null?"not specified":r.tm+" MPa"+(r.tk!=null?" / "+r.tk+" ksi":"")),
+    "Elongation: "+r.el+" · Hardness: "+r.hd,"Chemistry: "+r.chem,"Note: "+r.n,
+    "Status: "+({SPEC:"SPEC MINIMUM",TYP:"TYPICAL-PUBLISHED",MFR:"MANUFACTURER"})[r.st]+" · Source: "+(editionOf(r)?editionOf(r)+" · ":"")+r.src];
   return lines.join("\n");
 }
 
+/* ###########################################################################
+   SECTION 5 — EVENTS — navigation
+   Tab switching and the Start-here route buttons.
+   ########################################################################### */
 /* ============ tabs ============ */
 document.querySelectorAll("nav.tabs button").forEach(b=>{
   b.addEventListener("click",()=>{
@@ -992,6 +1200,7 @@ document.querySelectorAll("[data-goto]").forEach(b=>{
   });
 });
 
+/* ---- RENDER › BROWSE ---- */
 /* ============ browse ============ */
 const stdSel=$("stdSel"), elSel=$("elSel");
 [...new Set(DATA.map(r=>r.s))].sort().forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;stdSel.appendChild(o);});
@@ -1014,20 +1223,26 @@ function cardHTML(r,i,info){
   const aliasLine='<h4>Cross-reference designations</h4><p class="note">'+(desig?desig:"None verified")+(A&&A[4]?" "+scopedBadge(r,A):" — no two-source-verified cross-system designation for this grade")+'</p>';
   const viaBadge=(info&&info.via)?' <span class="badge b-tag">MATCHED VIA '+esc(info.via.toUpperCase())+(info.fuzzy?" (APPROX)":"")+'</span>':"";
   return '<details class="card"><summary><span class="fam">'+esc(r.f)+" · "+esc(r.form)+'</span>'+
-  '<span class="ghead"><span class="grade">'+esc(r.g)+'</span><span class="cond">'+esc(r.c)+'</span>'+BADGE[r.st]+(r.flag?' <span class="badge b-typ">'+esc(r.flag)+'</span>':'')+(r.tag?' <span class="badge b-tag">'+esc(r.tag)+'</span>':'')+viaBadge+'</span>'+
-  '<span class="props"><span><span class="lbl">Yield ('+esc(r.yb)+')</span>'+yTxt+'</span>'+
-  '<span><span class="lbl">Tensile</span>'+tTxt+'</span>'+
-  '<span><span class="lbl">Elong.</span><b>'+esc(r.el)+'</b></span>'+
-  '<span><span class="lbl">Hardness</span><b>'+esc(r.hd)+'</b></span></span></summary>'+
-  '<div class="detail"><h4>Governing standard</h4><p class="note">'+esc(r.s)+'</p>'+
-  '<h4>Near-equivalents (not identical)</h4><p class="note">'+esc(r.eq)+'</p>'+aliasLine+
-  '<h4>Chemistry (% by weight)</h4><table>'+chemRows+'</table>'+
-  (stdNoteFor(r)?'<h4>Standard-wide defaults</h4><p class="note">'+esc(stdNoteFor(r))+'</p>':"")+
-  (Object.keys(r.chemMap).length?'':'')+
-  '<h4>Note</h4><p class="note">'+esc(r.n)+'</p>'+
-  '<button class="copybtn" data-copy="'+i+'">Copy this row</button> <button class="copybtn" data-compare="'+i+'">+ Compare</button>'+
-  '<p class="src">Source: '+(editionOf(r)?esc(editionOf(r))+' · ':'')+esc(r.src)+'</p></div></details>';
+    '<span class="ghead"><span class="grade">'+esc(r.g)+'</span><span class="cond">'+esc(r.c)+'</span>'+BADGE[r.st]+(r.flag?' <span class="badge b-typ">'+esc(r.flag)+'</span>':'')+(r.tag?' <span class="badge b-tag">'+esc(r.tag)+'</span>':'')+viaBadge+'</span>'+
+    '<span class="props"><span><span class="lbl">Yield ('+esc(r.yb)+')</span>'+yTxt+'</span>'+
+    '<span><span class="lbl">Tensile</span>'+tTxt+'</span>'+
+    '<span><span class="lbl">Elong.</span><b>'+esc(r.el)+'</b></span>'+
+    '<span><span class="lbl">Hardness</span><b>'+esc(r.hd)+'</b></span></span></summary>'+
+    '<div class="detail"><h4>Governing standard</h4><p class="note">'+esc(r.s)+'</p>'+
+    '<h4>Near-equivalents (not identical)</h4><p class="note">'+esc(r.eq)+'</p>'+aliasLine+
+    '<h4>Chemistry (% by weight)</h4><table>'+chemRows+'</table>'+
+    (stdNoteFor(r)?'<h4>Standard-wide defaults</h4><p class="note">'+esc(stdNoteFor(r))+'</p>':"")+
+    (Object.keys(r.chemMap).length?'':'')+
+    '<h4>Note</h4><p class="note">'+esc(r.n)+'</p>'+
+    '<button class="copybtn" data-copy="'+i+'">Copy this row</button> <button class="copybtn" data-compare="'+i+'">+ Compare</button>'+
+    '<p class="src">Source: '+(editionOf(r)?esc(editionOf(r))+' · ':'')+esc(r.src)+'</p></div></details>';
 }
+/* Intent: render() filters DATA in a fixed order (family chip → standard →
+   search → min yield → min tensile → element), sorts, then groups by family in
+   DATA order. Rows whose yield is not a number never pass a min-yield filter.
+   NOTE: in the element-min clause below, `cm.min>elMin&&cm.max==null&&cm.min<elMin`
+   can never be true, so only the max-side test filters — kept byte-for-byte
+   (behaviour freeze); flagged in BUILD-REPORT.md. */
 function render(){
   const q=$("q").value, hasQ=q.trim().length>0, std=stdSel.value, minY=parseFloat($("minYield").value),
         minT=parseFloat($("minTensile").value),
@@ -1059,10 +1274,12 @@ function render(){
   document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",ev=>{ev.preventDefault();copyText(rowSummary(DATA[+b.dataset.copy]),b);}));
   document.querySelectorAll("[data-compare]").forEach(b=>b.addEventListener("click",ev=>{ev.preventDefault();addToCompare(+b.dataset.compare,b);}));
 }
+/* EVENTS › Browse: every filter input re-renders; initial render follows. */
 ["q","minYield","minTensile","elMin"].forEach(id=>$(id).addEventListener("input",render));
 [stdSel,elSel,$("sortSel")].forEach(s=>s.addEventListener("change",render));
 render();
 
+/* ---- RENDER › COMPARE ---- */
 /* ============ compare ============ */
 const cmpA=$("cmpA"),cmpB=$("cmpB");
 cmpA.add(new Option("Select material A",""));cmpB.add(new Option("Select material B",""));
@@ -1127,6 +1344,12 @@ function addToCompare(i,btn){
   if(btn)btn.textContent="✓ In Compare — tap again to view";
 }
 
+/* ###########################################################################
+   SECTION 6 — CHECKER
+   Verify mode: grade selection → field grid → smart fill → run → verdict →
+   copyable summary. State: chkRow, chkEnt, lastCheck, chkPastedSum, chkMode,
+   ceOnlyVals/ceExtraSig (CE-only inputs, SECTION 8).
+   ########################################################################### */
 /* ============ check a cert: chemistry checker ============ */
 const chkGrade=$("chkGrade");
 const gradeKeys={};
@@ -1140,20 +1363,32 @@ let chkRow=null;
 let lastCheck=null;
 let chkEnt=null;
 let chkPastedSum=null;
+/* ==== BEGIN DATA: CE_FAMS ===================================================
+   What: DATA families for which the IIW carbon equivalent is shown.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* Stage 2.1: the IIW carbon equivalent is meaningful for carbon and alloy
    steels only — CE/Pcm are never shown for stainless steels, tool steels,
    cast irons, aluminium or copper alloys, where IIW CE does not apply.
    (Family strings are DATA's own — read here, never edited.) */
 const CE_FAMS=["Carbon steel bar","Alloy steel bar","Free-machining steel bar","GB/T 3077 alloy steel","Plate","Tube"];
+/* ==== END DATA: CE_FAMS ===================================================== */
 /* CE-only inputs (Step 2): values for IIW elements the selected grade has
    no checker field for, keyed by element. They feed CE/Pcm ONLY — never
    the checker, never a verdict, never the report. */
 let ceOnlyVals={};
 let ceExtraSig="";
 let chkMode="verify";
+/* ==== BEGIN DATA: CHK_EXAMPLE ===============================================
+   What: the placeholder's example values; a check on exactly these is flagged as demo data.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* The pasted-text example in the checker placeholder — if a check is run on
    exactly these values, the qualification report must say it was demo data. */
 const CHK_EXAMPLE={C:0.41,Mn:0.87,Si:0.28,Cr:0.95,Mo:0.20,P:0.012,S:0.008};
+/* ==== END DATA: CHK_EXAMPLE ================================================= */
 function buildQualReport(){
   const r=chkRow; if(!r)return "";
   const ent=chkEnt||chemEntryFor(r);
@@ -1243,6 +1478,7 @@ function chkSetup(){
   $("chkOut").innerHTML="";
   ceAuto();
 }
+/* EVENTS › Checker: grade and basis changes (both void any previous check). */
 chkGrade.addEventListener("change",chkSetup);
 $("chkBasis").addEventListener("change",e=>{$("basisNote").style.display=e.target.value==="product"?"block":"none";invalidateCheck();});
 /* Smart fill: parse pasted cert-style text into the Verify grid. Parsed
@@ -1258,6 +1494,11 @@ function fillFromText(txt){
      fields (P, S, Cu, Ni where the grade scores them) — exactly as
      typing does. Stage 2 silently dropped the caps on paste. */
   const F={};chkFields().forEach(f=>{F[f.e]=f;});
+  /* Hardness scales are NOT chemistry: "HRC 28" must never read as carbon,
+     "HB 170" never as boron, "HS 45" never as sulphur. Strip scale+value
+     tokens before any element matching (chair fix 2026-11-14: the matcher
+     below read the C of HRC as element C and filled carbon = 28). */
+  work=work.replace(/\bHR[A-Z]\s*\d+(\.\d+)?/gi," ").replace(/\bHB[WS]?\s*\d+(\.\d+)?/gi," ").replace(/\bH[VK]\s*\d+(\.\d+)?/gi," ").replace(/\bHS\s*\d+(\.\d+)?/gi," ");
   /* "Cu + sum of named elements" is the standard's own sum line (B505
      Table 11) — NOT a copper value. Held for the sum rule at check time. */
   work=work.replace(/Cu\s*\+\s*(?:sum of\s+)?named(?:\s+elements)?\s*[:=]?\s*(\d+\.?\d*)/i,(m,v)=>{
@@ -1274,15 +1515,15 @@ function fillFromText(txt){
   /* "<x" below-detection values: count as 0 against max-only limits; they
      can never satisfy a minimum, so a min-bearing element is left unchecked
      and the gap is disclosed, never silently passed. */
-  work=work.replace(/([A-Z][a-z]?)\s*[:=]?\s*<\s*(\d+\.?\d*)/g,(m,el,x)=>{
+  work=work.replace(/(^|[^A-Za-z])([A-Z][a-z]?)\s*[:=]?\s*<\s*(\d+\.?\d*)/g,(m,pre,el,x)=>{
     const lim=F[el];
     if(lim&&!lim.rem){
       if(lim.min==null&&lim.max!=null){seen[el]=0;notes.push(el+" reported as <"+x+" — counted as 0 against its max-only limit.");}
       else{notes.push(el+" reported as <"+x+" — a below-detection value can never satisfy a minimum, so "+el+" is left unchecked.");}
     }
     return " ";});
-  const re=/([A-Z][a-z]?)\s*[:=]?\s*(\d+\.?\d*)\s*%?/g;let m;
-  while((m=re.exec(work))){const el=m[1];if(F[el]&&!(el in seen))seen[el]=parseFloat(m[2]);}
+  const re=/(^|[^A-Za-z])([A-Z][a-z]?)\s*[:=]?\s*(\d+\.?\d*)(?:\s*%)?/g;let m;
+  while((m=re.exec(work))){const el=m[2];if(F[el]&&!(el in seen))seen[el]=parseFloat(m[3]);}
   let n=0;const filledEls=[];
   Object.entries(seen).forEach(([el,v])=>{const inp=$("in-"+el);if(inp){inp.value=v;n++;filledEls.push(el);}});
   invalidateCheck();
@@ -1301,15 +1542,26 @@ $("chkFile").addEventListener("change",e=>{
     $("chkOut").innerHTML='<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"” — review the fields, then run the check."):"No recognisable chemistry found in “"+esc(f.name)+"”. The checker reads element–value pairs (e.g. “Cr 0.95”); a scanned-image cert needs its numbers typed or pasted.")+"</div>"+fillNotesHTML(r);ceAuto();};
   rd.readAsText(f);
 });
+/* Intent: the check run. Each Verify field gets exactly one per-criterion
+   verdict, decided in this order:
+     blank / non-numeric  → NOT CHECKED (listed in `missing`; blocks CONFORMS)
+     remainder element    → REPORTED — NOT RANGED (counted as checked, never fails)
+     below min / above max → FAIL (bounds are inclusive: a value equal to a
+                             limit passes); otherwise PASS
+   Standard-wide caps (fd.cap) are scored exactly like grade limits and only
+   carry their label. Then the B505 sum rule adds one more PASS/FAIL row. */
 $("chkRun").addEventListener("click",()=>{
   if(!chkEnt||chkEnt.ns){chkSetup();return;}
   let fails=0,checked=0,notEntered=0;const rows=[];const repLines=[];const enteredVals={};const missing=[];
   chkFields().forEach(fd=>{
     const e=fd.e, v=fd;
     const inp=$("in-"+e), raw=inp?inp.value.trim():"", val=parseFloat(raw);
+    /* NOT CHECKED: blank or unparseable — recorded, never treated as 0. */
     if(raw===""||isNaN(val)){notEntered++;missing.push(e);repLines.push({el:e,val:"— (not entered)",spec:fmtRange(v),res:"NOT CHECKED"});rows.push("<tr><td><strong>"+e+"</strong></td><td class='num'>"+fmtRange(v)+"</td><td class='num'>—</td><td>not entered</td></tr>");return;}
     checked++;enteredVals[e]=val;let ok=true,why="within range";
+    /* Remainder/balance element: echoed back, no band to test. */
     if(v.rem){why="balance element — reported, not ranged";repLines.push({el:e,val:val+"%",spec:"remainder",res:"REPORTED — NOT RANGED"});rows.push("<tr><td><strong>"+e+"</strong></td><td class='num'>remainder</td><td class='num'>"+val+"</td><td>"+why+"</td></tr>");return;}
+    /* Ranged limit: either side may be null (= no limit on that side). */
     if(v.min!=null&&val<v.min){ok=false;why="BELOW minimum "+v.min;}
     if(v.max!=null&&val>v.max){ok=false;why="ABOVE maximum "+v.max;}
     if(!ok)fails++;
@@ -1330,15 +1582,18 @@ $("chkRun").addEventListener("click",()=>{
       repLines.push({el:"Cu + named",val:total.toFixed(2)+"%",spec:"≥ "+sumMin+" % · B505 sum rule",res:(okS?"PASS":"FAIL")});
       rows.push("<tr><td><strong>Cu + named elements</strong></td><td class='num'>≥ "+sumMin+" %</td><td class='num'>"+total.toFixed(2)+"</td><td class='"+(okS?"pass":"fail")+"'>"+(okS?"PASS":"FAIL")+" — sum rule, "+how+"</td></tr>");}
   }
+  /* Demo detection: ≥3 entered values, every one equal to CHK_EXAMPLE. */
   const demoKeys=Object.keys(enteredVals);
   const isDemo=demoKeys.length>=3&&demoKeys.every(e=>CHK_EXAMPLE[e]===enteredVals[e]);
   lastCheck={key:chkGrade.value,lines:repLines,fails:fails,checked:checked,notEntered:notEntered>0,missing:missing,total:chkFields().length,demo:isDemo};
+  /* Banner: PASS whenever nothing failed (even on a partial entry). The
+     CONFORMS / NOT FULLY CHECKED distinction is made in buildQualReport. */
   const verdict=checked===0&&!sumScored?'<div class="verdict v-none">Nothing entered yet — type or paste at least one element value.</div>'
     :fails===0?'<div class="verdict v-pass">✓ '+(checked>0?'ALL '+checked+' CHECKED ELEMENTS':'SUM RULE')+' WITHIN RANGE — '+esc(chkRow.g)+" ("+esc(chkRow.s)+")</div>"
     :'<div class="verdict v-fail">✗ '+fails+" CHECK"+(fails>1?"S":"")+" OUT OF RANGE — "+esc(chkRow.g)+" ("+esc(chkRow.s)+")</div>";
   $("chkOut").innerHTML=verdict+"<table><tr><th>Element</th><th class='num'>Spec</th><th class='num'>Cert value %</th><th>Result</th></tr>"+rows.join("")+"</table>"+
-  ($("chkBasis").value==="product"?'<p class="note">Checked against heat-analysis ranges. For product analysis, confirm the general-requirements standard\'s permitted variations before rejecting on a marginal miss.</p>':"")+
-  '<button class="copybtn" id="chkCopy">Copy check result</button> <button class="copybtn" id="chkReport">Copy check summary</button>';
+    ($("chkBasis").value==="product"?'<p class="note">Checked against heat-analysis ranges. For product analysis, confirm the general-requirements standard\'s permitted variations before rejecting on a marginal miss.</p>':"")+
+    '<button class="copybtn" id="chkCopy">Copy check result</button> <button class="copybtn" id="chkReport">Copy check summary</button>';
   const rp=$("chkReport");if(rp)rp.addEventListener("click",e=>copyText(buildQualReport(),e.target));
   const cp=$("chkCopy");if(cp)cp.addEventListener("click",e=>{
     const txt=[chkRow.g+" chemistry check vs "+chkRow.s+" ("+$("chkBasis").value+" analysis)",
@@ -1348,6 +1603,10 @@ $("chkRun").addEventListener("click",()=>{
 });
 chkSetup();
 
+/* ###########################################################################
+   SECTION 7 — IDENTIFY
+   Reverse lookup: which grades' bands contain the entered chemistry.
+   ########################################################################### */
 /* ============ identify mode ============ */
 /* Element grid derived from CHEMROWS itself: the union of every element at
    least one grade actually limits (remainder/balance entries excluded —
@@ -1390,6 +1649,16 @@ function identify(){
   const M=Object.keys(entered).length, out=$("idOut");
   if(M===0){out.innerHTML='<div class="verdict v-none">Nothing entered yet — enter at least two element values.</div>';return;}
   if(M<2){out.innerHTML='<div class="verdict v-none">One element identifies nothing — enter at least two.</div>';return;}
+  /* Intent: candidate logic. For every non-NS CHEMMAP entry, count the entered
+     elements it actually limits (`tested`; remainder/absent = untested) and
+     how many fall outside its band (`fails`). Buckets:
+       0 fails & tested ≥1 → candidate (strong if tested ≥ half of entered
+                              elements, else "weak match")
+       exactly 1 fail      → near miss
+       ≥2 fails            → excluded (counted only)
+       tested 0            → untested (counted only)
+     Candidates rank by tested desc, then grade name; `edge` marks a pass
+     inside the outer 10% of a band (bandEdge). */
   const cands=[],nears=[];let excluded=0,untested=0;
   Object.keys(CHEMMAP).forEach(k=>{
     const ent=CHEMMAP[k]; if(ent.ns)return; /* cast irons: never identified or excluded — see footnote */
@@ -1450,10 +1719,10 @@ function identify(){
     h+='<h3 class="idhead">'+esc(fam)+' · '+famMap[fam].length+'</h3>';
     famMap[fam].forEach(c=>{
       h+='<div class="idcand"><span class="idg">'+esc(c.g)+'</span> <span class="ids">'+esc(c.s)+'</span>'+
-      '<p>✓ <strong>Candidate</strong> — matched on '+c.tested+' of '+M+' entered elements</p>'+
-      (c.untestedEls.length?'<p>'+c.untestedEls.map(e=>"no limit set for "+e+" — not tested").join(" · ")+'</p>':"")+
-      (c.edge?'<p>one value sits at the edge of its window</p>':"")+
-      '<button class="copybtn" data-verify="'+esc(c.key)+'">Verify this grade →</button></div>';
+        '<p>✓ <strong>Candidate</strong> — matched on '+c.tested+' of '+M+' entered elements</p>'+
+        (c.untestedEls.length?'<p>'+c.untestedEls.map(e=>"no limit set for "+e+" — not tested").join(" · ")+'</p>':"")+
+        (c.edge?'<p>one value sits at the edge of its window</p>':"")+
+        '<button class="copybtn" data-verify="'+esc(c.key)+'">Verify this grade →</button></div>';
     });
   });
   if(weak.length){
@@ -1461,17 +1730,17 @@ function identify(){
     h+='<p class="note">These grades limit only a few of the elements entered, so chemistry barely tests them — unranked possibilities, not candidates.</p>';
     weak.forEach(c=>{
       h+='<div class="idnear"><span class="idg">'+esc(c.g)+'</span> <span class="ids">'+esc(c.s)+'</span>'+
-      '<p>≈ <strong>Weak match</strong> — matched on '+c.tested+' of '+M+' entered elements</p>'+
-      (c.untestedEls.length?'<p>'+c.untestedEls.map(e=>"no limit set for "+e+" — not tested").join(" · ")+'</p>':"")+
-      (c.edge?'<p>one value sits at the edge of its window</p>':"")+
-      '<button class="copybtn" data-verify="'+esc(c.key)+'">Verify this grade →</button></div>';
+        '<p>≈ <strong>Weak match</strong> — matched on '+c.tested+' of '+M+' entered elements</p>'+
+        (c.untestedEls.length?'<p>'+c.untestedEls.map(e=>"no limit set for "+e+" — not tested").join(" · ")+'</p>':"")+
+        (c.edge?'<p>one value sits at the edge of its window</p>':"")+
+        '<button class="copybtn" data-verify="'+esc(c.key)+'">Verify this grade →</button></div>';
     });
   }
   if(nears.length){
     h+='<h3 class="idhead">Near misses — out on one element</h3>';
     nears.forEach(n=>{
       h+='<div class="idnear"><span class="idg">'+esc(n.g)+'</span> <span class="ids">'+esc(n.s)+'</span>'+
-      '<p>✗ <strong>Near miss</strong> — '+esc(n.fail.el)+' '+n.fail.val+' is outside '+fmtBand(n.fail.lim)+'</p></div>';
+        '<p>✗ <strong>Near miss</strong> — '+esc(n.fail.el)+' '+n.fail.val+' is outside '+fmtBand(n.fail.lim)+'</p></div>';
     });
   }
   if(excluded>0)h+='<p class="note">'+excluded+' grades excluded on 2 or more elements.</p>';
@@ -1509,6 +1778,10 @@ $("idOut").addEventListener("click",e=>{
   ceAuto();
 });
 
+/* ###########################################################################
+   SECTION 8 — CE
+   IIW CE + Pcm, computed automatically from the Verify fields.
+   ########################################################################### */
 /* ============ carbon equivalent — AUTO from the Step 1 fields ============
    Stage 2: the standalone CE calculator (with its own re-typed inputs) is
    gone. CE and Pcm are computed from the SAME values entered in the Step 1
@@ -1529,7 +1802,13 @@ function ceReadVal(el){
   if(el in ceOnlyVals&&ceOnlyVals[el]!==""){const v=parseFloat(ceOnlyVals[el]);return isNaN(v)?null:v;}
   return null;
 }
+/* ==== BEGIN DATA: CE_IIW ====================================================
+   What: the IIW CE elements whose absence makes the CE partial.
+   Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
+   Edit data only via a verified data change — never by hand-tuning numbers.
+   Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 const CE_IIW=["C","Mn","Cr","Mo","V","Ni","Cu"];
+/* ==== END DATA: CE_IIW ====================================================== */
 function ceApplicable(){return !!(chkRow&&CE_FAMS.indexOf(chkRow.f)>=0);}
 function ceSyncExtras(){
   /* CE-only inputs (stage 2.1, item 3e): one for each IIW element the
@@ -1573,11 +1852,18 @@ function ceAuto(){
     out.innerHTML='<div class="verdict v-none">CE needs C and Mn — enter them in Step 1 (or in the CE-only fields above, where the grade has no checker field for them) and the carbon equivalent appears here, computed from those same values.</div>';
     return;
   }
+  /* Intent: substitution arithmetic. z(e) substitutes 0 for a blank element
+     in the NUMBER; s(e) prints the blank as — in the worked line, so the
+     reader sees exactly what was substituted. C and Mn are never substituted
+     (the early return above guarantees both are present). */
   const ce=val.C+val.Mn/6+(z("Cr")+z("Mo")+z("V"))/5+(z("Ni")+z("Cu"))/15;
   const sub=s("C")+" + "+s("Mn")+"/6 + ("+s("Cr")+" + "+s("Mo")+" + "+s("V")+")/5 + ("+s("Ni")+" + "+s("Cu")+")/15";
   const bandOf=v=>v<=0.40?"≤ 0.40 — generally weldable without special measures":v<=0.60?"0.40–0.60 — preheat likely; follow a qualified procedure":"> 0.60 — high hardenability; procedure-qualification territory";
   const missIIW=["Cr","Mo","V","Ni","Cu"].filter(e=>val[e]==null);
   let h;
+  /* Intent: partial-CE flooring. Every IIW coefficient is positive, so a 0 in
+     place of an unreported element can only LOWER the result — the partial
+     figure is a guaranteed floor, printed as "≥" with no weldability band. */
   if(missIIW.length){
     /* Items 3a/3b: a partial CE is a LOWER BOUND — shown with ≥, the
        excluded elements named, blanks printed as — in the worked line,
@@ -1591,6 +1877,8 @@ function ceAuto(){
     h+='<p class="formula">CE = '+sub+' = '+ce.toFixed(3)+'</p>';
     h+='<p class="note">Guidance band for '+ce.toFixed(3)+': '+bandOf(ce)+'.</p>';
   }
+  /* Pcm uses the same substitution and the same floor rule; B (5B term) is
+     never added to the number — the worked line and note say so. */
   const pcm=val.C+z("Si")/30+(val.Mn+z("Cu")+z("Cr"))/20+z("Ni")/60+z("Mo")/15+z("V")/10;
   const psub=s("C")+" + "+s("Si")+"/30 + ("+s("Mn")+" + "+s("Cu")+" + "+s("Cr")+")/20 + "+s("Ni")+"/60 + "+s("Mo")+"/15 + "+s("V")+"/10 + 5B";
   const missPcm=["Si","Cr","Mo","V","Ni","Cu"].filter(e=>val[e]==null);
@@ -1598,6 +1886,9 @@ function ceAuto(){
   h+='<p class="src">Worked references from atlas chemistries (midpoints): 1018 CE ≈ 0.30 (weld freely) · 4140 CE ≈ 0.78 (preheat/procedure territory). Bands are guidance from welding practice, not a spec.</p>';
   out.innerHTML=h;
 }
+/* ###########################################################################
+   SECTION 9 — EVENTS — checker/CE input wiring
+   ########################################################################### */
 /* Any edit to a Step 1 field voids the previous check (item 1) AND
    refreshes the CE. CE-only edits refresh the CE only — they are not
    checker inputs, so they never void a check. */
@@ -1608,6 +1899,10 @@ $("ceExtra").addEventListener("input",e=>{
   ceAuto();
 });
 
+/* ###########################################################################
+   SECTION 10 — RENDER — Learn & qualify checklist
+   Qualify checklist ticks (session-only) and the Learn element grid.
+   ########################################################################### */
 /* ============ qualify checklist (session-only ticks, nothing stored) ============ */
 const qualChecks=[...document.querySelectorAll(".qual-check")];
 function qualSync(){

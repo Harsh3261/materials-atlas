@@ -87,3 +87,4 @@ sourced from an older edition, the row says so.
 4. Verify on the live URL (anchors: 42CrMo 930/1080 MPa; C36000 Pb 2.5–3.7;
    checker test — 1018 with Mn 1.20 must return Mn FAIL).
 5. Report repo, commits and live checks to the owner.
+Round 5 stage 1 (2026-11-14): B505 aluminium-bronze roster (9 grades), C95400 chemistry completion (D54), C95500 corrected profile (D44), residual-cap scoring, 4140 HTSR + conditions glossary, checker smart fill, Identify-to-Verify handoff fixes. 96 grade-condition rows, 287 chemistry limits. B148 rows held pending B148-24 verification (D47).

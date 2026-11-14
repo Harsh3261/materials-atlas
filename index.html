@@ -52,6 +52,7 @@ button,[role="button"],select,summary,input:not([type="checkbox"]){min-height:2.
 .b-near{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber)}
 .b-off{background:var(--green-soft);color:var(--green);border:1px solid var(--green)}
 .b-match{background:var(--teal-soft);color:var(--teal);border:1px solid var(--teal)}
+.b-xref{background:var(--panel2);color:var(--ink2);border:1px solid var(--ink2)}
 header.top{padding:30px 0 6px;border-top:4px solid var(--teal);margin-top:14px;position:relative}
 h1{font-family:var(--disp);font-weight:700;font-size:clamp(38px,7vw,58px);letter-spacing:.015em;text-transform:uppercase;margin:0;line-height:.98}
 h1 .atlas{color:var(--teal)}
@@ -222,9 +223,11 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
     <h2>Equivalents — near is not identical</h2>
     <p><strong>42CrMo (GB/T 3077) vs AISI 4140:</strong> <span class="badge b-typ">NEAR — NOT INTERCHANGEABLE</span> same Cr-Mo idea, different windows — 42CrMo Mn is 0.50–0.80%, 4140 Mn is 0.75–1.00%. A heat can pass one and fail the other on manganese alone. And the mechanical bases differ entirely: GB/T 3077 publishes Q&amp;T reference-bar minimums; SAE J404 publishes no mechanicals at all.</p>
     <p><strong>40Cr vs AISI 5140:</strong> 40Cr's Cr window is 0.80–1.10% vs 5140's 0.70–0.90% — a 40Cr heat at 1.05% Cr is out of 5140 spec.</p>
-    <p><strong>304 (ASTM A240) vs 1.4301 (EN 10088):</strong> <span class="badge b-near">NEAR — NOT INTERCHANGEABLE</span> the canonical pair, but NEAR under the strict rule — A240 allows C up to 0.08 while EN 1.4301 caps C at 0.07, so neither window contains the other. The EN minimum Rp0.2 (230 MPa, cold-rolled strip) is <em>higher</em> than A240's 205 MPa, and the chemistry windows differ slightly. Dual-certified material exists precisely because neither standard contains the other.</p>
+    <p><strong>304 (ASTM A240) vs 1.4301 (EN 10088):</strong> <span class="badge b-near">NEAR — NOT INTERCHANGEABLE</span> the canonical pair, but NEAR under the strict rule — the windows cross rather than nest: carbon is 0.07 max in both (the 0.08 figure sometimes quoted for A240 is the A276 bar limit, not A240), and the two standards set their remaining limits and mechanical minimums differently, so neither window contains the other. The EN minimum Rp0.2 (230 MPa, cold-rolled strip) is <em>higher</em> than A240's 205 MPa. Dual-certified material exists precisely because neither standard contains the other.</p>
     <p><strong>E355 / ST52.3 / “1026-class” honed tube:</strong> three different documents (EN 10305-1, withdrawn DIN 2391, ASTM A519) with three different property bases — spec minimums by delivery condition, legacy minimums, and typicals. Same barrel application, not the same guarantee.</p>
     <p><strong>20CrMo's EN counterpart is genuinely disputed</strong> — crosswalks list both 18CrMo4 (1.7243) and 25CrMo4 (1.7218), and neither reaches two-source confirmation, so the atlas asserts <em>no</em> EN designation for it (its AISI cross is likewise disputed). JIS SCM420 is the corroborated cross. <strong>C36000 vs CW603N</strong> is the standard free-cutting-brass pair, but Pb windows and temper designations differ — a cert must name the system it certifies to.</p>
+    <p><strong>4340 (SAE J404) vs EN 34CrNiMo6 / 1.6582:</strong> <span class="badge b-xref">XREF-ONLY</span> Conventional cross-reference only — EN ISO 683-2 34CrNiMo6 (C 0.30–0.38, Cr 1.30–1.70, Ni 1.30–1.70) vs SAE J404 4340 (C 0.38–0.43, Cr 0.70–0.90, Ni 1.65–2.00): the Cr and Ni bands are disjoint. The JIS SNCM439 entry stays NEAR. <strong>XREF-ONLY</strong> — a conventional cross-reference whose composition bands do not even overlap; never substitute on it.</p>
+    <p><strong>C95400 (ASTM B505) vs EN CC331G / CuAl10Fe2-C:</strong> <span class="badge b-near">NEAR — NOT INTERCHANGEABLE</span> CC333G (Ni 4–6) is disjoint from C95400 (Ni max 1.5) and pairs with C95500; C95400's EN casting neighbour is CC331G, still NEAR — its Al/Fe windows run lower.</p>
     <p><strong>Substitution rule:</strong> a near-equivalent may be <em>proposed</em> by a supplier; it is <em>qualified</em> only when chemistry (all restricted elements), condition, form/thickness band, and mechanical basis are each checked against the specified standard — or the substitution is formally approved as a deviation.</p>
   </div>
 </section>
@@ -334,7 +337,7 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
 <footer>
   <p>Materials Atlas — concept build, 83 verified grade-condition rows. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
   <p class="tuesday">Below a spec minimum is a rejection. Below a typical is just a Tuesday.</p>
-  <p class="datarev">DATA REV 2026-11-13 R3 · 83 GRADE-CONDITION ROWS · 239 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D40</p>
+  <p class="datarev">DATA REV 2026-11-13 R4 · 83 GRADE-CONDITION ROWS · 239 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D43</p>
   <p class="stamp">BUILT BY HARSH PATEL · WITH SATUREDAY</p>
 </footer>
 </div>
@@ -392,7 +395,7 @@ const DATA=[
 {f:"Aluminium",g:"6063",s:"ASTM B221 (extrusions)",eq:"UNS A96063 · EN AW-6063",form:"Extrusions / bar / tube",c:"T5 — wall/thickness ≤12.5 mm band",chem:"Si 0.20–0.60; Fe ≤0.35; Cu ≤0.10; Mn ≤0.10; Mg 0.45–0.90; Cr ≤0.10; Zn ≤0.10; Ti ≤0.10",ym:110,yk:16,yb:"min-spec",tm:152,tk:22,el:"8%",hd:"—",n:"Minimums fall for thicker sections (press cooling) — the band travels with the row. Typical T5 runs ≈186/145 MPa; typicals are not minimums.",src:"ASTM B221 mechanical-property limits as reproduced (two agreeing, round 2)",st:"SPEC"},
 {f:"Aluminium",g:"6063",s:"ASTM B221 (extrusions)",eq:"UNS A96063 · EN AW-6063",form:"Extrusions / bar / tube",c:"T6 — standard thickness band",chem:"Si 0.20–0.60; Fe ≤0.35; Cu ≤0.10; Mn ≤0.10; Mg 0.45–0.90; Cr ≤0.10; Zn ≤0.10; Ti ≤0.10",ym:172,yk:25,yb:"min-spec",tm:207,tk:30,el:"8%",hd:"—",n:"MPa figures are exact conversions of the ksi limits (30/25 ksi). Typical T6 ≈241/214 MPa.",src:"ASTM B221 mechanical-property limits as reproduced (two agreeing, round 2)",st:"SPEC"},
 {f:"Copper alloy",g:"C93200",s:"ASTM B505 (continuous castings)",eq:"SAE 660 · EN CC493K approx",form:"Continuous cast bar / tube / bushings",c:"As cast",chem:"Cu 81.0–85.0; Sn 6.3–7.5; Pb 6.0–8.0; Zn 2.0–4.0",ym:138,yk:20,yb:"min-spec (0.5% extension under load)",tm:241,tk:35,el:"10%",hd:"HB 65",n:"The standard bearing bronze (SAE 660). Yield-basis warning: spec yield is 0.5% EUL = 20 ksi; “typical” charts quoting 18 ksi use 0.2% offset — same metal, different definition.",src:"ASTM B505 minimums via Anchor Bronze + National Bronze published tables (agreeing)",st:"SPEC"},
-{f:"Copper alloy",g:"C95400",s:"ASTM B505 (continuous castings)",eq:"Aluminium bronze 9C · EN CC333G approx",form:"Continuous cast bar / plate / wear parts",c:"As cast",chem:"Al 10.0–11.5; Fe 3.0–5.0; Cu ≥83 (balance)",ym:221,yk:32,yb:"min-spec (0.5% extension under load)",tm:586,tk:85,el:"12%",hd:"HB 170",n:"Steel-class strength in a copper alloy (Al + Fe kappa phases). High-load bushings, gears, wear plate; weldable with matching consumables.",src:"ASTM B505 minimums via Anchor Bronze + National Bronze published tables (agreeing)",st:"SPEC"},
+{f:"Copper alloy",g:"C95400",s:"ASTM B505 (continuous castings)",eq:"Aluminium bronze 9C · EN CC331G approx",form:"Continuous cast bar / plate / wear parts",c:"As cast",chem:"Al 10.0–11.5; Fe 3.0–5.0; Cu ≥83 (balance)",ym:221,yk:32,yb:"min-spec (0.5% extension under load)",tm:586,tk:85,el:"12%",hd:"HB 170",n:"Steel-class strength in a copper alloy (Al + Fe kappa phases). High-load bushings, gears, wear plate; weldable with matching consumables.",src:"ASTM B505 minimums via Anchor Bronze + National Bronze published tables (agreeing)",st:"SPEC"},
 {f:"Copper alloy",g:"C36000",s:"ASTM B16 (rod/bar)",eq:"UNS C36000 · EN CW603N near-equiv",form:"Rod / bar",c:"H02 half-hard — rod over ½ to 1 in",chem:"Cu 60.0–63.0; Pb 2.5–3.7; Fe ≤0.35; Zn remainder",ym:172,yk:25,yb:"min-spec (0.5% extension under load)",tm:379,tk:55,el:"10%",hd:"HRB ≈80 class",n:"Free-cutting brass — the machinability benchmark (100%). B16 minimums STEP DOWN with diameter: 57 ksi TS at ≤½ in; 45 ksi over 2–4 in. Pb max is 3.7% (B16 text + CDA) — an earlier 3.0 figure is superseded.",src:"ASTM B16 Table 2 (open full text; two editions agreeing) + CDA registration",st:"SPEC"},
 {f:"Copper alloy",g:"C36000",s:"ASTM B16 (rod/bar)",eq:"UNS C36000 · EN CW603N near-equiv",form:"Rod / bar",c:"O60 soft annealed — 1 in and under",chem:"Cu 60.0–63.0; Pb 2.5–3.7; Fe ≤0.35; Zn remainder",ym:138,yk:20,yb:"min-spec (0.5% extension under load)",tm:331,tk:48,el:"15%",hd:"—",n:"Same alloy as the H02 row: annealed temper drops the tensile minimum 55 → 48 ksi and is chosen for forming — temper is a purchasing decision.",src:"ASTM B16 Table 2 (open full text; two editions agreeing)",st:"SPEC"},
 {f:"Copper alloy",g:"C11000",s:"ASTM B152 (sheet/strip/plate) — typicals only",eq:"UNS C11000 · EN CW004A (Cu-ETP) · JIS C1100",form:"Sheet / strip / plate",c:"O60 soft annealed",chem:"Cu ≥99.90 (incl. Ag); O ≤0.04",ym:69,yk:10,yb:"typical",tm:220,tk:32,el:"45%",hd:"HB 42 (typical)",n:"TYPICALS ONLY: B152's own tensile requirements could not be reproduced to two-source standard, so spec-minimum rows for C11000 are withheld as unverified. Do not use for acceptance.",src:"CDA alloy data for UNS C11000 as republished (round 2)",st:"TYP"},
@@ -506,7 +509,7 @@ const EDITIONS={
 "C45E|EN ISO 683-1:2018":"EN ISO 683-1:2018 (successor to withdrawn EN 10083-2:2006; cast-analysis values identical)",
 "A356.0|ASTM B26 (sand castings)":"AA registered limits (ANSI H35.1) as carried in ASTM B26/B108 — B26 edition year unconfirmed openly"};
 function editionOf(r){return EDITIONS[r.g+"|"+r.s]||"";}
-const DATAREV="DATA REV 2026-11-13 R3 · 83 GRADE-CONDITION ROWS · 239 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D40";
+const DATAREV="DATA REV 2026-11-13 R4 · 83 GRADE-CONDITION ROWS · 239 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D43";
 /* Parse "C 0.38–0.43; Mn ≤2.0; Cu ≥83 (balance); Zn remainder" into {C:{min,max},...} */
 function parseChem(chem){
   const out={};
@@ -532,7 +535,11 @@ DATA.forEach(r=>r.chemMap=parseChem(r.chem));
    OFFICIAL = same standards system as the grade · COMPOSITION-MATCH = the
    other system's specified composition fully contains / is contained ·
    NEAR = overlapping windows, neither contains the other — substitution
-   always needs a cert check. Empty string = no two-source-verified
+   always needs a cert check · XREF-ONLY = a conventional cross-reference
+   whose composition bands do not even overlap; never substitute on it.
+   For EN-native rows (42CrMo4, C45E) OFFICIAL covers only the EN
+   designation; their JIS entries carry their own NEAR rating and the
+   badge renders scoped: "OFFICIAL (EN) · JIS NEAR". Empty string = no two-source-verified
    designation (20Mn2 / 40Mn2 / 44W carry none, by design).
    20CrMo asserts NO EN designation: 18CrMo4 (1.7243) vs 25CrMo4 (1.7218)
    remains disputed (D31); JIS SCM420 is the corroborated cross.
@@ -550,7 +557,7 @@ const ALIASES={
 "20Mn2":["","","","",""],
 "303":["S30300","1.4305","X8CrNiS18-9","SUS303","NEAR"],
 "304":["S30400","1.4301","X5CrNi18-10","SUS304","NEAR"],
-"316":["S31600","1.4401","X4CrNiMo17-12-2","SUS316","NEAR"],
+"316":["S31600","1.4401","X5CrNiMo17-12-2","SUS316","NEAR"],
 "35CrMo":["","1.7220","34CrMo4","SCM435","NEAR"],
 "40Cr":["","1.7035","41Cr4","SCr440","NEAR"],
 "40Mn2":["","","","",""],
@@ -560,7 +567,7 @@ const ALIASES={
 "A519 4140":["G41400","1.7225","42CrMo4","SCM440","NEAR"],
 "416":["S41600","1.4005","","SUS416","NEAR"],
 "42CrMo":["","1.7225","42CrMo4","SCM440","NEAR"],
-"4340":["G43400","1.6582","34CrNiMo6","SNCM439","NEAR"],
+"4340":["G43400","1.6582","34CrNiMo6","SNCM439","XREF-ONLY"],
 "44W (300W)":["","","","",""],
 "5052":["A95052","","AW-5052","","COMPOSITION-MATCH"],
 "60-40-18":["","","EN-GJS-400-15","","NEAR"],
@@ -581,7 +588,7 @@ const ALIASES={
 "C11000":["C11000","","CW004A","C1100","NEAR"],
 "C36000":["C36000","","CW603N","","NEAR"],
 "C93200":["C93200","","CC493K","","NEAR"],
-"C95400":["C95400","","CC333G","","NEAR"],
+"C95400":["C95400","","CC331G (CuAl10Fe2-C)","","NEAR"],
 "D2":["T30402","1.2379","X153CrMoV12","SKD11","NEAR"],
 "E355":["","1.0580","E355","","OFFICIAL"],
 "G2":["","","EN-GJL-250","","NEAR"],
@@ -595,7 +602,15 @@ function confBadge(conf){
   if(conf==="NEAR")return '<span class="badge b-near">NEAR — NOT INTERCHANGEABLE</span>';
   if(conf==="OFFICIAL")return '<span class="badge b-off">OFFICIAL</span>';
   if(conf==="COMPOSITION-MATCH")return '<span class="badge b-match">COMPOSITION-MATCH</span>';
+  if(conf==="XREF-ONLY")return '<span class="badge b-xref">XREF-ONLY</span>';
   return "";
+}
+/* Per-entry scope for EN-native rows: OFFICIAL covers only the EN
+   designation; the JIS entry carries its own NEAR rating. */
+function scopedBadge(r,A){
+  if(A&&(r.g==="42CrMo4"||r.g==="C45E")&&A[4]==="OFFICIAL")
+    return '<span class="badge b-off">OFFICIAL (EN)</span> · <span class="badge b-near">JIS NEAR</span>';
+  return confBadge(A?A[4]:"");
 }
 /* Search normalisation + typo tolerance: designations are compared with
    punctuation stripped ("1.7225" → "17225"); fuzzy fallback is a bounded
@@ -833,7 +848,7 @@ function cardHTML(r,i,info){
   const chemRows=Object.keys(r.chemMap).length?Object.entries(r.chemMap).map(([e,v])=>"<tr><td><strong>"+e+"</strong></td><td class='num'>"+fmtRange(v)+"</td></tr>").join(""):"<tr><td colspan='2'>Not specified by the governing standard — mechanicals define this grade. The chemistry checker will not pass/fail it.</td></tr>";
   const A=aliasOf(r);
   const desig=A?[A[0]?"UNS "+esc(A[0]):"",A[1]?"EN "+esc(A[1]):"",A[2]?esc(A[2]):"",A[3]?"JIS "+esc(A[3]):""].filter(Boolean).join(" · "):"";
-  const aliasLine='<h4>Cross-reference designations</h4><p class="note">'+(desig?desig:"None verified")+(A&&A[4]?" "+confBadge(A[4]):" — no two-source-verified cross-system designation for this grade")+'</p>';
+  const aliasLine='<h4>Cross-reference designations</h4><p class="note">'+(desig?desig:"None verified")+(A&&A[4]?" "+scopedBadge(r,A):" — no two-source-verified cross-system designation for this grade")+'</p>';
   const viaBadge=(info&&info.via)?' <span class="badge b-tag">MATCHED VIA '+esc(info.via.toUpperCase())+(info.fuzzy?" (APPROX)":"")+'</span>':"";
   return '<details class="card"><summary><span class="fam">'+esc(r.f)+" · "+esc(r.form)+'</span>'+
   '<span class="ghead"><span class="grade">'+esc(r.g)+'</span><span class="cond">'+esc(r.c)+'</span>'+BADGE[r.st]+(r.flag?' <span class="badge b-typ">'+esc(r.flag)+'</span>':'')+(r.tag?' <span class="badge b-tag">'+esc(r.tag)+'</span>':'')+viaBadge+'</span>'+
@@ -900,7 +915,7 @@ function cmpRender(){
   /* Cross-reference confidence for the pair, from ALIASES: a pair is linked
      when either grade's verified designations name the other. Where the two
      directions rate differently, the more cautious label governs. */
-  const CONFRANK={"NEAR":0,"COMPOSITION-MATCH":1,"OFFICIAL":2};
+  const CONFRANK={"XREF-ONLY":-1,"NEAR":0,"COMPOSITION-MATCH":1,"OFFICIAL":2};
   const idsOf=r=>{const A=aliasOf(r),s=new Set([normQ(r.g)]);if(A)[A[0],A[1],A[2],A[3]].forEach(t=>{if(t)s.add(normQ(t));});return s;};
   const crossConf=(r,o)=>{const A=aliasOf(r);if(!A||!A[4])return null;const oi=idsOf(o);
     return [A[0],A[1],A[2],A[3]].some(t=>t&&oi.has(normQ(t)))?A[4]:null;};
@@ -911,6 +926,7 @@ function cmpRender(){
   if(relConf==="NEAR")nearBanner='<div class="verdict v-none">NEAR — NOT INTERCHANGEABLE · '+esc(a.g)+" ↔ "+esc(b.g)+": cross-referenced grades in different systems — chemistry windows overlap but neither contains the other, and the mechanical bases differ. A heat can pass one and fail the other. Qualify against the standard actually specified.</div>";
   else if(relConf==="COMPOSITION-MATCH")nearBanner='<div class="verdict v-none">COMPOSITION-MATCH · '+esc(a.g)+" ↔ "+esc(b.g)+": the cross-system designation shares the same specified composition — but product-standard requirements (form, temper, test basis) still differ. Check the cert against the governing spec, not the alias.</div>";
   else if(relConf==="OFFICIAL")nearBanner='<div class="verdict v-none">OFFICIAL · '+esc(a.g)+" ↔ "+esc(b.g)+": the designation belongs to the grade's own standards system.</div>";
+  else if(relConf==="XREF-ONLY")nearBanner='<div class="verdict v-none">XREF-ONLY · '+esc(a.g)+" ↔ "+esc(b.g)+": a conventional cross-reference only — the composition bands do not even overlap. Never substitute on it. Qualify against the standard actually specified.</div>";
   if(pairGs==="4140|42CrMo")nearBanner='<div class="verdict v-none">NEAR — NOT INTERCHANGEABLE · 4140 ↔ 42CrMo: same Cr-Mo idea, different chemistry windows (Mn 0.75–1.00 vs 0.50–0.80) and different mechanical bases — a heat can pass one and fail the other. Qualify against the standard actually specified.</div>';
   $("cmpOut").innerHTML=nearBanner+"<table><tr><th></th><th>"+esc(rowLabel(a))+"</th><th>"+esc(rowLabel(b))+"</th></tr>"+
     pair("Status",{SPEC:"SPEC MIN",TYP:"TYPICAL",MFR:"MANUFACTURER"}[a.st],{SPEC:"SPEC MIN",TYP:"TYPICAL",MFR:"MANUFACTURER"}[b.st])+

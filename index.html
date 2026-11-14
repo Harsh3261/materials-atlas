@@ -17,7 +17,7 @@
      provenance and the publish workflow; selftest/run.js is the pre-publish gate. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&family=Barlow+Semi+Condensed:wght@600&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme: dark;
@@ -175,6 +175,70 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
 .empty{border:1px dashed var(--line);border-radius:3px;padding:22px;text-align:center;color:var(--ink2)}
 .diff{background:var(--amber-soft);box-shadow:inset 3px 0 0 var(--amber)} /* shade + left bar: difference is never colour alone */
 </style>
+<style id="v62">
+/* ===== v62 EVOLVE polish — additive layer. The v61 sheet above is kept byte-identical
+   (its sha256 is pinned in selftest/golden.json); every v62 change is an override here. ===== */
+/* §2 status palette: fail is a clear red (no copper in it); pass brightened; muted role split
+   from --ink2 (which keeps #b2b9c1 for controls and data-bearing neutral text); hairline token. */
+:root{ --red:#ff5a5f; --green:#6fcf8e; --muted:#9aa3ad; --hair:#262c35; }
+/* §2 muted/secondary text roles → #9aa3ad */
+.sub,.hint,.sh-route span,.famhead .famcount,.controls label,.count,.fam,.props span.lbl,.src,
+footer,.datarev,.ceinputs label,.idcand .ids,.empty,.chkpaste-lbl{color:var(--muted)}
+/* §2 decorative hairlines → #262c35 (input/button/clickable-label borders keep --line) */
+.starthere,nav.tabs,.idcand,.idnear,.card,.panel,.elcard,.formula{border-color:var(--hair)}
+.idcand{border-left-color:var(--green)} .idnear{border-left-color:var(--amber)}
+.card{border-left-color:var(--steel)} .card[open]{border-left-color:var(--teal)}
+nav.tabs{border-bottom-color:var(--teal)} .starthere{border-left-color:var(--teal)}
+.panel{border-top-color:var(--steel)} .elcard{border-top-color:var(--teal)} .formula{border-left-color:var(--teal)}
+.famhead{border-bottom-color:var(--hair)} .detail{border-top-color:var(--hair)}
+th,td{border-color:var(--hair)} .v-none{border-color:var(--hair)} .empty{border-color:var(--hair)}
+footer{border-top-color:var(--hair)}
+/* §2 brass is warning-only: the Compare "differs" highlight is a highlight, not a warning → copper */
+.diff{background:var(--teal-soft);box-shadow:inset 3px 0 0 var(--teal)}
+/* §2 copper = interactive accent: one hover/active rule for every control */
+nav.tabs button:hover,.chips button:hover,.modetoggle button:hover{color:var(--ink);border-color:var(--teal)}
+nav.tabs button[aria-selected="true"]:hover,.chips button[aria-pressed="true"]:hover,.modetoggle button[aria-pressed="true"]:hover{color:#191007;border-color:var(--teal)}
+.sh-route:hover,.check-item:hover{border-color:var(--teal)}
+.copybtn:hover{background:var(--teal-soft);border-color:var(--teal)}
+.copybtn:active,.sh-route:active,.chips button:active,.modetoggle button:active,nav.tabs button:active{background-color:var(--teal-soft)}
+nav.tabs button[aria-selected="true"]:active,.chips button[aria-pressed="true"]:active,.modetoggle button[aria-pressed="true"]:active{background-color:var(--teal)}
+.card summary:hover .grade{color:var(--teal)}
+button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+/* §1 tabular, slashed-zero numerals in every data-bearing context */
+#results,.card,#cmpOut,#chkInputs,#chkOut,#chkLimitLine,#ceOut,#ceExtra,#idInputs,#idOut,#view-learn table,.props{
+  font-variant-numeric:tabular-nums slashed-zero}
+/* §4 Browse/Compare table headers */
+#results th,#cmpOut th{font-family:'Barlow Semi Condensed','Barlow Condensed','Barlow',sans-serif;font-weight:600}
+/* §3 status symbols */
+.vsym{display:inline-block;min-width:1.1em;font-weight:700}
+/* §5 checker range gauges (presentation only) */
+.gline{display:flex;align-items:center;gap:10px;margin-top:6px}
+.gauge{position:relative;flex:0 1 180px;min-width:90px;height:6px;background:#262c35;border-radius:3px}
+.g-win{position:absolute;top:0;bottom:0;background:#7a6552;border-radius:3px}
+.g-tick{position:absolute;top:-4px;width:3px;height:14px;margin-left:-1.5px;border-radius:1px}
+.g-in{background:#6fcf8e} .g-out{background:#ff5a5f}
+.g-margin{font-family:var(--mono);font-size:12.5px;font-weight:500;white-space:nowrap}
+/* §9 standard-wide note under each Identify candidate — same .note treatment as Checker */
+.idcand .note.idstdnote,.idnear .note.idstdnote{margin:6px 0 0;font-size:14px}
+/* §10 copper ember glow at the root; body made transparent so the root background shows */
+html{background:#0b0e11;background:radial-gradient(ellipse 80% 50% at 0% 0%, color-mix(in srgb, #d98e4a 6%, transparent) 0%, transparent 55%), #0b0e11;}
+body{background:transparent}
+/* §6 motion: 160–200 ms, transform/opacity only, no fill-mode (no lingering transform) */
+@keyframes v62In{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes v62Fade{from{opacity:0}to{opacity:1}}
+@keyframes v62Grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+section.view.on{animation:v62In 180ms ease}
+.card{animation:v62Fade 180ms ease}
+#chkOut .verdict,#chkOut table,#idOut .idcand,#idOut .idnear,#ceOut .verdict{animation:v62In 180ms ease}
+.g-win{transform-origin:left center;animation:v62Grow 200ms ease}
+.g-tick,.g-margin,.idstdnote{animation:v62Fade 200ms ease}
+button,.sh-route,.check-item,.card{transition:background-color 160ms ease,border-color 160ms ease,color 160ms ease,transform 160ms ease}
+button:active,.sh-route:active{transform:translateY(1px)}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  button:active,.sh-route:active{transform:none}
+}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -259,17 +323,17 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;color:v
       <button type="button" id="modeIdentify" aria-pressed="false">Identify from chemistry</button>
     </div>
     <div id="verifyMode">
-    <p>Type the chemistry off a mill cert — or paste it, or load a cert text/CSV file — and each element is checked against the grade's standard range. Blank fields are skipped; a value with no standard limit is reported as <em>not checked</em>, never passed silently.</p>
+    <p>Type the chemistry off a mill cert — or paste it, or load a cert text file — and each element is checked against the grade's standard range. Blank fields are skipped; a value with no standard limit is reported as <em>not checked</em>, never passed silently.</p>
     <div class="controls" style="margin-top:12px">
       <div><label for="chkGrade">Grade to check against</label><select id="chkGrade"></select></div>
       <div><label for="chkBasis">Analysis type on the cert</label>
         <select id="chkBasis"><option value="heat">Heat (ladle / cast) analysis</option><option value="product">Product (check) analysis</option></select></div>
-      <div><label for="chkFile">…or load a cert file (.txt / .csv)</label><input id="chkFile" type="file" accept=".txt,.csv,text/plain,text/csv"></div>
+      <div><label for="chkFile">…or load a cert text file (.txt)</label><input id="chkFile" type="file" accept=".txt,text/plain"></div>
     </div>
     <p class="count" id="chkLimitLine" style="margin:2px 0 10px" aria-live="polite"></p>
     <p class="note" id="chkStdNote" style="margin:2px 0 10px"></p>
     <div id="basisNote" class="warnbox" style="display:none">Product analysis gets extra permitted variation beyond the heat-analysis ranges, set by the governing general-requirements standard (e.g. SAE J409 for J403/J404 grades, ASTM A751/A29 practice). Those tolerance tables were not verified into this atlas — so a product-analysis value just outside a range below is flagged, but confirm the permitted variation in the licensed standard before rejecting.</div>
-    <label for="chkPaste" style="font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)">Paste cert chemistry</label>
+    <label for="chkPaste" class="chkpaste-lbl" style="font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">Paste cert chemistry</label>
     <textarea id="chkPaste" aria-label="Paste cert chemistry" placeholder="e.g. C 0.41, Mn 0.87, Si 0.28, Cr 0.95, Mo 0.20, P 0.012, S 0.008"></textarea>
     <div style="margin:10px 0"><button class="copybtn" id="chkParse" style="margin-top:0">Read pasted chemistry ↓</button></div>
     <div id="chkInputs"></div>
@@ -1432,7 +1496,7 @@ function invalidateCheck(){
   if(!lastCheck)return;
   lastCheck=null;
   const out=$("chkOut");
-  if(out)out.innerHTML='<div class="verdict v-none">The values changed after that check ran — its result no longer applies. Run the check again.</div>';
+  if(out)out.innerHTML='<div class="verdict v-none">▲ The values changed after that check ran — its result no longer applies. Run the check again.</div>';
 }
 function chkSetup(){
   lastCheck=null;ceOnlyVals={};ceExtraSig="";
@@ -1529,6 +1593,34 @@ function fillFromText(txt){
   invalidateCheck();
   return{filled:n,filledEls:filledEls,notes:notes};
 }
+/* v62 §3 — leading status symbol for a verdict cell (presentation only; the
+   verdict word that follows is unchanged, and the report/lastCheck text never
+   carries the symbol). */
+function vSym(kind){return '<span class="vsym" aria-hidden="true">'+(kind==="pass"?"✓":kind==="fail"?"✕":"▲")+'</span> ';}
+/* v62 §5 — range gauge + numeric margin for one checked row. Presentation
+   only: computed from the SAME limit (v.min/v.max) and cert value (val) the
+   verdict used, with `ok` passed in from that verdict — it decides nothing.
+   Drawn only when the limit has a max (min+max window, or cap-only 0→max);
+   min-only, remainder and unlimited rows get no gauge. Scale: the window plus
+   25% of its width either side (floored at 0; cap-only = 0 → 1.25×max), the
+   tick clamped to the bar ends when out of range. Margin, in the precision of
+   the inputs: inside → headroom to the nearer limit (+x); above max → "−x
+   over"; below min → "+x under". */
+function gaugeHTML(v,val,ok){
+  if(!v||v.rem||v.max==null)return "";
+  const lo=v.min!=null?v.min:0, hi=v.max, w=hi-lo;
+  if(!(w>0))return "";
+  const dLo=v.min!=null?Math.max(0,lo-0.25*w):0, dHi=hi+0.25*w;
+  const pct=x=>((Math.min(Math.max(x,dLo),dHi)-dLo)/(dHi-dLo)*100).toFixed(2);
+  const dec=x=>{const s=String(x),i=s.indexOf(".");return i<0?0:s.length-i-1;};
+  const dp=Math.max(dec(val),dec(hi),v.min!=null?dec(v.min):0);
+  let m;
+  if(v.min!=null&&val<v.min)m="+"+(v.min-val).toFixed(dp)+" under";
+  else if(val>hi)m="−"+(val-hi).toFixed(dp)+" over";
+  else m="+"+Math.min(hi-val,v.min!=null?val-v.min:Infinity).toFixed(dp);
+  return '<span class="gline"><span class="gauge" aria-hidden="true"><span class="g-win" style="left:'+pct(lo)+'%;width:'+(pct(hi)-pct(lo)).toFixed(2)+'%"></span>'+
+    '<span class="g-tick '+(ok?"g-in":"g-out")+'" style="left:'+pct(val)+'%"></span></span><span class="g-margin">'+m+'</span></span>';
+}
 function fillNotesHTML(r){return r.notes.length?'<p class="note">'+r.notes.map(esc).join("<br>")+"</p>":"";}
 $("chkParse").addEventListener("click",()=>{
   const r=fillFromText($("chkPaste").value);
@@ -1557,7 +1649,7 @@ $("chkRun").addEventListener("click",()=>{
     const e=fd.e, v=fd;
     const inp=$("in-"+e), raw=inp?inp.value.trim():"", val=parseFloat(raw);
     /* NOT CHECKED: blank or unparseable — recorded, never treated as 0. */
-    if(raw===""||isNaN(val)){notEntered++;missing.push(e);repLines.push({el:e,val:"— (not entered)",spec:fmtRange(v),res:"NOT CHECKED"});rows.push("<tr><td><strong>"+e+"</strong></td><td class='num'>"+fmtRange(v)+"</td><td class='num'>—</td><td>not entered</td></tr>");return;}
+    if(raw===""||isNaN(val)){notEntered++;missing.push(e);repLines.push({el:e,val:"— (not entered)",spec:fmtRange(v),res:"NOT CHECKED"});rows.push("<tr><td><strong>"+e+"</strong></td><td class='num'>"+fmtRange(v)+"</td><td class='num'>—</td><td>"+vSym("warn")+"not entered</td></tr>");return;}
     checked++;enteredVals[e]=val;let ok=true,why="within range";
     /* Remainder/balance element: echoed back, no band to test. */
     if(v.rem){why="balance element — reported, not ranged";repLines.push({el:e,val:val+"%",spec:"remainder",res:"REPORTED — NOT RANGED"});rows.push("<tr><td><strong>"+e+"</strong></td><td class='num'>remainder</td><td class='num'>"+val+"</td><td>"+why+"</td></tr>");return;}
@@ -1566,7 +1658,7 @@ $("chkRun").addEventListener("click",()=>{
     if(v.max!=null&&val>v.max){ok=false;why="ABOVE maximum "+v.max;}
     if(!ok)fails++;
     repLines.push({el:e,val:val+"%",spec:fmtRange(v)+(fd.cap?" · "+fd.cap:""),res:(ok?"PASS":"FAIL")});
-    rows.push("<tr><td><strong>"+e+"</strong></td><td class='num'>"+fmtRange(v)+"</td><td class='num'>"+val+"</td><td class='"+(ok?"pass":"fail")+"'>"+(ok?"PASS":"FAIL")+" — "+why+(fd.cap?" · "+fd.cap:"")+"</td></tr>");
+    rows.push("<tr><td><strong>"+e+"</strong></td><td class='num'>"+fmtRange(v)+"</td><td class='num'>"+val+"</td><td class='"+(ok?"pass":"fail")+"'>"+vSym(ok?"pass":"fail")+(ok?"PASS":"FAIL")+" — "+why+(fd.cap?" · "+fd.cap:"")+gaugeHTML(v,val,ok)+"</td></tr>");
   });
   /* B505 sum rule (Table 11): scored only when it can be computed in full
      from the entered values, or when the cert itself reported the total
@@ -1580,7 +1672,7 @@ $("chkRun").addEventListener("click",()=>{
     else if(chkPastedSum!=null){total=chkPastedSum;how="total as reported on the cert";}
     if(total!=null){sumScored=true;const okS=total>=sumMin;if(!okS)fails++;
       repLines.push({el:"Cu + named",val:total.toFixed(2)+"%",spec:"≥ "+sumMin+" % · B505 sum rule",res:(okS?"PASS":"FAIL")});
-      rows.push("<tr><td><strong>Cu + named elements</strong></td><td class='num'>≥ "+sumMin+" %</td><td class='num'>"+total.toFixed(2)+"</td><td class='"+(okS?"pass":"fail")+"'>"+(okS?"PASS":"FAIL")+" — sum rule, "+how+"</td></tr>");}
+      rows.push("<tr><td><strong>Cu + named elements</strong></td><td class='num'>≥ "+sumMin+" %</td><td class='num'>"+total.toFixed(2)+"</td><td class='"+(okS?"pass":"fail")+"'>"+vSym(okS?"pass":"fail")+(okS?"PASS":"FAIL")+" — sum rule, "+how+"</td></tr>");}
   }
   /* Demo detection: ≥3 entered values, every one equal to CHK_EXAMPLE. */
   const demoKeys=Object.keys(enteredVals);
@@ -1589,8 +1681,8 @@ $("chkRun").addEventListener("click",()=>{
   /* Banner: PASS whenever nothing failed (even on a partial entry). The
      CONFORMS / NOT FULLY CHECKED distinction is made in buildQualReport. */
   const verdict=checked===0&&!sumScored?'<div class="verdict v-none">Nothing entered yet — type or paste at least one element value.</div>'
-    :fails===0?'<div class="verdict v-pass">✓ '+(checked>0?'ALL '+checked+' CHECKED ELEMENTS':'SUM RULE')+' WITHIN RANGE — '+esc(chkRow.g)+" ("+esc(chkRow.s)+")</div>"
-    :'<div class="verdict v-fail">✗ '+fails+" CHECK"+(fails>1?"S":"")+" OUT OF RANGE — "+esc(chkRow.g)+" ("+esc(chkRow.s)+")</div>";
+    :fails===0?'<div class="verdict v-pass">'+(missing.length?"▲":"✓")+' '+(checked>0?'ALL '+checked+' CHECKED ELEMENTS':'SUM RULE')+' WITHIN RANGE — '+esc(chkRow.g)+" ("+esc(chkRow.s)+")</div>"
+    :'<div class="verdict v-fail">✕ '+fails+" CHECK"+(fails>1?"S":"")+" OUT OF RANGE — "+esc(chkRow.g)+" ("+esc(chkRow.s)+")</div>";
   $("chkOut").innerHTML=verdict+"<table><tr><th>Element</th><th class='num'>Spec</th><th class='num'>Cert value %</th><th>Result</th></tr>"+rows.join("")+"</table>"+
     ($("chkBasis").value==="product"?'<p class="note">Checked against heat-analysis ranges. For product analysis, confirm the general-requirements standard\'s permitted variations before rejecting on a marginal miss.</p>':"")+
     '<button class="copybtn" id="chkCopy">Copy check result</button> <button class="copybtn" id="chkReport">Copy check summary</button>';
@@ -1641,6 +1733,15 @@ function bandEdge(v,val){
   if(v.max!=null)return val>=0.9*v.max;
   if(v.min!=null)return val<=1.1*v.min;
   return false;
+}
+/* v62 §9 — the candidate standard's EXISTING standard-wide note (the same
+   STDNOTES text the Checker shows for that dataset entry: STDNOTES[ent.std]),
+   verbatim, under each candidate (strong and weak). Presentation only — it is
+   rendered after matching/ranking and never scores, excludes or re-ranks. No
+   note for the standard → nothing rendered. */
+function idStdNoteHTML(key){
+  const ent=CHEMMAP[key], t=ent?(STDNOTES[ent.std]||""):"";
+  return t?'<p class="note idstdnote">'+esc(t)+'</p>':"";
 }
 function identify(){
   const entered={};
@@ -1722,6 +1823,7 @@ function identify(){
         '<p>✓ <strong>Candidate</strong> — matched on '+c.tested+' of '+M+' entered elements</p>'+
         (c.untestedEls.length?'<p>'+c.untestedEls.map(e=>"no limit set for "+e+" — not tested").join(" · ")+'</p>':"")+
         (c.edge?'<p>one value sits at the edge of its window</p>':"")+
+        idStdNoteHTML(c.key)+
         '<button class="copybtn" data-verify="'+esc(c.key)+'">Verify this grade →</button></div>';
     });
   });
@@ -1733,6 +1835,7 @@ function identify(){
         '<p>≈ <strong>Weak match</strong> — matched on '+c.tested+' of '+M+' entered elements</p>'+
         (c.untestedEls.length?'<p>'+c.untestedEls.map(e=>"no limit set for "+e+" — not tested").join(" · ")+'</p>':"")+
         (c.edge?'<p>one value sits at the edge of its window</p>':"")+
+        idStdNoteHTML(c.key)+
         '<button class="copybtn" data-verify="'+esc(c.key)+'">Verify this grade →</button></div>';
     });
   }
@@ -1869,7 +1972,7 @@ function ceAuto(){
        excluded elements named, blanks printed as — in the worked line,
        and NO verdict band: the band belongs to the complete figure, and
        reading one off a floor understates the precautions. */
-    h='<div class="verdict v-none">CE (IIW) ≥ '+ce.toFixed(3)+' — partial (excludes '+missIIW.join(", ")+')</div>';
+    h='<div class="verdict v-none">▲ CE (IIW) ≥ '+ce.toFixed(3)+' — partial (excludes '+missIIW.join(", ")+')</div>';
     h+='<p class="formula">CE = '+sub+' = '+ce.toFixed(3)+' (floor)</p>';
     h+='<p class="note">This figure is a <strong>lower bound</strong>, not the CE: '+missIIW.join(", ")+' counted as 0 in the arithmetic, which is not the same as the metal containing none. The complete CE is higher — do not read a weldability band off this floor. Enter the missing elements (Step 1, or the CE-only fields above) for the complete figure.</p>';
   } else {

@@ -366,7 +366,7 @@ nav.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;margin:0;border-radius:
 nav.tabs button{flex:1 1 0;min-height:48px;padding:8px 4px}
 .wrap{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 /* v62.1 L2 sticky primary actions */
-#chkRun,#idRun{position:sticky;bottom:calc(68px + env(safe-area-inset-bottom));width:100%;min-height:52px;z-index:30;box-shadow:0 -6px 18px rgba(0,0,0,.35)}
+#chkRun,#idRun{width:100%;min-height:52px;margin-top:10px} /* 2026-11-15: no longer sticky; it floated over “Read pasted chemistry” */
 /* v62.1 L3 sticky selector strips + Identify pill */
 #view-browse > .controls{position:sticky;top:0;z-index:40;background:var(--bg);padding-top:10px;padding-bottom:10px}
 #view-compare .grid2{position:sticky;top:0;z-index:40;background:var(--bg);padding-top:8px;padding-bottom:8px}
@@ -556,7 +556,7 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
       <div><label for="chkGrade">Grade to check against</label><select id="chkGrade"></select></div>
       <div><label for="chkBasis">Analysis type on the cert</label>
         <select id="chkBasis"><option value="heat">Heat (ladle / cast) analysis</option><option value="product">Product (check) analysis</option></select></div>
-      <div><label for="chkFile">…or load a cert text file (.txt or .csv)</label><input id="chkFile" type="file" accept=".txt,.csv,text/plain,text/csv"></div>
+      <div><label for="chkFile">…or load a cert file (PDF, .txt or .csv)</label><input id="chkFile" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain,text/csv"></div>
     </div>
     <p class="count" id="chkLimitLine" style="margin:2px 0 10px" aria-live="polite"></p>
     <p class="note" id="chkStdNote" style="margin:2px 0 10px"></p>
@@ -2400,6 +2400,46 @@ $("chkBasis").addEventListener("change",e=>{$("basisNote").style.display=e.targe
    from here. Grouped cert lines are first-class (2026-11-13 ruling): a
    grouped line maps ONLY onto a quantity the governing standard itself
    defines, and is never split into invented single-element values. */
+/* 2026-11-15 · cert reading helpers: element names → symbols, PDF text
+   extraction (pdf.js, vendored, loaded only when a PDF is chosen), and the
+   grade named on the cert. */
+const CERT_EL_NAMES={carbon:"C",manganese:"Mn",silicon:"Si",phosphorus:"P",phosphorous:"P",sulfur:"S",sulphur:"S",chromium:"Cr",nickel:"Ni",molybdenum:"Mo",copper:"Cu",vanadium:"V",aluminum:"Al",aluminium:"Al",titanium:"Ti",niobium:"Nb",columbium:"Nb",boron:"B",nitrogen:"N",lead:"Pb",tin:"Sn",zinc:"Zn",iron:"Fe",cobalt:"Co",tungsten:"W",bismuth:"Bi",antimony:"Sb",arsenic:"As",selenium:"Se",calcium:"Ca",magnesium:"Mg",zirconium:"Zr",tellurium:"Te"};
+function certNamesToSymbols(t){
+  const re=new RegExp("\\b("+Object.keys(CERT_EL_NAMES).join("|")+")\\b","gi");
+  return String(t).replace(re,m=>CERT_EL_NAMES[m.toLowerCase()]).replace(/([A-Z][a-z]?)\s+plus\s+/g,"$1 + ").replace(/\bwt\.?\s*%/gi,"%");
+}
+let pdfjsReady=null;
+function loadPdfJs(){
+  if(pdfjsReady)return pdfjsReady;
+  pdfjsReady=new Promise((ok,bad)=>{const sc=document.createElement("script");sc.src="vendor/pdf.min.js";
+    sc.onload=()=>{try{window.pdfjsLib.GlobalWorkerOptions.workerSrc="vendor/pdf.worker.min.js";ok(window.pdfjsLib);}catch(e){bad(e);}};
+    sc.onerror=()=>{pdfjsReady=null;bad(new Error("PDF reader could not load (are you offline?)"));};document.head.appendChild(sc);});
+  return pdfjsReady;
+}
+/* Text of a PDF, rebuilt line by line from item positions (rows by y, then x). */
+async function pdfToText(file){
+  const lib=await loadPdfJs();const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;const out=[];
+  for(let pn=1;pn<=Math.min(doc.numPages,10);pn++){
+    const pg=await doc.getPage(pn);const tc=await pg.getTextContent();const rows=[];
+    tc.items.forEach(it=>{if(!it.str||!it.str.trim())return;const x=it.transform[4],y=it.transform[5];
+      let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r){r={y,items:[]};rows.push(r);}r.items.push({x,w:it.width||0,h:Math.abs(it.transform[3])||10,s:it.str});});
+    /* Pieces that touch are one word: TeX-made reports split "78.6" into
+       "78" "." "6". Join by the gap to the previous piece, never blindly. */
+    rows.sort((a,b)=>b.y-a.y).forEach(r=>{const its=r.items.sort((a,b)=>a.x-b.x);let line="",end=null;
+      its.forEach(i=>{if(end===null)line=i.s;else{const gap=i.x-end;line+=(gap<i.h*0.15?"":gap<i.h*1.2?" ":"   ")+i.s;}end=i.x+i.w;});
+      out.push(line);});
+  }
+  return out.join("\n");
+}
+/* Grade designations named in the cert text that exist in the checker. */
+function certGradeHits(t){
+  const txt=" "+String(t).replace(/\s+/g," ")+" ";const hits=new Map();
+  [...chkGrade.options].forEach(o=>{if(!o.value)return;const r=gradeByKey[o.value];if(!r)return;
+    const base=String(r.g).split(/\s+[—–-]\s+/)[0].trim();if(base.length<3||!/\d/.test(base))return;
+    const esc2=base.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+    if(new RegExp("(^|[^A-Za-z0-9])"+esc2+"([^A-Za-z0-9]|$)").test(txt)&&!hits.has(base))hits.set(base,o.value);});
+  return hits;
+}
 function fillFromText(txt){
   if(!chkEnt||chkEnt.ns)return{filled:0,filledEls:[],notes:[]};
   const notes=[];const seen={};let work=" "+String(txt||"")+" ";
@@ -2413,6 +2453,10 @@ function fillFromText(txt){
      tokens before any element matching (chair fix 2026-11-14: the matcher
      below read the C of HRC as element C and filled carbon = 28). */
   work=work.replace(/\bHR[A-Z]\s*\d+(\.\d+)?/gi," ").replace(/\bHB[WS]?\s*\d+(\.\d+)?/gi," ").replace(/\bH[VK]\s*\d+(\.\d+)?/gi," ").replace(/\bHS\s*\d+(\.\d+)?/gi," ");
+  /* 2026-11-15: lab reports spell elements out ("Manganese 0.6 wt %",
+     "Nickel plus Cobalt 5.1", "Copper plus Sum of Named Elements 99.9").
+     Map names to symbols and "plus" to "+" first, so the rules below apply. */
+  work=certNamesToSymbols(work);
   /* "Cu + sum of named elements" is the standard's own sum line (B505
      Table 11) — NOT a copper value. Held for the sum rule at check time. */
   work=work.replace(/Cu\s*\+\s*(?:sum of\s+)?named(?:\s+elements)?\s*[:=]?\s*(\d+\.?\d*)/i,(m,v)=>{
@@ -2458,7 +2502,12 @@ function fillFromText(txt){
     }
     return " ";});
   const re=/(^|[^A-Za-z])([A-Z][a-zA-Z]?)[ \t]*[:=]?[ \t]*(\d*[.,]?\d+)(?:[ \t]*%)?/g;let m;
-  while((m=re.exec(work))){const el=normEl(m[2]);if(F[el]&&!(el in seen))seen[el]=numOf(m[3]);}
+  /* 2026-11-15: a symbol glued to a long whole number is a designation, not a
+     value ("C95520", "G41400", "S30400"); and no chemistry value exceeds 100 %. */
+  while((m=re.exec(work))){const el=normEl(m[2]);
+    const glued=!/[ \t:=]/.test(m[0].slice(m[1].length+m[2].length,m[0].length-m[3].length-(/%$/.test(m[0])?1:0)))&&/^\d{3,}$/.test(m[3]);
+    const v=numOf(m[3]);if(glued||!(v<=100))continue;
+    if(F[el]&&!(el in seen))seen[el]=v;}
   let n=0;const filledEls=[];
   Object.entries(seen).forEach(([el,v])=>{const inp=$("in-"+el);if(inp){inp.value=v;n++;filledEls.push(el);}});
   invalidateCheck();
@@ -2498,12 +2547,28 @@ $("chkParse").addEventListener("click",()=>{
   $("chkOut").innerHTML='<div class="verdict v-none">'+(r.filled?("Filled "+r.filled+" element field"+(r.filled>1?"s":"")+" ("+r.filledEls.join(", ")+") from the pasted text — review the values in the fields, then run the check. Nothing has been checked yet."):"No element values recognised. Use the form “C 0.41, Mn 0.87, Cr 0.95…”")+"</div>"+fillNotesHTML(r);
   ceAuto();
 });
-$("chkFile").addEventListener("change",e=>{
+$("chkFile").addEventListener("change",async e=>{
   const f=e.target.files[0];if(!f)return;
-  const rd=new FileReader();
-  rd.onload=()=>{const r=fillFromText(String(rd.result||""));
-    $("chkOut").innerHTML='<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"” — review the fields, then run the check."):"No recognisable chemistry found in “"+esc(f.name)+"”. The checker reads element–value pairs (e.g. “Cr 0.95”); a scanned-image cert needs its numbers typed or pasted.")+"</div>"+fillNotesHTML(r);ceAuto();e.target.value="";};
-  rd.readAsText(f);
+  const isPdf=/\.pdf$/i.test(f.name)||f.type==="application/pdf";
+  let txt="";
+  try{
+    if(isPdf){$("chkOut").innerHTML='<div class="verdict v-none">Reading “'+esc(f.name)+'”…</div>';txt=await pdfToText(f);}
+    else txt=await f.text();
+  }catch(err){$("chkOut").innerHTML='<div class="verdict v-none">Could not read “'+esc(f.name)+'”: '+esc(err.message||String(err))+'. Paste the chemistry text instead.</div>';e.target.value="";return;}
+  e.target.value="";
+  if(isPdf&&!/\d/.test(txt)){$("chkOut").innerHTML='<div class="verdict v-none">“'+esc(f.name)+'” has no readable text: it is probably a scanned image. Type the values from the cert into the fields.</div>';return;}
+  /* the grade named on the cert: auto-select it if none is chosen; warn on a mismatch */
+  const hits=certGradeHits(txt);let gradeNote="";
+  if(hits.size){
+    const curBase=chkRow?String(chkRow.g).split(/\s+[—–-]\s+/)[0].trim():null;
+    if(!chkGrade.value&&hits.size===1){chkGrade.value=[...hits.values()][0];chkGrade.dispatchEvent(new Event("change"));gradeNote="Grade "+esc([...hits.keys()][0])+" was named on the cert and has been selected. Confirm it matches the PO.";}
+    else if(curBase&&!hits.has(curBase))gradeNote="Warning: the cert names "+esc([...hits.keys()].join(", "))+", but you are checking against "+esc(curBase)+".";
+    else if(!chkGrade.value)gradeNote="The cert names "+esc([...hits.keys()].join(", "))+". Select the right one above, then press “Read pasted chemistry”.";
+  }
+  $("chkPaste").value=txt;
+  const r=fillFromText(txt);
+  $("chkOut").innerHTML=(gradeNote?'<div class="verdict v-none">'+gradeNote+'</div>':'')+'<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"”. The extracted text is in the paste box: review the fields, then run the check."):(chkGrade.value?"No recognisable chemistry found in “"+esc(f.name)+"”. Its text is in the paste box; check it, or type the values.":"Select the grade named on the cert, then press “Read pasted chemistry”. The cert text is in the paste box."))+"</div>"+fillNotesHTML(r);
+  ceAuto();
 });
 /* Intent: the check run. Each Verify field gets exactly one per-criterion
    verdict, decided in this order:

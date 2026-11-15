@@ -233,3 +233,25 @@ How it was checked:
 - The full click-through test passes with 0 JS errors.
 
 Cache materials-atlas-v64-learn3.
+
+## Round 9 (2026-11-15, ~16:05): cert reader reads PDFs (Harsh's Acuren C95520 report)
+- The file box now accepts PDF. pdf.js 3.11.174 is vendored in vendor/ (Apache-2.0, see vendor/PDFJS-LICENSE). It loads only when a PDF is chosen and is cached by the SW fetch handler after first use.
+- pdfToText rebuilds lines from item positions, and joins touching pieces by gap. TeX-made reports split "78.6" into "78" "." "6"; a blind join read Al 10.8 as 10 and gave a FALSE FAIL. Caught in testing and fixed before publishing.
+- A PDF with no text (a scanned image) gets a plain message to type the values.
+- certNamesToSymbols(), run first in fillFromText:
+  - Element names map to symbols (Manganese→Mn, Aluminum/Aluminium→Al, Sulfur/Sulphur→S, …).
+  - "X plus Y" maps to "X + Y", so "Nickel plus Cobalt" and "Copper plus Sum of Named Elements" reach the existing Ni+Co and sum rules.
+  - "wt %" maps to "%".
+- Parser guard: a symbol glued to a whole number of 3+ digits is a designation, not a value ("C95520" was read as C = 95520). Values above 100 % are ignored. All t15–t18 cases still pass.
+- certGradeHits():
+  - If no grade is selected, the grade named on the cert is selected automatically, with a "confirm against PO" note.
+  - If a different grade is selected, the user gets a mismatch warning.
+- The extracted text is placed in the paste box so the user can see what was read.
+- #chkRun / #idRun are no longer sticky on phones. They floated over "Read pasted chemistry" (Harsh's screenshot).
+- Verified on the real report (Acuren 984429-26, C95520):
+  - 11 elements filled exactly.
+  - Cr and Co "< 0.01" counted as 0 against max-only limits.
+  - Ni+Co 5.1 applied to Ni.
+  - Sum rule 99.98 ≥ 99.5.
+  - Verdict: all within B505 C95520.
+- Cache materials-atlas-v65-pdfcert.

@@ -2076,7 +2076,7 @@ function cardHTML(r,i,info){
     (stdNoteFor(r)?'<h4>Standard-wide defaults</h4><p class="note">'+esc(stdNoteFor(r))+'</p>':"")+
     (Object.keys(r.chemMap).length?'':'')+
     '<h4>Note</h4><p class="note">'+esc(r.n)+'</p>'+
-    '<button class="copybtn" data-copy="'+i+'">Copy this row</button> <button class="copybtn" data-compare="'+i+'">+ Compare</button>'+
+    '<button class="copybtn" data-copy="'+i+'">Copy this row</button> <button class="copybtn" data-compare="'+i+'">+ Compare</button>'+(similarVals(r)?' <button class="copybtn" data-similar="'+i+'">Similar grades →</button>':'')+
     '<p class="src">Source: '+(editionOf(r)?esc(editionOf(r))+' · ':'')+esc(r.src)+'</p></div></details>';
 }
 /* Intent: render() filters DATA in a fixed order (family chip → standard →
@@ -2109,10 +2109,25 @@ function render(){
   if(sort==="yield-asc")rows.sort((a,b)=>yv(a.r)-yv(b.r));
   if(sort==="tensile-desc")rows.sort((a,b)=>tv(b.r)-tv(a.r));
   if(sort==="grade")rows.sort((a,b)=>a.r.g.localeCompare(b.r.g)||a.r.c.localeCompare(b.r.c));
+  /* 2026-11-15 · relevance when searching: exact grade first, then a grade
+     that starts with the term, then the grade's own designation (OFFICIAL
+     alias, e.g. 1.7225 → 42CrMo4), then cross-references and text mentions,
+     then typo matches. The chosen sort applies within each tier, and the
+     family holding the best match is shown first. */
+  const rankOf=r=>{if(!hasQ)return 0;const nq=normQ(q),ng=normQ(r.g);if(!nq)return 5;
+    if(ng===nq)return 0;
+    if(nq.length>=3&&(ng.indexOf(nq)===0||nq.indexOf(ng)===0)&&ng.length>=3)return 1;
+    const A=aliasOf(r),toks=A?[A[0],A[1],A[2],A[3]].filter(Boolean).map(normQ):[];
+    if(toks.indexOf(nq)>=0)return A[4]==="OFFICIAL"?2:3;
+    return 4;};
+  rows.forEach(x=>{x.rank=x.info&&x.info.fuzzy?5:rankOf(x.r);});
+  if(hasQ)rows.sort((a,b)=>a.rank-b.rank);   /* Array.sort is stable: the chosen sort holds within a tier */
   $("count").textContent=rows.length+" of "+DATA.length+" grade-condition rows";
   learnHint(hasQ?$("q").value.trim():"");
   let html="";
-  [...new Set(DATA.map(r=>r.f))].forEach(fam=>{
+  const famOrder=[...new Set(DATA.map(r=>r.f))];
+  if(hasQ){const best={};rows.forEach(x=>{best[x.r.f]=Math.min(best[x.r.f]??9,x.rank);});famOrder.sort((a,b)=>(best[a]??9)-(best[b]??9));}
+  famOrder.forEach(fam=>{
     const frows=rows.filter(({r})=>r.f===fam);
     if(!frows.length)return;
     html+='<h3 class="famhead" data-fam="'+esc(fam)+'">'+esc(fam)+' <span class="famcount">· '+frows.length+' row'+(frows.length===1?"":"s")+'</span></h3>'+
@@ -2121,6 +2136,31 @@ function render(){
   $("results").innerHTML=rows.length?html:'<div class="empty">No rows match. Loosen the filters — or the combination may be deliberately withheld as unverified.</div>';
   document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",ev=>{ev.preventDefault();copyText(rowSummary(DATA[+b.dataset.copy]),b);}));
   document.querySelectorAll("[data-compare]").forEach(b=>b.addEventListener("click",ev=>{ev.preventDefault();addToCompare(+b.dataset.compare,b);}));
+  document.querySelectorAll("[data-similar]").forEach(b=>b.addEventListener("click",ev=>{ev.preventDefault();findSimilar(+b.dataset.similar);}));
+}
+/* 2026-11-15 · "Similar grades →" on a Browse card: the middle of each of the
+   grade's RANGED chemistry limits (min and max both set) is sent to Identify,
+   which tests it against every grade. Candidates contain all those values;
+   near misses show the one element that is out. Uses the checker's verified
+   chemistry where it exists, else the row's own chemistry. */
+const SIM_ELS=/^(C|Mn|Si|P|S|Cr|Ni|Mo|Cu|V|Al|Ti|Nb|B|N|Pb|Sn|Zn|Fe|Co|W|Mg|Bi|Sb|Te|Se|Ca|Zr|As)$/; /* static: render() runs before ID_ELS exists */
+function similarVals(r){
+  const ent=chemEntryFor(r),src=ent&&!ent.ns?ent.els:(r.chemMap||{}),v={};
+  Object.keys(src).forEach(e=>{const l=src[e];if(!l||l.rem||l.min==null||l.max==null||!(l.max>l.min))return;if(!SIM_ELS.test(e))return;
+    v[e]=+((l.min+l.max)/2).toFixed(4);});
+  return Object.keys(v).length>=2?v:null;
+}
+function findSimilar(i){
+  const r=DATA[i],v=similarVals(r);if(!v)return;
+  const tab=document.querySelector('nav.tabs button[data-view="check"]');if(tab)tab.click();
+  setChkMode("identify");
+  ID_ELS.forEach(e=>{const inp=$("id-"+e);if(inp)inp.value="";});
+  Object.entries(v).forEach(([e,x])=>{const inp=$("id-"+e);if(inp)inp.value=x;});
+  identify();
+  $("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">Grades similar to '+esc(r.g)+' ('+esc(r.s)+'): the middle of each of its ranges ('+Object.entries(v).map(([e,x])=>e+" "+x).join(", ")+') was tested against every grade. Candidates contain all of these values; near misses differ in one element. Similar chemistry is not interchangeability: check the standard, condition and mechanical basis.</div>');
+  /* land on the RESULTS, below the sticky tab bar (it is at the top on PC, at the bottom on phones) */
+  setTimeout(()=>{const o=$("idOut");if(!o)return;const nav=document.querySelector("nav.tabs");const navTop=nav&&getComputedStyle(nav).position==="sticky"?nav.offsetHeight:0;
+    window.scrollTo({top:o.getBoundingClientRect().top+(window.scrollY||0)-navTop-8,behavior:"smooth"});},60);
 }
 /* EVENTS › Browse: every filter input re-renders; initial render follows. */
 ["q","minYield","minTensile","elMin"].forEach(id=>$(id).addEventListener("input",render));
@@ -2604,7 +2644,9 @@ function certToIdentify(txt,why){
   if(!r.filled){$("idOut").innerHTML='<div class="verdict v-none">'+why+' No element values could be read, so nothing was identified. Type the values above.</div>'+fillNotesHTML(r);return r;}
   identify();
   $("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">'+why+' The '+r.filled+' values read ('+r.filledEls.join(", ")+') were tested against every grade in the atlas. Tap “Verify this grade” on the one named on your PO to run the full check.</div>'+fillNotesHTML(r));
-  const top=$("identifyMode");if(top&&top.scrollIntoView)top.scrollIntoView({behavior:"smooth",block:"start"});
+  /* land on the RESULTS, below the sticky tab bar (it is at the top on PC, at the bottom on phones) */
+  setTimeout(()=>{const o=$("idOut");if(!o)return;const nav=document.querySelector("nav.tabs");const navTop=nav&&getComputedStyle(nav).position==="sticky"?nav.offsetHeight:0;
+    window.scrollTo({top:o.getBoundingClientRect().top+(window.scrollY||0)-navTop-8,behavior:"smooth"});},60);
   return r;
 }
 $("chkParse").addEventListener("click",()=>{

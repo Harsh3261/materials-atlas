@@ -313,3 +313,21 @@ Cache materials-atlas-v66-certs.
 - The pdf.js reader in vendor/ is pre-cached in ASSETS, so PDF certs can be read offline.
 - Tested: with the network cut after the first visit, the app reloads, reads the Acuren C95520 PDF, and gives the correct verdict.
 - Cache materials-atlas-v68-offline2.
+
+## Round 13 (2026-11-15, ~17:00): "Similar grades →" button + search relevance
+- **"Similar grades →" button.** Each Browse card has one when the grade has at least 2 ranged elements (250 of 298 rows). findSimilar():
+  - Sends the middle of each RANGED limit to Identify. It uses the checker's verified chemistry when present, else the row's own chemistry.
+  - Runs identify() and lands on the results.
+- **Self-test:** every one of the 188 rows that are in the checker dataset finds ITSELF among its own candidates. The 14 A311 rows have no checker chemistry, so they show the matching base-chemistry grades.
+- **TDZ trap.** render() runs before ID_ELS is defined, so similarVals uses a static SIM_ELS regex. Referencing ID_ELS there broke page load; the test caught it before publishing.
+- **Search relevance.** While searching, results are ranked:
+  1. exact grade
+  2. grade starts with the term
+  3. OFFICIAL alias token (1.7225 → 42CrMo4)
+  4. other alias tokens
+  5. text mention
+  6. typo match
+
+  The chosen sort applies within each rank (stable sort). The family with the best match is listed first. Before this: "C95520" showed C95500 first, and "42CrMo4" showed 25CrMo4 and 34CrMo4 first.
+- certToIdentify and findSimilar now scroll to #idOut (the results), not to the input grid.
+- Cache materials-atlas-v69-similar.

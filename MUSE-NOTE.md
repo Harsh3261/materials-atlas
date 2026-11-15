@@ -331,3 +331,8 @@ Cache materials-atlas-v66-certs.
   The chosen sort applies within each rank (stable sort). The family with the best match is listed first. Before this: "C95520" showed C95500 first, and "42CrMo4" showed 25CrMo4 and 34CrMo4 first.
 - certToIdentify and findSimilar now scroll to #idOut (the results), not to the input grid.
 - Cache materials-atlas-v69-similar.
+
+## Round 14 (2026-11-15, ~16:50): Verify result → "Find grades matching these values →"
+- Harsh asked for this. A new #chkMatchAll button next to Copy check result / Copy check summary. It copies the numeric in-* values into the Identify grid, runs identify(), adds a note saying where the values came from, and lands on #idOut.
+- Tested on Harsh's cert 935784-24 ("4140", Mn 0.67): candidates are 42CrMo4, 41Cr4, B7, 2H, 42CrMo, 40Cr and 1040. 4140 is correctly not among them.
+- Cache materials-atlas-v70-matchall.

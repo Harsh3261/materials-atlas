@@ -2741,7 +2741,22 @@ $("chkRun").addEventListener("click",()=>{
     :'<div class="verdict v-fail">✕ '+fails+" CHECK"+(fails>1?"S":"")+" OUT OF RANGE — "+esc(chkRow.g)+" ("+esc(chkRow.s)+")</div>";
   $("chkOut").innerHTML=verdict+"<table><tr><th>Element</th><th class='num'>Spec</th><th class='num'>Cert value %</th><th>Result</th></tr>"+rows.join("")+"</table>"+
     ($("chkBasis").value==="product"?'<p class="note">Checked against heat-analysis ranges. For product analysis, confirm the general-requirements standard\'s permitted variations before rejecting on a marginal miss.</p>':"")+
-    '<button class="copybtn" id="chkCopy">Copy check result</button> <button class="copybtn" id="chkReport">Copy check summary</button>';
+    '<button class="copybtn" id="chkCopy">Copy check result</button> <button class="copybtn" id="chkReport">Copy check summary</button>'+
+    ' <button class="copybtn" id="chkMatchAll">Find grades matching these values →</button>';
+  /* 2026-11-15 · from a Verify result straight to Identify: the values just
+     checked are tested against every grade (e.g. a "4140" cert failing Mn
+     shows which grades the heat actually fits). */
+  const ma=$("chkMatchAll");if(ma)ma.addEventListener("click",()=>{
+    const v={};ID_ELS.forEach(e=>{const inp=$("in-"+e);if(!inp)return;const raw=inp.value.trim(),x=parseFloat(raw);if(raw!==""&&!isNaN(x))v[e]=x;});
+    const from=chkRow?chkRow.g+" ("+chkRow.s+")":"the check";
+    setChkMode("identify");
+    ID_ELS.forEach(e=>{const inp=$("id-"+e);if(inp)inp.value="";});
+    Object.entries(v).forEach(([e,x])=>{const inp=$("id-"+e);if(inp)inp.value=x;});
+    identify();
+    $("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">The values from your '+esc(from)+' check ('+Object.entries(v).map(([e,x])=>e+" "+x).join(", ")+') were tested against every grade. Candidates contain all of them; near misses differ in one element. Tap “Verify this grade” to run the full check on any of them.</div>');
+    setTimeout(()=>{const o=$("idOut");if(!o)return;const nav=document.querySelector("nav.tabs");const navTop=nav&&getComputedStyle(nav).position==="sticky"?nav.offsetHeight:0;
+      window.scrollTo({top:o.getBoundingClientRect().top+(window.scrollY||0)-navTop-8,behavior:"smooth"});},60);
+  });
   const rp=$("chkReport");if(rp)rp.addEventListener("click",e=>copyText(buildQualReport(),e.target));
   const cp=$("chkCopy");if(cp)cp.addEventListener("click",e=>{
     const txt=[chkRow.g+" chemistry check vs "+chkRow.s+" ("+$("chkBasis").value+" analysis)",

@@ -139,3 +139,42 @@ so they don't collide with your planned v20.1 (UNJ) numbering.
   per two reproductions of the 2015 table (Caishuku 42CrMo/A30422, H2ABC). ≤217 is
   the GB/T 3077-1999 value. Your original ≤229 was right. The text now reads
   "HB ≤229 (annealed or high-temper supply condition)". Cache materials-atlas-v63-learn2.
+
+## Round 7 (2026-11-15, ~15:20): polish, Heat treatment lesson rebuilt, PC layout
+No data value changed. The fenced 4140 tempering table is byte-identical, so its
+golden sha256 still matches.
+- Compare: new "Strength at a glance" bars (cmpBarsHTML, before RENDER › COMPARE).
+  - One common MPa scale for yield and tensile of both rows.
+  - Hatched = TYPICAL/MFR, solid = SPEC MIN.
+  - A range string such as "942–1077" plots its lower bound and says "low end of range".
+  - Null shows "not specified".
+- Reverse search: the MPa/ksi choice is remembered in localStorage key
+  'atlas.minUnit' (wrapped in try/catch).
+- Check a cert on phones: after a run, the result table pushed the page about
+  40 px wider than a 390 px screen, so the whole page scrolled sideways. Fixed with
+  a ≤560 px media block (smaller gauge floor, gauge stacked under the verdict,
+  spec cells on one line) and a ≤380 px block. No horizontal overflow at
+  320–1920 px in any view.
+- Check gauge tick: it was the same colour as the filled PASS/FAIL cell and read
+  as a gap. It's now dark with a light outline.
+- Learn › 3 Heat treatment rebuilt (Harsh found it odd: one dense paragraph, a
+  wrapping table, then unrelated notes):
+  - Lead line plus a link to the Conditions glossary.
+  - Four schematic thermal-cycle SVGs (anneal, normalize, Q+T, stress relieve)
+    against A3/A1 lines, labelled not to scale.
+  - Nine process cards (.lgi, so Learn search indexes them), each with a
+    condition-code chip, an effect line and "On a cert" guidance. New cards:
+    nitride, induction harden, harden (quench) on its own.
+  - The fenced tempering table is unchanged. #htBars draws bars FROM that table
+    at runtime, so the numbers live in one place.
+  - "Heat-treatment traps on certs": the E355 and flame-cut cards (same content
+    as before).
+- PC layout (≥1024 px):
+  - Top sticky tab bar instead of the phone bottom bar.
+  - 1200 px max width.
+  - Browse results in two columns (an open card spans both).
+  - Reverse-search inputs fill their columns.
+  - Static Check/Identify run buttons. They used to float over "Read pasted chemistry".
+  - Hover states.
+  - Keyboard: "/" focuses search; Ctrl/⌘+Enter runs Check/Identify.
+- Cache materials-atlas-v63-polish.

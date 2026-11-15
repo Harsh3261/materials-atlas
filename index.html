@@ -571,6 +571,10 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
     </div><!-- /verifyMode -->
     <div id="identifyMode" hidden>
     <p>Type the values from a chemical analysis (wt% as reported). Blank = not entered. Every grade in the atlas's verified chemistry dataset is tested against the values you enter — an entered element a grade does not limit cannot exclude it, and is disclosed as not tested.</p>
+    <div class="controls" style="margin-top:8px"><div><label for="idFile">Load a cert file (PDF, .txt or .csv): fills the values and identifies</label><input id="idFile" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain,text/csv"></div></div>
+    <label for="idPaste" class="chkpaste-lbl" style="font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">…or paste cert chemistry</label>
+    <textarea id="idPaste" aria-label="Paste cert chemistry to identify" placeholder="e.g. C 0.42, Mn 0.67, Si 0.22, Cr 1.07, Mo 0.16, P 0.016, S 0.007"></textarea>
+    <div style="margin:10px 0"><button class="copybtn" id="idParse" style="margin-top:0">Read pasted chemistry and identify ↓</button></div>
     <div id="idInputs"></div>
     <button class="copybtn" id="idRun">Identify material</button>
     <div id="idOut" aria-live="polite"></div>
@@ -2447,7 +2451,7 @@ $("chkBasis").addEventListener("change",e=>{$("basisNote").style.display=e.targe
 const CERT_EL_NAMES={carbon:"C",manganese:"Mn",silicon:"Si",phosphorus:"P",phosphorous:"P",sulfur:"S",sulphur:"S",chromium:"Cr",nickel:"Ni",molybdenum:"Mo",copper:"Cu",vanadium:"V",aluminum:"Al",aluminium:"Al",titanium:"Ti",niobium:"Nb",columbium:"Nb",boron:"B",nitrogen:"N",lead:"Pb",tin:"Sn",zinc:"Zn",iron:"Fe",cobalt:"Co",tungsten:"W",bismuth:"Bi",antimony:"Sb",arsenic:"As",selenium:"Se",calcium:"Ca",magnesium:"Mg",zirconium:"Zr",tellurium:"Te"};
 function certNamesToSymbols(t){
   const re=new RegExp("\\b("+Object.keys(CERT_EL_NAMES).join("|")+")\\b","gi");
-  return String(t).replace(re,m=>CERT_EL_NAMES[m.toLowerCase()]).replace(/([A-Z][a-z]?)\s+plus\s+/g,"$1 + ").replace(/\bwt\.?\s*%/gi,"%");
+  return String(t).replace(re,m=>CERT_EL_NAMES[m.toLowerCase()]).replace(/([A-Z][a-z]?)\s+plus\s+/g,"$1 + ").replace(/wt\.?\s*%/gi,"%");
 }
 let pdfjsReady=null;
 function loadPdfJs(){
@@ -2536,8 +2540,8 @@ function fillFromText(txt,opt){
      value as including Co (B505 / AMS bronzes); never split, and Co is not
      separately checked from a combined line. */
   work=work.replace(/Ni\s*\+\s*Co\s*[:=]?\s*(\d+\.?\d*)/i,(m,v)=>{
-    if(chkEnt.els.Ni){seen.Ni=parseFloat(v);
-      notes.push("Ni + Co combined value entered against Ni — this standard defines the Ni value as including Co.");}
+    if(opt?F.Ni:(chkEnt&&chkEnt.els.Ni)){seen.Ni=parseFloat(v);
+      notes.push(opt?"Ni + Co combined value used as Ni (bronze standards define Ni as including Co).":"Ni + Co combined value entered against Ni — this standard defines the Ni value as including Co.");}
     return " ";});
   /* "<x" below-detection values: count as 0 against max-only limits; they
      can never satisfy a minimum, so a min-bearing element is left unchecked
@@ -2572,7 +2576,7 @@ function fillFromText(txt,opt){
      lines[i]=" ";lines[i+1]=" ";i++;
    }
    work=" "+lines.join("\n")+" ";}
-  work=work.replace(/(^|[^A-Za-z])([A-Z][a-zA-Z]?)[ \t]*[:=]?[ \t]*<[ \t]*(\d*[.,]?\d+)/g,(m,pre,el0,x)=>{
+  work=work.replace(/(^|[^A-Za-z0-9])([A-Z][a-zA-Z]?)[ \t]*[:=]?[ \t]*<[ \t]*(\d*[.,]?\d+)(?![A-Za-z0-9])/g,(m,pre,el0,x)=>{
     const el=normEl(el0);const lim=F[el];
     if(lim&&opt){notes.push(el+" reported as <"+x+" (below detection): not used to identify.");}
     else if(lim&&!lim.rem){
@@ -2580,7 +2584,10 @@ function fillFromText(txt,opt){
       else{notes.push(el+" reported as <"+x+" — a below-detection value can never satisfy a minimum, so "+el+" is left unchecked.");}
     }
     return " ";});
-  const re=/(^|[^A-Za-z])([A-Z][a-zA-Z]?)[ \t]*[:=,;]?[ \t]*(\d*[.,]?\d+)(?:[ \t]*%)?/g;let m;
+  /* 2026-11-15: a symbol right after a digit, or a value running straight into
+     a letter or digit, is part of a code, not chemistry (postal "N1R 7W4",
+     "N5C 3J7"; heat "A71234"). */
+  const re=/(^|[^A-Za-z0-9])([A-Z][a-zA-Z]?)[ \t]*[:=,;]?[ \t]*(\d*[.,]?\d+)(?![A-Za-z0-9])(?:[ \t]*%)?/g;let m;
   /* 2026-11-15: a symbol glued to a long whole number is a designation, not a
      value ("C95520", "G41400", "S30400"); and no chemistry value exceeds 100 %. */
   while((m=re.exec(work))){const el=normEl(m[2]);
@@ -2597,7 +2604,7 @@ function fillFromText(txt,opt){
      if(odd.length>=2)notes.push("Values for "+odd.join(", ")+" are about 100× the limits. The cert may print chemistry in hundredths (×100). Check the cert's units before judging.");}}
   /* elements on the cert that this grade has no field for: listed, never dropped silently */
   {const KNOWN=/^(C|Mn|Si|P|S|Cr|Ni|Mo|Cu|V|Al|Ti|Nb|B|N|Pb|Sn|Zn|Fe|Co|W|Bi|Sb|As|Se|Ca|Mg|Zr|Te)$/;const extra=[];
-   const r2=/(^|[^A-Za-z])([A-Z][a-z]?)[ \t]*[:=,;]?[ \t]*(\d*[.,]\d+)/g;let m2;
+   const r2=/(^|[^A-Za-z0-9])([A-Z][a-z]?)[ \t]*[:=,;]?[ \t]*(\d*[.,]\d+)(?![A-Za-z0-9])/g;let m2;
    while((m2=r2.exec(work))){const el=m2[2];if(KNOWN.test(el)&&!F[el]&&!extra.some(x=>x.startsWith(el+" ")))extra.push(el+" "+m2[3].replace(",","."));}
    if(extra.length)notes.push("Also on the cert, but this grade's row holds no limit for them, so they are NOT checked: "+extra.join(", ")+".");}
   let n=0;const filledEls=[];
@@ -2928,6 +2935,28 @@ function identify(){
   out.innerHTML=h;
 }
 $("idRun").addEventListener("click",identify);
+/* 2026-11-15 · cert straight into Identify (Harsh's idea): a cert file or
+   pasted text fills the Identify grid and runs it. If the cert names a grade
+   the atlas holds, a one-tap "Verify against <grade>" is offered too. */
+function idFromCertText(txt,label){
+  const hits=certGradeHits(txt);
+  certToIdentify(txt,label);
+  if(hits.size){
+    const btns=[...hits.entries()].map(([base,ov])=>{const r=gradeByKey[ov];return r?'<button class="copybtn" data-verify="'+esc(r.g+"|"+r.s)+'">Verify against '+esc(r.g)+' ('+esc(r.s)+') →</button>':"";}).join(" ");
+    $("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">The cert names '+esc([...hits.keys()].join(", "))+'. Check it against that grade:</div><div class="btnrow">'+btns+'</div>');
+  }
+}
+$("idParse").addEventListener("click",()=>{const t=$("idPaste").value;if(!t.trim()){$("idOut").innerHTML='<div class="verdict v-none">Paste the cert chemistry first.</div>';return;}idFromCertText(t,"Pasted text:");});
+$("idFile").addEventListener("change",async e=>{
+  const f=e.target.files[0];if(!f)return;e.target.value="";
+  const isPdf=/\.pdf$/i.test(f.name)||f.type==="application/pdf";let txt="";
+  try{if(isPdf){$("idOut").innerHTML='<div class="verdict v-none">Reading “'+esc(f.name)+'”…</div>';txt=await pdfToText(f);}else txt=await f.text();}
+  catch(err){$("idOut").innerHTML='<div class="verdict v-none">Could not read “'+esc(f.name)+'”: '+esc(err.message||String(err))+'. Paste the chemistry instead.</div>';return;}
+  if(isPdf&&!/\d/.test(txt)){$("idOut").innerHTML='<div class="verdict v-none">“'+esc(f.name)+'” has no readable text: it is probably a scanned image. Type the values into the fields.</div>';return;}
+  $("idPaste").value=txt;
+  idFromCertText(txt,"“"+esc(f.name)+"”:");
+});
+
 /* R3 — one-tap handoff: switch to Verify mode with the grade preselected,
    CARRY the chemistry entered in Identify across (rebuild happens in
    chkSetup, so copy after it), and scroll the Checker panel top into view —

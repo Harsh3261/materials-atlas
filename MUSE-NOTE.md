@@ -336,3 +336,16 @@ Cache materials-atlas-v66-certs.
 - Harsh asked for this. A new #chkMatchAll button next to Copy check result / Copy check summary. It copies the numeric in-* values into the Identify grid, runs identify(), adds a note saying where the values came from, and lands on #idOut.
 - Tested on Harsh's cert 935784-24 ("4140", Mn 0.67): candidates are 42CrMo4, 41Cr4, B7, 2H, 42CrMo, 40Cr and 1040. 4140 is correctly not among them.
 - Cache materials-atlas-v70-matchall.
+
+## Round 15 (2026-11-15, ~17:05): cert straight into Identify + code-token guard
+- Identify mode gained #idFile (PDF/txt/csv) and #idPaste with #idParse. idFromCertText() runs certToIdentify(). If the cert names grades the atlas holds, it adds "Verify against <grade> →" buttons (data-verify = g|s, handled by the existing R3 hand-off).
+- **BUG FOUND (Identify reads every element).** Lab postal codes were read as chemistry: "N1R 7W4" gave N=1 and W=4; "N5C 3J7" was also at risk. In all three parser regexes (the main pair regex, the "<" regex and the extras list):
+  - a symbol right after a digit is not a match;
+  - a value followed directly by a letter or digit is not a match.
+  The "wt%" → "%" replacement no longer needs a word boundary ("0.6wt%").
+- **BUG FOUND:** the Ni+Co rule read chkEnt.els with no grade selected (Identify path). It now uses F.Ni in Identify mode.
+- **Retested:**
+  - Both Acuren certs and all 8 generated certs, in Verify and in Identify.
+  - Parser tests t15–t18 unchanged.
+  - Full click-through: 0 JS errors.
+- Cache materials-atlas-v71-idcert.

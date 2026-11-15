@@ -79,3 +79,21 @@ so they don't collide with your planned v20.1 (UNJ) numbering.
   falling back to MPa ÷ 6.894757 only where no ksi value exists, so rows such as
   75 ksi / 517 MPa aren't dropped by rounding. Labels show a live conversion
   (e.g. "100 ksi ≈ 689 MPa"). No data changed. Cache materials-atlas-v63-fix3.
+
+## Round 3 (2026-11-15, ~13:00): remaining audit items
+- 2024-T3 "typical" row: now the Aluminum Association typicals, 345/483 MPa
+  (50/70 ksi), El 18%, HB 120 (500 kg, 10 mm). The old 290/441 were B209 sheet
+  minimums mislabelled as typicals. The source now names AA typicals.
+- GB/T 3077 42CrMo annealed hardness: HB ≤229 → ≤217 (Total Materia 42CrMoA
+  and ML42CrMo both ≤217). Please confirm against GB/T 3077-2015 Table 3.
+- 42CrMo4 (ISO 683-2): the checker no longer scores the Si 0.10 minimum. The
+  standard's footnote allows lower Si with alternative deoxidation, so a low-Si
+  cert isn't automatically nonconforming. The max stays 0.40; the display string is unchanged.
+- README: the product-analysis wording now matches the app. Results are scored on
+  heat ranges, with a warning for product analysis; J409/A6 variations are not
+  computed in-app.
+- Not changed, on purpose:
+  - The 1020 HR HB 137 and CD 24% values. They match the cited Alro/MSO source exactly,
+    and the HB agrees with the source's own HRB 76.
+  - ISO 683-3 Si 0.15–0.40. Confirmed by Ovako and Salzgitter (EN ISO 683-3).
+- Cache materials-atlas-v63-fix4.

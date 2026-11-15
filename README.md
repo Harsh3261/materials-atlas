@@ -18,8 +18,10 @@ Live: https://harsh3261.github.io/materials-atlas/
   "equivalent".
 - **Chemistry Checker** — type or paste a mill-cert chemistry (or load a
   .txt/.csv) and get an element-by-element PASS/FAIL against the grade's
-  standard range, with heat-analysis vs product-analysis rules applied
-  (SAE J409 / ASTM A6 permissible variations). Materials whose standards set
+  standard range. Results are scored against heat-analysis ranges; when a
+  product analysis is entered the app warns that the governing standard's
+  permissible variations (e.g. SAE J409 / ASTM A6) must be applied before
+  rejecting a marginal result — those variations are not computed in-app. Materials whose standards set
   no chemistry limits (e.g. Dura-Bar cast irons, ASTM A536/A48) correctly
   return "not specified by standard" instead of a fake verdict.
 - **CE calculator** — IIW carbon equivalent for weldability.

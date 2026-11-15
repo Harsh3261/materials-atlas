@@ -66,3 +66,9 @@ so they don't collide with your planned v20.1 (UNJ) numbering.
 - 1020 HR HB 137 and CD elongation 24% match the Alro source but look implausible
   next to 1018 CD at 15%.
 - UNJ: the 302 staged rows are still yours to ship (v20.1).
+
+## Design tweak (2026-11-15, second commit)
+- Form-field borders (input/select/textarea, unfocused) now use `--field:#6e7586`,
+  ≥3:1 against bg/panel/panel2 (WCAG 1.4.11). The old `--line` #343947 was
+  about 1.2–1.6:1. Added as one rule at the end of the last <style>; all other
+  colours unchanged. Cache materials-atlas-v63-fix2.

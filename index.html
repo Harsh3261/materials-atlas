@@ -346,6 +346,10 @@ button:active,.sh-route:active,.chips button:active,.modetoggle button:active,na
   html{scroll-behavior:auto}
   button:active,.sh-route:active,.chips button:active,.modetoggle button:active,nav.tabs button:active{transform:none}
 }
+
+/* 2026-11-15 accessibility tweak: form-field borders raised to >=3:1 contrast (WCAG 1.4.11); colours otherwise unchanged. */
+:root{--field:#6e7586}
+input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),textarea:not(:focus){border-color:var(--field)}
 </style>
 </head>
 <body>

@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="dark" />
 <link rel="icon" href="data:," />
+<link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
@@ -3064,6 +3065,10 @@ $("elGrid").innerHTML=ELEMENTS.map(e=>'<div class="elcard"><span class="sym">'+e
     setTimeout(()=>{const h=$("qualStep");if(h)h.scrollIntoView({behavior:"smooth",block:"start"});},80);
   });
 })();
+/* 2026-11-15 · offline: sw.js existed but was never registered, so the
+   atlas never worked offline. It is registered now (cache-first; bump CACHE
+   in sw.js on every publish). The PDF reader in vendor/ is pre-cached. */
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{try{navigator.serviceWorker.register("sw.js").catch(()=>{});}catch(e){}});}
 </script>
 </body>
 </html>

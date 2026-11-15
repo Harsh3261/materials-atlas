@@ -306,3 +306,10 @@ Cache materials-atlas-v66-certs.
   - Certs that name their grade still go straight to Verify.
   - All earlier certs and the t15–t19 tests still pass.
 - Cache materials-atlas-v67-autoid.
+
+## Round 12 (2026-11-15, ~16:35): OFFLINE FIX
+- **The atlas never worked offline.** sw.js existed but index.html never registered it, and there was no manifest link.
+- It now registers sw.js on load and links manifest.json.
+- The pdf.js reader in vendor/ is pre-cached in ASSETS, so PDF certs can be read offline.
+- Tested: with the network cut after the first visit, the app reloads, reads the Acuren C95520 PDF, and gives the correct verdict.
+- Cache materials-atlas-v68-offline2.

@@ -1,8 +1,8 @@
 // Materials Atlas service worker — cache-first, offline capable.
 // Bump CACHE on every published data/design change.
-const CACHE = 'materials-atlas-v67-autoid';
-const ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
-// vendor/pdf*.js load only when a PDF cert is chosen; the fetch handler then caches them (same origin).
+const CACHE = 'materials-atlas-v68-offline2';
+const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './vendor/pdf.min.js', './vendor/pdf.worker.min.js'];
+// vendor/pdf*.js (PDF cert reader) are pre-cached so PDF certs can be read offline.
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));

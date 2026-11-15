@@ -2425,20 +2425,47 @@ async function pdfToText(file){
       let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r){r={y,items:[]};rows.push(r);}r.items.push({x,w:it.width||0,h:Math.abs(it.transform[3])||10,s:it.str});});
     /* Pieces that touch are one word: TeX-made reports split "78.6" into
        "78" "." "6". Join by the gap to the previous piece, never blindly. */
-    rows.sort((a,b)=>b.y-a.y).forEach(r=>{const its=r.items.sort((a,b)=>a.x-b.x);let line="",end=null;
-      its.forEach(i=>{if(end===null)line=i.s;else{const gap=i.x-end;line+=(gap<i.h*0.15?"":gap<i.h*1.2?" ":"   ")+i.s;}end=i.x+i.w;});
-      out.push(line);});
+    rows.sort((a,b)=>b.y-a.y);
+    /* merge touching pieces into words, keeping each word's x-centre */
+    const words=r=>{const its=r.items.sort((a,b)=>a.x-b.x),ws=[];its.forEach(i=>{const last=ws[ws.length-1];
+      if(last&&i.x-last.end<i.h*0.15){last.s+=i.s;last.end=i.x+i.w;}else ws.push({s:i.s,x:i.x,end:i.x+i.w});});
+      ws.forEach(w=>w.c=(w.x+w.end)/2);return ws;};
+    const SYM=/^(C|Mn|Si|P|S|Cr|Ni|Mo|Cu|V|Al|Ti|Nb|Cb|B|N|Pb|Sn|Zn|Fe|Co|W|Bi|Sb|As|Se|Ca|Mg|Zr|Te)$/i;
+    /* Column tables: a row of element symbols followed by a row of numbers is
+       paired by POSITION (nearest x-centre), not by counting cells, so a
+       two-word header ("Others each") cannot shift values onto the wrong
+       element. A value farther than half a column from its header is left out. */
+    for(let k=0;k<rows.length;k++){
+      const hw=words(rows[k]),syms=hw.filter(w=>SYM.test(w.s.trim()));
+      if(syms.length>=3&&k+1<rows.length){
+        const vw=words(rows[k+1]).filter(w=>/^[<≤]?\s*\d*[.,]?\d+$/.test(w.s.trim()));
+        if(vw.length>=2){
+          const xs=syms.map(w=>w.c).sort((a,b)=>a-b);let pitch=Infinity;for(let q=1;q<xs.length;q++)pitch=Math.min(pitch,xs[q]-xs[q-1]);
+          const pairs=[];syms.forEach(h=>{let best=null,bd=Infinity;vw.forEach(v=>{const d=Math.abs(v.c-h.c);if(d<bd){bd=d;best=v;}});
+            if(best&&bd<pitch*0.5)pairs.push(h.s.trim()+" "+best.s.trim());});
+          if(pairs.length>=2){out.push(pairs.join("   "));k++;continue;}
+        }
+      }
+      out.push(hw.map((w,q)=>(q?(w.x-hw[q-1].end<w.s.length*0.1+ (rows[k].items[0].h||10)*1.2?" ":"   "):"")+w.s).join(""));
+    }
   }
   return out.join("\n");
 }
-/* Grade designations named in the cert text that exist in the checker. */
+/* Grade designations named in the cert text that exist in the checker.
+   Lines that name the material (Specimen / Material / Grade / AISI / SAE /
+   ASTM / UNS / EN / steel / alloy …) are trusted; elsewhere a bare number is
+   ignored when it looks like a year, phone/fax, date or lab number. */
 function certGradeHits(t){
-  const txt=" "+String(t).replace(/\s+/g," ")+" ";const hits=new Map();
-  [...chkGrade.options].forEach(o=>{if(!o.value)return;const r=gradeByKey[o.value];if(!r)return;
-    const base=String(r.g).split(/\s+[—–-]\s+/)[0].trim();if(base.length<3||!/\d/.test(base))return;
-    const esc2=base.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
-    if(new RegExp("(^|[^A-Za-z0-9])"+esc2+"([^A-Za-z0-9]|$)").test(txt)&&!hits.has(base))hits.set(base,o.value);});
-  return hits;
+  const KEY=/\b(specimen|material|grade|alloy|steel|aisi|sae|astm|asme|uns|en\s?1\d{4}|din|gb\/?t|jis|spec(?:ification)?|description|product|bar|tube|plate|casting|bronze|brass|aluminium|aluminum|stainless)\b/i;
+  const lines=String(t).split(/\r?\n/);const strong=new Map(),weak=new Map();
+  const opts=[...chkGrade.options].filter(o=>o.value&&gradeByKey[o.value]).map(o=>({o,base:String(gradeByKey[o.value].g).split(/\s+[—–-]\s+/)[0].trim()})).filter(x=>/\d/.test(x.base)&&(x.base.length>=3||/^[A-Z]{1,2}\d$/.test(x.base)));
+  lines.forEach(line=>{const L=" "+line.replace(/\s+/g," ")+" ";const isKey=KEY.test(line);
+    opts.forEach(({o,base})=>{const e=base.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+      const m=new RegExp("(^|[^A-Za-z0-9\\-/.])"+e+"(?![A-Za-z0-9]|[-/.]\\d)").exec(L);if(!m)return;
+      const bare=/^\d+$/.test(base);
+      if(isKey){if(base.length<3&&!/\b(grade|gr\.?|class)\s*$/i.test(L.slice(0,m.index+m[1].length)))return;if(!strong.has(base))strong.set(base,o.value);}
+      else if(!bare&&!weak.has(base))weak.set(base,o.value);});});
+  return strong.size?strong:weak;
 }
 function fillFromText(txt){
   if(!chkEnt||chkEnt.ns)return{filled:0,filledEls:[],notes:[]};
@@ -2484,10 +2511,19 @@ function fillFromText(txt){
   const numOf=t=>parseFloat(String(t).replace(",","."));
   {const lines=work.split(/\r?\n/);
    for(let i=0;i+1<lines.length;i++){
-     let A=lines[i].trim().split(/[\s;|]+/).filter(Boolean),B=lines[i+1].trim().split(/[\s;|]+/).filter(Boolean);
+     /* 2026-11-15: split on COLUMN gaps (2+ spaces, tab, ; or |) when the
+        line has them, so a two-word header ("Others each") stays one cell. */
+     const cells=l=>{const t=l.trim();return (/\s{2,}|\t|[;|]/.test(t)?t.split(/\s{2,}|\t|\s*[;|]\s*/):t.split(/\s+/)).filter(Boolean);};
+     let A=cells(lines[i]),B=cells(lines[i+1]);
      if(A.length<2||B.length<2)continue;
-     /* label columns ("Element" / "Heat A") sit on the left: align from the right */
-     if(B.length>A.length)B=B.slice(B.length-A.length);else if(A.length>B.length)A=A.slice(A.length-B.length);
+     /* label columns ("Element" / "Heat A") sit on the left: align from the
+        right, but only when exactly one label column differs. Any other
+        mismatch is ambiguous, and a value on the wrong element is worse than
+        no value, so the pair is skipped. */
+     if(Math.abs(A.length-B.length)>1)continue;
+     const isEl=t=>/^[A-Z][a-zA-Z]?$/.test(t)&&!!F[normEl(t)],isNum=t=>/^[<≤]?\d*[.,]?\d+%?$/.test(t);
+     if(B.length>A.length){if(isNum(B[0]))continue;B=B.slice(1);}
+     else if(A.length>B.length){if(isEl(A[0]))continue;A=A.slice(1);}
      const cols=A.map((t,k)=>({el:/^[A-Z][a-zA-Z]?$/.test(t)?normEl(t):null,v:B[k]})).filter(c=>c.el&&/^\d*[.,]?\d+%?$/.test(c.v));
      if(cols.length<2)continue;
      cols.forEach(c=>{if(F[c.el]&&!(c.el in seen))seen[c.el]=numOf(c.v);});
@@ -2501,13 +2537,26 @@ function fillFromText(txt){
       else{notes.push(el+" reported as <"+x+" — a below-detection value can never satisfy a minimum, so "+el+" is left unchecked.");}
     }
     return " ";});
-  const re=/(^|[^A-Za-z])([A-Z][a-zA-Z]?)[ \t]*[:=]?[ \t]*(\d*[.,]?\d+)(?:[ \t]*%)?/g;let m;
+  const re=/(^|[^A-Za-z])([A-Z][a-zA-Z]?)[ \t]*[:=,;]?[ \t]*(\d*[.,]?\d+)(?:[ \t]*%)?/g;let m;
   /* 2026-11-15: a symbol glued to a long whole number is a designation, not a
      value ("C95520", "G41400", "S30400"); and no chemistry value exceeds 100 %. */
   while((m=re.exec(work))){const el=normEl(m[2]);
-    const glued=!/[ \t:=]/.test(m[0].slice(m[1].length+m[2].length,m[0].length-m[3].length-(/%$/.test(m[0])?1:0)))&&/^\d{3,}$/.test(m[3]);
+    const glued=!/[ \t:=,;]/.test(m[0].slice(m[1].length+m[2].length,m[0].length-m[3].length-(/%$/.test(m[0])?1:0)))&&/^\d{3,}$/.test(m[3]);
     const v=numOf(m[3]);if(glued||!(v<=100))continue;
     if(F[el]&&!(el in seen))seen[el]=v;}
+  /* 2026-11-15: some mill certs print chemistry in hundredths or thousandths
+     ("x100": C 46 = 0.46 %). A stated multiplier is applied; without one,
+     values that only make sense /100 raise a warning but are NOT changed. */
+  {const mm=/(?:\(|\b)[x×]\s?(100|1000)\b/i.exec(String(txt));
+   if(mm){const k=+mm[1];Object.keys(seen).forEach(el=>{seen[el]=+(seen[el]/k).toFixed(5);});
+     notes.push("The cert states chemistry “×"+k+"”: values were divided by "+k+". Check them against the cert.");}
+   else{const odd=Object.keys(seen).filter(el=>{const f=F[el];return f&&f.max!=null&&seen[el]>f.max*10&&seen[el]/100<=f.max*1.2;});
+     if(odd.length>=2)notes.push("Values for "+odd.join(", ")+" are about 100× the limits. The cert may print chemistry in hundredths (×100). Check the cert's units before judging.");}}
+  /* elements on the cert that this grade has no field for: listed, never dropped silently */
+  {const KNOWN=/^(C|Mn|Si|P|S|Cr|Ni|Mo|Cu|V|Al|Ti|Nb|B|N|Pb|Sn|Zn|Fe|Co|W|Bi|Sb|As|Se|Ca|Mg|Zr|Te)$/;const extra=[];
+   const r2=/(^|[^A-Za-z])([A-Z][a-z]?)[ \t]*[:=,;]?[ \t]*(\d*[.,]\d+)/g;let m2;
+   while((m2=r2.exec(work))){const el=m2[2];if(KNOWN.test(el)&&!F[el]&&!extra.some(x=>x.startsWith(el+" ")))extra.push(el+" "+m2[3].replace(",","."));}
+   if(extra.length)notes.push("Also on the cert, but this grade's row holds no limit for them, so they are NOT checked: "+extra.join(", ")+".");}
   let n=0;const filledEls=[];
   Object.entries(seen).forEach(([el,v])=>{const inp=$("in-"+el);if(inp){inp.value=v;n++;filledEls.push(el);}});
   invalidateCheck();

@@ -255,3 +255,38 @@ Cache materials-atlas-v64-learn3.
   - Sum rule 99.98 ≥ 99.5.
   - Verdict: all within B505 C95520.
 - Cache materials-atlas-v65-pdfcert.
+
+## Round 10 (2026-11-15, ~16:15): cert reader hardened with 10 test certs
+Test set: Harsh's 2 real Acuren reports, plus 8 generated formats in my tools/certs:
+- a US mill table with ".41" decimals
+- 316L "C: 0.021" lines
+- an EU 42CrMo4 with decimal commas and uppercase symbols
+- B7 with spelled-out names
+- a 6061 table with "Others each/total"
+- a ×100 1045
+- a CSV
+- a TXT
+All 10 now read correctly.
+
+Fixes:
+- **PDF column tables are paired by POSITION.** A row of ≥3 element symbols is followed by a row of numbers, and each value goes to the symbol with the nearest x-centre, within half the symbol-column pitch. Before this, a two-word header ("Others each") shifted values onto the wrong elements, giving false results.
+- **The generic two-row table path is stricter.**
+  - Cells are split on column gaps.
+  - Header and value counts may differ by at most one, and the dropped cell must be a label, not an element or a value.
+  - Otherwise the pair is skipped: a blank field is better than a wrong one.
+- **Grade detection:**
+  - Only lines naming the material (Specimen / Material / Grade / AISI / ASTM / UNS / steel / alloy …) can select a grade.
+  - Bare numbers elsewhere (years "2024", fax "…-6082", lab numbers) are ignored.
+  - Short grades such as "B7" are accepted after "Grade" or "Class".
+- **×100 / ×1000 notation:** applied when the cert states it. If 2 or more values are about 100× their limits, the reader warns and does NOT change them.
+- **Separators:** CSV "C,0.18" and "C;0.18" are read. A glued long whole number is still treated as a designation.
+- **Unchecked elements are listed.** Elements on the cert that the grade row has no field for are named in a note ("NOT checked: Fe 0.31, Mn 0.06, Ti 0.03"), never dropped silently.
+
+DATA GAP: the 6061 / ASTM B209 checker row carries only Si, Cu, Mg, Cr and Zn. Fe ≤0.7, Mn ≤0.15, Ti ≤0.15 and the "others" limits are missing. These are candidates for a verified data change.
+
+REAL FINDING on Harsh's cert 935784-24 (3.50 in "AISI 4140" IHCS):
+- Mn 0.67 is below the 4140 range of 0.75–1.00.
+- Even with the usual product-analysis allowance (0.03 under), it fails.
+- The chemistry fits 42CrMo4 / 42CrMo windows.
+
+Cache materials-atlas-v66-certs.

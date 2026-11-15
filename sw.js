@@ -1,6 +1,6 @@
 // Materials Atlas service worker — cache-first, offline capable.
 // Bump CACHE on every published data/design change.
-const CACHE = 'materials-atlas-v65-pdfcert';
+const CACHE = 'materials-atlas-v66-certs';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
 // vendor/pdf*.js load only when a PDF cert is chosen; the fetch handler then caches them (same origin).
 

@@ -1,6 +1,6 @@
 // Materials Atlas service worker — cache-first, offline capable.
 // Bump CACHE on every published data/design change.
-const CACHE = 'materials-atlas-v63-polish';
+const CACHE = 'materials-atlas-v64-learn3';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', (e) => {

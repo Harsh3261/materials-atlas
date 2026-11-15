@@ -179,3 +179,57 @@ golden sha256 still matches.
   - Hover states.
   - Keyboard: "/" focuses search; Ctrl/⌘+Enter runs Check/Identify.
 - Cache materials-atlas-v63-polish.
+
+## Round 8 (2026-11-15, ~15:50): Material science for QA, trends, search bridge
+Harsh asked for a material-science Learn section: "keep it precise, not overwhelming".
+How it was checked:
+- A research pass collected sources (my tools/ms_facts.md).
+- An independent audit pass checked every claim; all 10 findings are applied.
+
+**New lessons 7–13**, after "Reading a cert". They use .lgi cards, so Learn search indexes them. New topic chips sit under "Material science:".
+- **7 Inside steel:** a schematic Fe–C diagram plus phase cards.
+- **8 Mechanical testing:** a schematic stress–strain curve; E8/E8M 4D vs 5D; E10/E18/E92/E384/E140; E23.
+- **9 Hardenability:**
+  - Schematic Jominy curves.
+  - A REAL fenced data table "mass-effect" (EMJ, ½/1/2/4 in; centre vs half-radius noted).
+  - A255, A304 / J1268.
+- **10 Welding:**
+  - IIW CE with TWI bands (0.40/0.50). The checker's coarser 0.40/0.60 screen is left as is and labelled coarser.
+  - Hobart 41xx preheat by thickness.
+  - E7018 H4.
+- **11 Corrosion & coatings:**
+  - Hard chrome: Ovako rod data, B650/AMS 2460/ISO 6158.
+  - Hydrogen bake: F1941 39 HRC; ISO 4042 390 HV.
+  - Zinc: B633 SC thicknesses.
+  - Nitriding: AMS 2759/10 gas, 2759/8 plasma.
+- **12 How parts fail:** a schematic S–N curve; the endurance limit is stated for polished specimens.
+- **13 NDT:**
+  - MT is now E3024 (general industry) / E1444 (aerospace) / E709.
+  - The ET standards are marked tubing-only.
+  - On phones the table becomes cards.
+
+**Heat treatment (lesson 3):**
+- New fenced data "4130 / 4340 tempering trend" (EMJ 1-in round).
+- #htBars now groups all three grades from the tables.
+
+**DATA LABEL CORRECTIONS. Please re-pin the golden hash for the 4140 tempering fence; I changed its header only.**
+- The 4140 tempering values (311/285/269) are EMJ's **4142** 1-in data. The research found no such table at Alro, and EMJ publishes no 4140 series.
+- The fence header now reads "4140-type (EMJ 4142)". The source line under the bars says this.
+- The values are unchanged. The DATA rows that credit Alro for 4140 Q&T were NOT changed. Please re-check their source credit.
+
+**Other corrections:**
+- E355 +SR row note: "understate by ≈25 %" → "about 21 % below" (355 vs 450).
+- Heat card "Anneal": annealed 4140 is now "about HB 187–212" (distributors list CF annealed 197–212), and annealed is "a common supply state", not "the normal" one.
+
+**Browse → Learn bridge:**
+- #learnHint under the result count lists the lessons that mention the search term, with an "Open in Learn" button that pre-fills the Learn search.
+
+**Checker:**
+- Rows with no chemistry of their own (A311 Class A/B) now offer a jump to the same base grade's chemistry row (chkAltHTML), where one exists (1018, 1045).
+- The other A311 grades (1035, 1050, 1541, 11xx) have no J403 chemistry rows yet. They are candidates for a verified data change.
+
+**Tests:**
+- No horizontal overflow at 320–1920 px.
+- The full click-through test passes with 0 JS errors.
+
+Cache materials-atlas-v64-learn3.

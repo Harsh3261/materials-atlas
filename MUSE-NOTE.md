@@ -132,3 +132,10 @@ so they don't collide with your planned v20.1 (UNJ) numbering.
     - C: weldability is now judged by CE using the app's own bands, not "0.40% C".
     - Mn: 40Mn2 is 885 MPa min tensile, about 80% of 42CrMo's 1,080 — it was "near-4140-class".
 - README "Explainers" bullet replaced with the Learn description. Cache materials-atlas-v63-learn.
+
+## Round 6 (2026-11-15, ~13:30): 42CrMo hardness REVERTED to ≤229
+- My round-3 change (≤229 → ≤217) was wrong. GB/T 3077-2015 Table 3 gives
+  HBW ≤229 for 42CrMo (annealed or high-temperature-temper supply condition),
+  per two reproductions of the 2015 table (Caishuku 42CrMo/A30422, H2ABC). ≤217 is
+  the GB/T 3077-1999 value. Your original ≤229 was right. The text now reads
+  "HB ≤229 (annealed or high-temper supply condition)". Cache materials-atlas-v63-learn2.

@@ -290,3 +290,19 @@ REAL FINDING on Harsh's cert 935784-24 (3.50 in "AISI 4140" IHCS):
 - The chemistry fits 42CrMo4 / 42CrMo windows.
 
 Cache materials-atlas-v66-certs.
+
+## Round 11 (2026-11-15, ~16:20): no grade known, so test against all grades (Harsh's idea)
+- certToIdentify(txt, why) applies when a cert file or pasted text does not name exactly one grade the atlas holds and no grade is selected.
+  - It switches to Identify and clears the Identify grid.
+  - It fills the grid with fillFromText(txt, {fields, prefix:"id-"}) and runs identify().
+  - A note at the top explains why, and says to tap "Verify this grade" on the grade named on the PO. That runs the full check, with the values carried across by the existing R3 hand-off.
+- fillFromText gained an optional second argument for the Identify grid. In that mode, "<x" values are not used to identify, and a note says so. Verify behaviour is unchanged.
+- "Read pasted chemistry" with no grade selected:
+  - If the text names exactly one grade, it auto-selects it.
+  - Otherwise it runs the same Identify fallback.
+- Tested:
+  - The 1018 CSV with no grade identifies 1018.
+  - An unnamed bronze identifies C95800, and Verify then passes all 5 entered elements.
+  - Certs that name their grade still go straight to Verify.
+  - All earlier certs and the t15–t19 tests still pass.
+- Cache materials-atlas-v67-autoid.

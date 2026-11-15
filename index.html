@@ -2467,14 +2467,15 @@ function certGradeHits(t){
       else if(!bare&&!weak.has(base))weak.set(base,o.value);});});
   return strong.size?strong:weak;
 }
-function fillFromText(txt){
-  if(!chkEnt||chkEnt.ns)return{filled:0,filledEls:[],notes:[]};
+function fillFromText(txt,opt){
+  /* opt (2026-11-15): {fields, prefix:"id-"} fills the Identify grid instead of the Verify grid */
+  if(!opt&&(!chkEnt||chkEnt.ns))return{filled:0,filledEls:[],notes:[]};
   const notes=[];const seen={};let work=" "+String(txt||"")+" ";
   /* Stage 2.1 parity: paste/file fill targets EVERY field in the Verify
      grid — the grade's own limits PLUS its scored standard-wide cap
      fields (P, S, Cu, Ni where the grade scores them) — exactly as
      typing does. Stage 2 silently dropped the caps on paste. */
-  const F={};chkFields().forEach(f=>{F[f.e]=f;});
+  const F={};if(opt)Object.assign(F,opt.fields);else chkFields().forEach(f=>{F[f.e]=f;});
   /* Hardness scales are NOT chemistry: "HRC 28" must never read as carbon,
      "HB 170" never as boron, "HS 45" never as sulphur. Strip scale+value
      tokens before any element matching (chair fix 2026-11-14: the matcher
@@ -2532,7 +2533,8 @@ function fillFromText(txt){
    work=" "+lines.join("\n")+" ";}
   work=work.replace(/(^|[^A-Za-z])([A-Z][a-zA-Z]?)[ \t]*[:=]?[ \t]*<[ \t]*(\d*[.,]?\d+)/g,(m,pre,el0,x)=>{
     const el=normEl(el0);const lim=F[el];
-    if(lim&&!lim.rem){
+    if(lim&&opt){notes.push(el+" reported as <"+x+" (below detection): not used to identify.");}
+    else if(lim&&!lim.rem){
       if(lim.min==null&&lim.max!=null){seen[el]=0;notes.push(el+" reported as <"+x+" — counted as 0 against its max-only limit.");}
       else{notes.push(el+" reported as <"+x+" — a below-detection value can never satisfy a minimum, so "+el+" is left unchecked.");}
     }
@@ -2558,8 +2560,8 @@ function fillFromText(txt){
    while((m2=r2.exec(work))){const el=m2[2];if(KNOWN.test(el)&&!F[el]&&!extra.some(x=>x.startsWith(el+" ")))extra.push(el+" "+m2[3].replace(",","."));}
    if(extra.length)notes.push("Also on the cert, but this grade's row holds no limit for them, so they are NOT checked: "+extra.join(", ")+".");}
   let n=0;const filledEls=[];
-  Object.entries(seen).forEach(([el,v])=>{const inp=$("in-"+el);if(inp){inp.value=v;n++;filledEls.push(el);}});
-  invalidateCheck();
+  Object.entries(seen).forEach(([el,v])=>{const inp=$((opt?opt.prefix:"in-")+el);if(inp){inp.value=v;n++;filledEls.push(el);}});
+  if(!opt)invalidateCheck();
   return{filled:n,filledEls:filledEls,notes:notes};
 }
 /* v62 §3 — leading status symbol for a verdict cell (presentation only; the
@@ -2591,7 +2593,25 @@ function gaugeHTML(v,val,ok){
     '<span class="g-tick '+(ok?"g-in":"g-out")+'" style="left:'+pct(val)+'%"></span></span><span class="g-margin">'+m+'</span></span>';
 }
 function fillNotesHTML(r){return r.notes.length?'<p class="note">'+r.notes.map(esc).join("<br>")+"</p>":"";}
+/* 2026-11-15 · no grade known: test the cert chemistry against EVERY grade
+   (Identify), then the user taps "Verify this grade" on the right one. */
+function certToIdentify(txt,why){
+  const fields={};ID_ELS.forEach(e=>{fields[e]={e};});
+  setChkMode("identify");
+  ID_ELS.forEach(e=>{const i=$("id-"+e);if(i)i.value="";});
+  const r=fillFromText(txt,{fields,prefix:"id-"});
+  if(!r.filled){$("idOut").innerHTML='<div class="verdict v-none">'+why+' No element values could be read, so nothing was identified. Type the values above.</div>'+fillNotesHTML(r);return r;}
+  identify();
+  $("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">'+why+' The '+r.filled+' values read ('+r.filledEls.join(", ")+') were tested against every grade in the atlas. Tap “Verify this grade” on the one named on your PO to run the full check.</div>'+fillNotesHTML(r));
+  const top=$("identifyMode");if(top&&top.scrollIntoView)top.scrollIntoView({behavior:"smooth",block:"start"});
+  return r;
+}
 $("chkParse").addEventListener("click",()=>{
+  if(!chkGrade.value){
+    const t=$("chkPaste").value,hits=certGradeHits(t);
+    if(hits.size===1){chkGrade.value=[...hits.values()][0];chkGrade.dispatchEvent(new Event("change"));}
+    else{certToIdentify(t,hits.size>1?"The text names more than one grade ("+esc([...hits.keys()].join(", "))+") and none is selected.":"No grade is selected and none is named in the text.");return;}
+  }
   const r=fillFromText($("chkPaste").value);
   $("chkOut").innerHTML='<div class="verdict v-none">'+(r.filled?("Filled "+r.filled+" element field"+(r.filled>1?"s":"")+" ("+r.filledEls.join(", ")+") from the pasted text — review the values in the fields, then run the check. Nothing has been checked yet."):"No element values recognised. Use the form “C 0.41, Mn 0.87, Cr 0.95…”")+"</div>"+fillNotesHTML(r);
   ceAuto();
@@ -2612,9 +2632,9 @@ $("chkFile").addEventListener("change",async e=>{
     const curBase=chkRow?String(chkRow.g).split(/\s+[—–-]\s+/)[0].trim():null;
     if(!chkGrade.value&&hits.size===1){chkGrade.value=[...hits.values()][0];chkGrade.dispatchEvent(new Event("change"));gradeNote="Grade "+esc([...hits.keys()][0])+" was named on the cert and has been selected. Confirm it matches the PO.";}
     else if(curBase&&!hits.has(curBase))gradeNote="Warning: the cert names "+esc([...hits.keys()].join(", "))+", but you are checking against "+esc(curBase)+".";
-    else if(!chkGrade.value)gradeNote="The cert names "+esc([...hits.keys()].join(", "))+". Select the right one above, then press “Read pasted chemistry”.";
   }
   $("chkPaste").value=txt;
+  if(!chkGrade.value){certToIdentify(txt,hits.size>1?"“"+esc(f.name)+"” names more than one grade ("+esc([...hits.keys()].join(", "))+").":"“"+esc(f.name)+"” does not name a grade the atlas holds.");return;}
   const r=fillFromText(txt);
   $("chkOut").innerHTML=(gradeNote?'<div class="verdict v-none">'+gradeNote+'</div>':'')+'<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"”. The extracted text is in the paste box: review the fields, then run the check."):(chkGrade.value?"No recognisable chemistry found in “"+esc(f.name)+"”. Its text is in the paste box; check it, or type the values.":"Select the grade named on the cert, then press “Read pasted chemistry”. The cert text is in the paste box."))+"</div>"+fillNotesHTML(r);
   ceAuto();

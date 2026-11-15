@@ -239,6 +239,114 @@ button:active,.sh-route:active{transform:translateY(1px)}
   button:active,.sh-route:active{transform:none}
 }
 </style>
+<style id="v62.1">
+/* ===== v62.1 DESIGN REVAMP "Temper" — presentation-only override layer. The pinned first sheet
+   and the v62 layer above are byte-identical; everything here wins by cascade order. ===== */
+/* v62.1 §1 colour system */
+:root{
+  --bg:#13151C; --panel:#1C1F28; --panel2:#262A35; --steel:#262A35;
+  --ink:#EDE7DD; --ink2:#B5AFA3; --muted:#B5AFA3;
+  --line:#343947; --hair:#343947;
+  --teal:#E8743B; --teal-soft:#2C1A0E;
+  --red:#FF4D5A; --green:#4ADE80; --amber:#FFD23F;
+  --red-soft:rgba(255,77,90,.12); --green-soft:rgba(74,222,128,.12); --amber-soft:rgba(255,210,63,.10);
+  --fam-steel:#7C9BFF; --fam-plate:#A98BFF; --fam-stainless:#3FC8D8; --fam-copper:#C9A060; --fam-alu:#AEBBCC; --fam-iron:#E36FD0;
+  --dur-fast:120ms; --dur-base:180ms; --ease:cubic-bezier(.2,0,0,1);
+}
+/* v62.1 §2 hard-coded colour leftovers. Chair refinement at gate: the body grid is NOT
+   restored — v62 §10 deliberately presents the root ember background (body transparent);
+   only the root background is recoloured to the Temper base + hotter copper. */
+html{background:radial-gradient(ellipse 80% 50% at 0% 0%, color-mix(in srgb, #E8743B 6%, transparent) 0%, transparent 55%), #13151C}
+.rule{background:rgba(232,116,59,.07);box-shadow:inset 0 0 0 3px var(--bg), inset 0 0 0 4.5px rgba(232,116,59,.45)}
+nav.tabs button[aria-selected="true"],.chips button[aria-pressed="true"],.modetoggle button[aria-pressed="true"],
+nav.tabs button[aria-selected="true"]:hover,.chips button[aria-pressed="true"]:hover,.modetoggle button[aria-pressed="true"]:hover{color:#13151C}
+.gauge{background:#343947} .g-win{background:#E8743B;opacity:.5} .g-in{background:#4ADE80} .g-out{background:#FF4D5A}
+/* v62.1 §3 verdict discipline — verdicts are the only filled colour blocks; badges are outline tags */
+.verdict.v-pass{background:#4ADE80;color:#13151C;border-color:#4ADE80}
+.verdict.v-fail{background:#FF4D5A;color:#13151C;border-color:#FF4D5A}
+.verdict.v-none{background:var(--panel2);color:var(--ink2);border:1px dashed var(--hair)}
+td.pass{background:#4ADE80;color:#13151C;font-weight:700} td.fail{background:#FF4D5A;color:#13151C;font-weight:700}
+.b-off{color:#4ADE80;border-color:#4ADE80;background:transparent}
+.b-near{color:#FFD23F;border-color:#FFD23F;background:transparent}
+.b-typ{color:#FFD23F;border-color:#FFD23F;background:transparent}
+.b-match{color:#E8743B;border-color:#E8743B;background:transparent}
+.b-xref{color:var(--ink2);border-color:var(--ink2);background:transparent}
+.warnbox{border:1px solid #FFD23F;background:rgba(255,210,63,.08);color:var(--ink)}
+.idcand{border-left-color:#4ADE80} .idnear{border-left-color:#FFD23F}
+/* v62.1 §4 family colour-coding — stripe/tag/text only, always beside the text label ("Other" = default) */
+.famhead[data-fam="Carbon steel bar"],.famhead[data-fam="Alloy steel bar"],.famhead[data-fam="Free-machining steel bar"],.famhead[data-fam="GB/T 3077 alloy steel"],.famhead[data-fam="Tool steel"],.famhead[data-fam="Tube"]{color:var(--fam-steel);border-left:4px solid var(--fam-steel);padding-left:12px}
+.fam[data-fam="Carbon steel bar"],.fam[data-fam="Alloy steel bar"],.fam[data-fam="Free-machining steel bar"],.fam[data-fam="GB/T 3077 alloy steel"],.fam[data-fam="Tool steel"],.fam[data-fam="Tube"]{color:var(--fam-steel)}
+.famhead[data-fam="Plate"]{color:var(--fam-plate);border-left:4px solid var(--fam-plate);padding-left:12px}
+.fam[data-fam="Plate"]{color:var(--fam-plate)}
+.famhead[data-fam="Stainless steel"],.famhead[data-fam="Stainless steel (PH)"]{color:var(--fam-stainless);border-left:4px solid var(--fam-stainless);padding-left:12px}
+.fam[data-fam="Stainless steel"],.fam[data-fam="Stainless steel (PH)"]{color:var(--fam-stainless)}
+.famhead[data-fam="Copper alloy"]{color:var(--fam-copper);border-left:4px solid var(--fam-copper);padding-left:12px}
+.fam[data-fam="Copper alloy"]{color:var(--fam-copper)}
+.famhead[data-fam="Aluminium"],.famhead[data-fam="Aluminium (cast)"]{color:var(--fam-alu);border-left:4px solid var(--fam-alu);padding-left:12px}
+.fam[data-fam="Aluminium"],.fam[data-fam="Aluminium (cast)"]{color:var(--fam-alu)}
+.famhead[data-fam="Cast iron (Dura-Bar)"]{color:var(--fam-iron);border-left:4px solid var(--fam-iron);padding-left:12px}
+.fam[data-fam="Cast iron (Dura-Bar)"]{color:var(--fam-iron)}
+.famhead .famcount{color:var(--muted)}
+.chips button[data-fam="Carbon steel bar"],.chips button[data-fam="Alloy steel bar"],.chips button[data-fam="Free-machining steel bar"],
+.chips button[data-fam="GB/T 3077 alloy steel"],.chips button[data-fam="Tool steel"],.chips button[data-fam="Tube"]{border-left:3px solid var(--fam-steel)}
+.chips button[data-fam="Plate"]{border-left:3px solid var(--fam-plate)}
+.chips button[data-fam="Stainless steel"],.chips button[data-fam="Stainless steel (PH)"]{border-left:3px solid var(--fam-stainless)}
+.chips button[data-fam="Copper alloy"]{border-left:3px solid var(--fam-copper)}
+.chips button[data-fam="Aluminium"],.chips button[data-fam="Aluminium (cast)"]{border-left:3px solid var(--fam-alu)}
+.chips button[data-fam="Cast iron (Dura-Bar)"]{border-left:3px solid var(--fam-iron)}
+/* v62.1 L1 bottom tab bar + page clearance */
+nav.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;margin:0;border-radius:0;border-left:none;border-right:none;border-top:3px solid var(--teal);border-bottom:none;background:var(--panel);min-height:56px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:60;flex-wrap:nowrap}
+nav.tabs button{flex:1 1 0;min-height:48px;padding:8px 4px}
+.wrap{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+/* v62.1 L2 sticky primary actions */
+#chkRun,#idRun{position:sticky;bottom:calc(68px + env(safe-area-inset-bottom));width:100%;min-height:52px;z-index:30;box-shadow:0 -6px 18px rgba(0,0,0,.35)}
+/* v62.1 L3 sticky selector strips + Identify pill */
+#view-browse > .controls{position:sticky;top:0;z-index:40;background:var(--bg);padding-top:10px;padding-bottom:10px}
+#view-compare .grid2{position:sticky;top:0;z-index:40;background:var(--bg);padding-top:8px;padding-bottom:8px}
+.modetoggle button{border-radius:999px;padding:10px 18px}
+/* v62.1 L4 sticky table headers — chair refinement at gate: scoped to Learn tables only.
+   In Compare the sticky selector strip (L3) and in the Checker the sticky verdict (L5) own
+   the top edge; a second sticky header there would hide behind them. */
+#view-learn th{position:sticky;top:0;z-index:5;background:var(--panel2)}
+table{overscroll-behavior:contain}
+/* v62.1 L5 sticky verdict line */
+#chkOut .verdict,#ceOut .verdict{position:sticky;top:8px;z-index:20}
+/* v62.1 L6 input protection (no iOS zoom; keep focused field clear of the bottom bar) */
+#chkInputs input,#idInputs input,.ceinputs input,#chkPaste{font-size:16px}
+input,select,textarea{scroll-margin-bottom:calc(150px + env(safe-area-inset-bottom))}
+/* v62.1 L7 tap targets */
+button,[role="button"],select,summary,input:not([type="checkbox"]){min-height:48px}
+.chips{gap:8px} .chips button{min-height:48px}
+th,td{padding-top:11px;padding-bottom:11px}
+/* v62.1 L8–L11 motion — token timings, nothing over 240ms, no shake */
+@keyframes v621In{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes v621Badge{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes v621Fade{from{opacity:0}to{opacity:1}}
+@keyframes v621FailTint{from{background-color:transparent}to{background-color:#FF4D5A}}
+section.view.on{animation:v621In 160ms var(--ease)}
+.card{animation:v621Fade var(--dur-base) var(--ease)}
+#chkOut .verdict,#ceOut .verdict{animation:v621Badge var(--dur-base) ease-out}
+#idOut .idcand,#idOut .idnear{animation:v621In var(--dur-base) var(--ease)}
+#chkOut td.fail{animation:v621FailTint 240ms var(--ease)}
+.g-win{animation:v62Grow 200ms var(--ease)}
+nav.tabs button{transition:background-color 200ms var(--ease),color 200ms var(--ease),transform var(--dur-fast) var(--ease)}
+/* v62.1 L12 press feedback */
+button,.sh-route,.check-item,.card{transition:background-color 160ms var(--ease),border-color 160ms var(--ease),color 160ms var(--ease),transform var(--dur-fast) var(--ease)}
+button:active,.sh-route:active,.chips button:active,.modetoggle button:active,nav.tabs button:active{transform:scale(.97)}
+/* v62.1 L13 accordion reveal (no height animation) */
+.card[open] > :not(summary){animation:v621In var(--dur-base) var(--ease)}
+/* v62.1 L14 scroll-driven shadow on the sticky Browse strip (progressive enhancement) */
+@supports (animation-timeline: scroll()){
+  @keyframes v621Shadow{from{box-shadow:0 0 0 rgba(0,0,0,0)}to{box-shadow:0 10px 18px rgba(0,0,0,.35)}}
+  #view-browse > .controls{animation:v621Shadow linear both;animation-timeline:scroll()}
+}
+/* v62.1 L15 reduced motion — must stay the last rules in this block */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  button:active,.sh-route:active,.chips button:active,.modetoggle button:active,nav.tabs button:active{transform:none}
+}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -1286,7 +1394,7 @@ function cardHTML(r,i,info){
   const desig=A?[A[0]?"UNS "+esc(A[0]):"",A[1]?"EN "+esc(A[1]):"",A[2]?esc(A[2]):"",A[3]?"JIS "+esc(A[3]):""].filter(Boolean).join(" · "):"";
   const aliasLine='<h4>Cross-reference designations</h4><p class="note">'+(desig?desig:"None verified")+(A&&A[4]?" "+scopedBadge(r,A):" — no two-source-verified cross-system designation for this grade")+'</p>';
   const viaBadge=(info&&info.via)?' <span class="badge b-tag">MATCHED VIA '+esc(info.via.toUpperCase())+(info.fuzzy?" (APPROX)":"")+'</span>':"";
-  return '<details class="card"><summary><span class="fam">'+esc(r.f)+" · "+esc(r.form)+'</span>'+
+  return '<details class="card"><summary><span class="fam" data-fam="'+esc(r.f)+'">'+esc(r.f)+" · "+esc(r.form)+'</span>'+
     '<span class="ghead"><span class="grade">'+esc(r.g)+'</span><span class="cond">'+esc(r.c)+'</span>'+BADGE[r.st]+(r.flag?' <span class="badge b-typ">'+esc(r.flag)+'</span>':'')+(r.tag?' <span class="badge b-tag">'+esc(r.tag)+'</span>':'')+viaBadge+'</span>'+
     '<span class="props"><span><span class="lbl">Yield ('+esc(r.yb)+')</span>'+yTxt+'</span>'+
     '<span><span class="lbl">Tensile</span>'+tTxt+'</span>'+
@@ -1331,7 +1439,7 @@ function render(){
   [...new Set(DATA.map(r=>r.f))].forEach(fam=>{
     const frows=rows.filter(({r})=>r.f===fam);
     if(!frows.length)return;
-    html+='<h3 class="famhead">'+esc(fam)+' <span class="famcount">· '+frows.length+' row'+(frows.length===1?"":"s")+'</span></h3>'+
+    html+='<h3 class="famhead" data-fam="'+esc(fam)+'">'+esc(fam)+' <span class="famcount">· '+frows.length+' row'+(frows.length===1?"":"s")+'</span></h3>'+
       frows.map(({r,i,info})=>cardHTML(r,i,info)).join("");
   });
   $("results").innerHTML=rows.length?html:'<div class="empty">No rows match. Loosen the filters — or the combination may be deliberately withheld as unverified.</div>';

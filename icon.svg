@@ -1,6 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="72" fill="#0b0e11"/>
-  <rect x="86" y="86" width="340" height="340" fill="none" stroke="#d98e4a" stroke-width="16"/>
-  <text x="256" y="316" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="190" fill="#ece7db">MA</text>
-  <text x="118" y="152" font-family="Arial, Helvetica, sans-serif" font-size="44" fill="#d98e4a">45</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Materials Atlas icon: FCC unit cell. Accent lives ONLY in the style block below (one value). -->
+  <style>
+    .accent { fill: #E8743B; }
+    .lattice { stroke: #C9D1DA; }
+    .node { fill: #C9D1DA; }
+  </style>
+  <!-- Background: adopted system base tone, iOS-style rounded square -->
+  <rect x="0" y="0" width="1024" height="1024" rx="228" fill="#13151C"/>
+  <!-- Cube outline: isometric hexagon -->
+  <polygon class="lattice" points="512,172 806,342 806,682 512,852 218,682 218,342"
+           fill="none" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Near-vertex Y: centre to upper-left, upper-right, bottom -->
+  <path class="lattice" d="M512,512 L218,342 M512,512 L806,342 M512,512 L512,852"
+        fill="none" stroke-width="28" stroke-linecap="round"/>
+  <!-- Corner + centre lattice nodes -->
+  <g class="node">
+    <circle cx="512" cy="172" r="40"/>
+    <circle cx="806" cy="342" r="40"/>
+    <circle cx="806" cy="682" r="40"/>
+    <circle cx="512" cy="852" r="40"/>
+    <circle cx="218" cy="682" r="40"/>
+    <circle cx="218" cy="342" r="40"/>
+    <circle cx="512" cy="512" r="40"/>
+  </g>
+  <!-- Face-centre atoms (the FCC signature) in the accent -->
+  <g class="accent">
+    <circle cx="512" cy="342" r="66"/>
+    <circle cx="365" cy="597" r="66"/>
+    <circle cx="659" cy="597" r="66"/>
+  </g>
 </svg>

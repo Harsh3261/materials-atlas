@@ -2462,10 +2462,25 @@ function loadPdfJs(){
   return pdfjsReady;
 }
 /* Text of a PDF, rebuilt line by line from item positions (rows by y, then x). */
+const CALIBRI_GID=(()=>{const m={3:" ",32:"",4:"A",17:"B",18:"C",24:"D",28:"E",38:"F",39:"G",44:"H",47:"I",58:"J",62:"L",68:"M",69:"N",75:"O",87:"P",89:"Q",90:"R",94:"S",100:"T",104:"U",115:"V",116:"W",121:"X",122:"Y",127:"Z",
+  258:"a",271:"b",272:"c",282:"d",286:"e",296:"f",336:"g",346:"h",349:"i",364:"k",367:"l",373:"m",374:"n",381:"o",393:"p",395:"q",396:"r",400:"s",410:"t",437:"u",448:"v",449:"w",454:"x",455:"y",460:"z",
+  853:",",855:":",856:".",876:"/",882:"-",890:"_",910:"*",951:"#"};for(let d=0;d<10;d++)m[1004+d]=String(d);return m;})();
+let decodedGid=false;
 async function pdfToText(file){
+  decodedGid=false;
   const lib=await loadPdfJs();const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;const out=[];
   for(let pn=1;pn<=Math.min(doc.numPages,10);pn++){
     const pg=await doc.getPage(pn);const tc=await pg.getTextContent();const rows=[];
+    /* 2026-11-15 · scrambled text layers: certs "printed to PDF" with Calibri
+       embedded as a CID font with no ToUnicode map store GLYPH NUMBERS, so
+       text comes out as "ϲϮ͘ϲϬϬϬ" for 62.6000. A font is treated as
+       glyph-coded only if its items contain codes ≥ 256 or control codes; its
+       text is then decoded with the Calibri glyph table below (digits 0–9 =
+       1004–1013, "." = 856, verified on a real supplier cert). A glyph not in
+       the table becomes "?", so it can never be read as part of a number. */
+    const gidFonts=new Set();
+    tc.items.forEach(it=>{if(it.str&&[...it.str].some(c=>{const k=c.codePointAt(0);return k>=256||(k<32&&k!==9&&k!==10&&k!==13);}))gidFonts.add(it.fontName);});
+    if(gidFonts.size)tc.items.forEach(it=>{if(it.str&&gidFonts.has(it.fontName)){it.str=[...it.str].map(c=>{const k=c.codePointAt(0),v=CALIBRI_GID[k];return v===undefined?"?":v;}).join("");decodedGid=true;}});
     tc.items.forEach(it=>{if(!it.str||!it.str.trim())return;const x=it.transform[4],y=it.transform[5];
       let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r){r={y,items:[]};rows.push(r);}r.items.push({x,w:it.width||0,h:Math.abs(it.transform[3])||10,s:it.str});});
     /* Pieces that touch are one word: TeX-made reports split "78.6" into
@@ -2576,7 +2591,7 @@ function fillFromText(txt,opt){
      lines[i]=" ";lines[i+1]=" ";i++;
    }
    work=" "+lines.join("\n")+" ";}
-  work=work.replace(/(^|[^A-Za-z0-9])([A-Z][a-zA-Z]?)[ \t]*[:=]?[ \t]*<[ \t]*(\d*[.,]?\d+)(?![A-Za-z0-9])/g,(m,pre,el0,x)=>{
+  work=work.replace(/(^|[^A-Za-z0-9])([A-Z][a-zA-Z]?)\**[ \t]*[:=]?[ \t]*<[ \t]*(\d*[.,]?\d+)(?![A-Za-z0-9])/g,(m,pre,el0,x)=>{
     const el=normEl(el0);const lim=F[el];
     if(lim&&opt){notes.push(el+" reported as <"+x+" (below detection): not used to identify.");}
     else if(lim&&!lim.rem){
@@ -2587,7 +2602,7 @@ function fillFromText(txt,opt){
   /* 2026-11-15: a symbol right after a digit, or a value running straight into
      a letter or digit, is part of a code, not chemistry (postal "N1R 7W4",
      "N5C 3J7"; heat "A71234"). */
-  const re=/(^|[^A-Za-z0-9])([A-Z][a-zA-Z]?)[ \t]*[:=,;]?[ \t]*(\d*[.,]?\d+)(?![A-Za-z0-9])(?:[ \t]*%)?/g;let m;
+  const re=/(^|[^A-Za-z0-9])([A-Z][a-zA-Z]?)\**[ \t]*[:=,;]?[ \t]*(\d*[.,]?\d+)(?![A-Za-z0-9])(?:[ \t]*%)?/g;let m;
   /* 2026-11-15: a symbol glued to a long whole number is a designation, not a
      value ("C95520", "G41400", "S30400"); and no chemistry value exceeds 100 %. */
   while((m=re.exec(work))){const el=normEl(m[2]);
@@ -2604,7 +2619,7 @@ function fillFromText(txt,opt){
      if(odd.length>=2)notes.push("Values for "+odd.join(", ")+" are about 100× the limits. The cert may print chemistry in hundredths (×100). Check the cert's units before judging.");}}
   /* elements on the cert that this grade has no field for: listed, never dropped silently */
   {const KNOWN=/^(C|Mn|Si|P|S|Cr|Ni|Mo|Cu|V|Al|Ti|Nb|B|N|Pb|Sn|Zn|Fe|Co|W|Bi|Sb|As|Se|Ca|Mg|Zr|Te)$/;const extra=[];
-   const r2=/(^|[^A-Za-z0-9])([A-Z][a-z]?)[ \t]*[:=,;]?[ \t]*(\d*[.,]\d+)(?![A-Za-z0-9])/g;let m2;
+   const r2=/(^|[^A-Za-z0-9])([A-Z][a-z]?)\**[ \t]*[:=,;]?[ \t]*(\d*[.,]\d+)(?![A-Za-z0-9])/g;let m2;
    while((m2=r2.exec(work))){const el=m2[2];if(KNOWN.test(el)&&!F[el]&&!extra.some(x=>x.startsWith(el+" ")))extra.push(el+" "+m2[3].replace(",","."));}
    if(extra.length)notes.push("Also on the cert, but this grade's row holds no limit for them, so they are NOT checked: "+extra.join(", ")+".");}
   let n=0;const filledEls=[];
@@ -2684,9 +2699,9 @@ $("chkFile").addEventListener("change",async e=>{
     else if(curBase&&!hits.has(curBase))gradeNote="Warning: the cert names "+esc([...hits.keys()].join(", "))+", but you are checking against "+esc(curBase)+".";
   }
   $("chkPaste").value=txt;
-  if(!chkGrade.value){certToIdentify(txt,hits.size>1?"“"+esc(f.name)+"” names more than one grade ("+esc([...hits.keys()].join(", "))+").":"“"+esc(f.name)+"” does not name a grade the atlas holds.");return;}
+  if(!chkGrade.value){const gidPdf=isPdf&&decodedGid;certToIdentify(txt,hits.size>1?"“"+esc(f.name)+"” names more than one grade ("+esc([...hits.keys()].join(", "))+").":"“"+esc(f.name)+"” does not name a grade the atlas holds.");if(gidPdf)$("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>');return;}
   const r=fillFromText(txt);
-  $("chkOut").innerHTML=(gradeNote?'<div class="verdict v-none">'+gradeNote+'</div>':'')+'<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"”. The extracted text is in the paste box: review the fields, then run the check."):(chkGrade.value?"No recognisable chemistry found in “"+esc(f.name)+"”. Its text is in the paste box; check it, or type the values.":"Select the grade named on the cert, then press “Read pasted chemistry”. The cert text is in the paste box."))+"</div>"+fillNotesHTML(r);
+  $("chkOut").innerHTML=(isPdf&&decodedGid?'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>':'')+(gradeNote?'<div class="verdict v-none">'+gradeNote+'</div>':'')+'<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"”. The extracted text is in the paste box: review the fields, then run the check."):(chkGrade.value?"No recognisable chemistry found in “"+esc(f.name)+"”. Its text is in the paste box; check it, or type the values.":"Select the grade named on the cert, then press “Read pasted chemistry”. The cert text is in the paste box."))+"</div>"+fillNotesHTML(r);
   ceAuto();
 });
 /* Intent: the check run. Each Verify field gets exactly one per-criterion
@@ -2954,7 +2969,9 @@ $("idFile").addEventListener("change",async e=>{
   catch(err){$("idOut").innerHTML='<div class="verdict v-none">Could not read “'+esc(f.name)+'”: '+esc(err.message||String(err))+'. Paste the chemistry instead.</div>';return;}
   if(isPdf&&!/\d/.test(txt)){$("idOut").innerHTML='<div class="verdict v-none">“'+esc(f.name)+'” has no readable text: it is probably a scanned image. Type the values into the fields.</div>';return;}
   $("idPaste").value=txt;
+  const gidPdf=isPdf&&decodedGid;
   idFromCertText(txt,"“"+esc(f.name)+"”:");
+  if(gidPdf)$("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>');
 });
 
 /* R3 — one-tap handoff: switch to Verify mode with the grade preselected,

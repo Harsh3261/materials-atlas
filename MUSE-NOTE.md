@@ -349,3 +349,15 @@ Cache materials-atlas-v66-certs.
   - Parser tests t15–t18 unchanged.
   - Full click-through: 0 JS errors.
 - Cache materials-atlas-v71-idcert.
+
+## Round 16 (2026-11-15, ~17:55): scrambled PDF text layers (Spectrum Machine C86300 cert)
+- **Cause:** the cert was printed to PDF (PScript5 → Distiller). Calibri is embedded as a CID font with Identity-H encoding, no ToUnicode and no cmap, so the text layer holds GLYPH NUMBERS. "62.6000" extracts as "ϲϮ͘ϲϬϬϬ". pdf.js does keep the raw glyph numbers, including the control-range ones (A=4, C=18, E=28 …).
+- **Fix, in pdfToText:**
+  - A font is treated as glyph-coded if any of its items has codes ≥ 256 or control codes. Only those fonts are decoded; the cert's Arial date stamp stays ASCII.
+  - Decoding uses CALIBRI_GID: digits 0–9 = 1004–1013, "." = 856, plus letters and punctuation, each confirmed against this cert's rendered text.
+  - Unmapped glyphs become "?" and can never be read as a number.
+  - A visible notice tells the user the text was decoded and to check the values.
+- Symbols with footnote asterisks ("Cu*", "Ni**") are now read by all three regexes.
+- **Result:** Cu 62.6, Sn 0.0172, Pb 0.0492, Zn 25.87, Fe 2.32, Ni 0.0326, Al 5.44, Mn 3.51. All match the printed cert.
+- **DATA GAP:** C86300 (ASTM B505) is not in the atlas, so Identify finds no candidate. The cert prints Cu 60–66, Zn 22–28, Al 5–7.5, Mn 2.5–5, Fe 2–4, Sn/Pb ≤ 0.2, Ni ≤ 1.0. It needs a verified data change against B505 itself before it is added.
+- Cache materials-atlas-v72-gid.

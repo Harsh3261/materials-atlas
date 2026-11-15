@@ -157,6 +157,7 @@ golden sha256 still matches.
   320–1920 px in any view.
 - Check gauge tick: it was the same colour as the filled PASS/FAIL cell and read
   as a gap. It's now dark with a light outline.
+- Wording check: EN 10305-1 gives ReH only for +SR (450) and +N (355) on E355; +C/+LC/+A carry Rm only. The Normalize card says "+N guarantees a lower yield than +SR", not "lowest".
 - Learn › 3 Heat treatment rebuilt (Harsh found it odd: one dense paragraph, a
   wrapping table, then unrelated notes):
   - Lead line plus a link to the Conditions glossary.

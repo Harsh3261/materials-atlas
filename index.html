@@ -80,7 +80,7 @@ section.view.on{display:block}
 .controls input:focus,.controls select:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
 .revsearch{display:grid;gap:10px}
 @media(min-width:760px){.revsearch{grid-template-columns:1fr 1fr}}
-@media(min-width:1100px){.revsearch{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1100px){.revsearch{grid-template-columns:repeat(5,1fr)}}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 14px}
 .chips button{border:1px solid var(--line);background:var(--panel);color:var(--ink2);border-radius:2px;padding:6px 12px;
   font-size:13px;font-weight:600;cursor:pointer;min-height:44px}
@@ -386,9 +386,11 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
       <select id="sortSel"><option value="grade">Grade A–Z</option><option value="yield-desc">Yield, high → low</option><option value="yield-asc">Yield, low → high</option><option value="tensile-desc">Tensile, high → low</option></select></div>
   </div>
   <div class="revsearch">
-    <div class="controls" style="margin:0"><div><label for="minYield">Reverse search — yield at least (MPa)</label>
+    <div class="controls" style="margin:0"><div><label for="minUnit">Reverse search — strength units</label>
+      <select id="minUnit"><option value="mpa">MPa</option><option value="ksi">ksi</option></select></div></div>
+    <div class="controls" style="margin:0"><div><label for="minYield" id="minYieldLbl">…yield at least (MPa)</label>
       <input id="minYield" type="number" inputmode="decimal" placeholder="e.g. 700"></div></div>
-    <div class="controls" style="margin:0"><div><label for="minTensile">…tensile at least (MPa)</label>
+    <div class="controls" style="margin:0"><div><label for="minTensile" id="minTensileLbl">…tensile at least (MPa)</label>
       <input id="minTensile" type="number" inputmode="decimal" placeholder="e.g. 1000"></div></div>
     <div class="controls" style="margin:0"><div><label for="elSel">…containing element</label>
       <select id="elSel"><option value="">Any element</option></select></div></div>
@@ -1995,12 +1997,17 @@ function render(){
         minT=parseFloat($("minTensile").value),
         el=elSel.value, elMin=parseFloat($("elMin").value), sort=$("sortSel").value;
   const yv=r=>typeof r.ym==="number"?r.ym:-1, tv=r=>{const n=parseFloat(r.tm);return isNaN(n)?-1:n;};
+  /* Reverse-search units: in ksi mode compare against the row's own published ksi
+     values (yk/tk) so a 75 ksi row is never dropped by MPa rounding (517 vs 517.1). */
+  const ksiMode=$("minUnit").value==="ksi";
+  const yF=r=>ksiMode?(typeof r.yk==="number"?r.yk:(typeof r.ym==="number"?r.ym/6.894757:null)):(typeof r.ym==="number"?r.ym:null);
+  const tF=r=>{if(ksiMode){const k=parseFloat(r.tk);if(!isNaN(k))return k;const m=parseFloat(r.tm);return isNaN(m)?-1:m/6.894757;}return tv(r);};
   let rows=DATA.map((r,i)=>({r,i,info:hasQ?matchRow(r,q):{via:""}})).filter(({r,info})=>{
     if(activeFam&&r.f!==activeFam)return false;
     if(std&&r.s!==std)return false;
     if(hasQ&&!info)return false;
-    if(!isNaN(minY)){if(typeof r.ym!=="number"||r.ym<minY)return false;}
-    if(!isNaN(minT)){if(tv(r)<minT)return false;}
+    if(!isNaN(minY)){const y=yF(r);if(y===null||y<minY)return false;}
+    if(!isNaN(minT)){if(tF(r)<minT)return false;}
     if(el){const cm=r.chemMap[el];if(!cm)return false;
       if(!isNaN(elMin)){if(cm.max!=null&&cm.max<elMin)return false;if(cm.min!=null&&cm.min>elMin&&cm.max==null&&cm.min<elMin)return false;}}
     return true;
@@ -2023,6 +2030,12 @@ function render(){
 }
 /* EVENTS › Browse: every filter input re-renders; initial render follows. */
 ["q","minYield","minTensile","elMin"].forEach(id=>$(id).addEventListener("input",render));
+function minUnitLabels(){const k=$("minUnit").value==="ksi",u=k?"ksi":"MPa";
+  const conv=id=>{const v=parseFloat($(id).value);if(isNaN(v))return"";return k?" ≈ "+Math.round(v*6.894757)+" MPa":" ≈ "+(v/6.894757).toFixed(1)+" ksi";};
+  $("minYieldLbl").textContent="…yield at least ("+u+")"+conv("minYield");$("minTensileLbl").textContent="…tensile at least ("+u+")"+conv("minTensile");
+  $("minYield").placeholder=k?"e.g. 100":"e.g. 700";$("minTensile").placeholder=k?"e.g. 150":"e.g. 1000";}
+$("minUnit").addEventListener("change",()=>{minUnitLabels();render();});
+["minYield","minTensile"].forEach(id=>$(id).addEventListener("input",minUnitLabels));
 [stdSel,elSel,$("sortSel")].forEach(s=>s.addEventListener("change",render));
 render();
 

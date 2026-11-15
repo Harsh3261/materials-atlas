@@ -72,3 +72,10 @@ so they don't collide with your planned v20.1 (UNJ) numbering.
   ≥3:1 against bg/panel/panel2 (WCAG 1.4.11). The old `--line` #343947 was
   about 1.2–1.6:1. Added as one rule at the end of the last <style>; all other
   colours unchanged. Cache materials-atlas-v63-fix2.
+
+## Feature (2026-11-15, third commit): ksi in reverse search
+- New "strength units" select (MPa / ksi) at the start of the reverse search.
+  In ksi mode the filters compare against each row's own published yk/tk values,
+  falling back to MPa ÷ 6.894757 only where no ksi value exists, so rows such as
+  75 ksi / 517 MPa aren't dropped by rounding. Labels show a live conversion
+  (e.g. "100 ksi ≈ 689 MPa"). No data changed. Cache materials-atlas-v63-fix3.

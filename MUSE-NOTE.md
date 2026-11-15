@@ -112,3 +112,23 @@ so they don't collide with your planned v20.1 (UNJ) numbering.
   - Compare 4140 ↔ 42CrMo Mn-window note.
   - Alias cross-references (UNS / EN / JIS) and the A572 elongation table.
 - Cache materials-atlas-v63-fix5.
+
+## Round 5 (2026-11-15, ~13:45): Learn tab rebuilt (Harsh's request)
+- Structure: a search box and topic chips, then six collapsible lessons:
+  1. Quick rules (new: ten one-line rules, each linking to its lesson).
+  2. Elements.
+  3. Heat treatment (tempering table, flame-cut and E355 kept verbatim).
+  4. Conditions glossary (the 16 terms, now cards instead of a 3-column table).
+  5. Which standard gives a number (table kept).
+  6. Reading a cert (the 7 check names plus a button to Check a Cert → Step 3, `#qualStep`).
+- Search filters every rule, element card, glossary term, table row and checklist item, and opens the matching lessons.
+- Content corrections:
+  - DOM: was "an A519 product … typicals". It's ASTM A513 Type 5, which gives minimums, as-drawn or SR — this matches your data rows.
+  - As-rolled 4140: HB 187–197 is *annealed* 4140. True as-rolled is harder, so the "can never be as-rolled" claim is removed. The floor check now reads "bar sold as annealed".
+  - +SR: removed "stress relief is required for DOM tube unless the buyer waives it", which contradicts your A513 as-drawn rows.
+  - HRR: the internal "2026-11-13 mislabel" reference is replaced with a general warning.
+  - HRAP: finish designation attributed to ASTM A480.
+  - ELEMENTS data (hash-pinned):
+    - C: weldability is now judged by CE using the app's own bands, not "0.40% C".
+    - Mn: 40Mn2 is 885 MPa min tensile, about 80% of 42CrMo's 1,080 — it was "near-4140-class".
+- README "Explainers" bullet replaced with the Learn description. Cache materials-atlas-v63-learn.

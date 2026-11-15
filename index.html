@@ -350,6 +350,28 @@ button:active,.sh-route:active,.chips button:active,.modetoggle button:active,na
 /* 2026-11-15 accessibility tweak: form-field borders raised to >=3:1 contrast (WCAG 1.4.11); colours otherwise unchanged. */
 :root{--field:#6e7586}
 input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),textarea:not(:focus){border-color:var(--field)}
+
+/* 2026-11-15 Learn rebuild: topics, search, jump chips */
+#view-learn .learn-top label{display:block;font-size:13px;color:var(--ink2);margin:10px 0 4px}
+#learnQ{width:100%;padding:10px;font-size:16px;border:1px solid var(--field);border-radius:3px;background:var(--panel2);color:var(--ink)}
+#learnQ:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+.lchips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+.lchips button{font:inherit;font-size:14px;padding:8px 14px;min-height:40px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer}
+.lchips button:hover,.lchips button:focus-visible{border-color:var(--teal);color:var(--teal)}
+.lt summary{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:baseline}
+.lnum{grid-row:span 2;font-family:var(--mono);font-weight:700;font-size:20px;color:var(--teal)}
+.ltitle{font-family:var(--disp);font-weight:700;font-size:20px;letter-spacing:.03em;text-transform:uppercase}
+.lkey{color:var(--ink2);font-size:14px;margin-top:2px}
+.ldetail{padding:0 16px 16px}
+.ldetail h3{margin:16px 0 6px}
+.lrules{margin:0;padding-left:22px}.lrule p{margin:6px 0 12px;line-height:1.5}
+.lgo{font:inherit;font-size:13px;background:none;border:none;color:var(--teal);cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:2px}
+.lgloss{display:grid;gap:10px;margin:10px 0}@media(min-width:760px){.lgloss{grid-template-columns:1fr 1fr}}
+.lgi{border:1px solid var(--hair);border-left:3px solid var(--teal);border-radius:3px;padding:10px 12px;background:var(--panel2)}
+.lgi h4{margin:0 0 4px;font-size:15px}.lgi p{margin:4px 0;font-size:14px;line-height:1.45}.lwhy{color:var(--ink2)}
+.lnote{border-left:3px solid var(--amber);padding:8px 12px;background:var(--amber-soft);border-radius:2px}
+.lchecks{padding-left:22px}.lchecks li{margin:4px 0}
+.lhide{display:none!important}
 </style>
 </head>
 <body>
@@ -469,7 +491,7 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
     <div id="ceOut" aria-live="polite"></div>
   </div>
   <div class="panel">
-    <h2>Step 3 · Qualify the cert — the checklist</h2>
+    <h2 id="qualStep">Step 3 · Qualify the cert — the checklist</h2>
     <p class="hint">Seven checks that decide whether a mill cert actually qualifies the material — work them in order.</p>
     <p>Work top to bottom with the cert in hand. The seven checks, with the red flags folded into the step where they bite. If a box can't be ticked honestly, the cert isn't qualified yet — ticks live only for this session.</p>
     <div class="qualbar">
@@ -499,20 +521,17 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
 
 <!-- ============ LEARN ============ -->
 <section class="view" id="view-learn">
-  <div class="panel">
-    <h2>Learn — the teach-me path</h2>
-    <p>One path, four stops, in order: <strong>1</strong> what the elements actually do · <strong>2</strong> heat treatment — why the condition is half the material · <strong>3</strong> the conditions glossary — the words that land on certs and POs · <strong>4</strong> which standard can actually give you a number. Nothing here is decoration: every stop explains one of the checks in the Check a Cert flow.</p>
-  </div>
-  <div class="panel">
-    <h2>What the elements actually do</h2>
-    <p class="hint">What each alloying element actually does, and why the heat-treat condition is half the material.</p>
-    <p>Direction and honest magnitude, each tied to a real row in the atlas. The only numbers here are ones from sourced rows or the CE formula.</p>
-    <div class="elgrid" id="elGrid"></div>
-  </div>
-  <div class="panel">
-    <h2>Heat treatment — the condition <em>is</em> the material</h2>
-    <p><strong>Anneal</strong> — soften, improve machinability, relieve stress; the normal supply state for 4130/4140 bar before machining. <strong>Normalize</strong> — grain refinement and uniform properties (compare the A519 normalized rows against cold-worked). <strong>Quench</strong> — form martensite; the medium matters (the sourced rows show 4130 water-quenched, 4140/4340 oil-quenched). <strong>Temper</strong> — trade hardness for toughness. <strong>Carburize</strong> — hard case, tough core: 8620 and 20CrMo core properties are <em>not</em> case properties. <strong>Age</strong> — precipitation hardening: 17-4 PH H900, aluminium T6.</p>
-    <h3>Tempering temperature vs hardness — the sourced trend (Alro, 1-in bars)</h3>
+<div class="panel learn-top">
+<h2>Learn</h2>
+<p>Short, practical lessons behind every check in this app. Start with the quick rules, tap a topic to open it, or search.</p>
+<label for="learnQ">Search the lessons</label>
+<input id="learnQ" type="search" placeholder="e.g. HTSR, E355, typical, weld, DOM" autocomplete="off">
+<div class="lchips" role="group" aria-label="Jump to a topic"><button type="button" data-lgo="rules">Quick rules</button><button type="button" data-lgo="elements">Elements</button><button type="button" data-lgo="heat">Heat treatment</button><button type="button" data-lgo="glossary">Conditions</button><button type="button" data-lgo="standards">Standards</button><button type="button" data-lgo="cert">Reading a cert</button></div>
+<p class="count" id="learnCount" aria-live="polite"></p>
+</div>
+<details class="card lt" id="lt-rules" open><summary><span class="lnum">1</span><span class="ltitle">Quick rules</span><span class="lkey">Ten rules that catch most bad certs.</span></summary><div class="ldetail"><ol class="lrules"><li class="lrule"><p>Compare a cert only against <strong>SPEC MIN</strong> rows. A value below a TYPICAL is not a rejection; a value at typical proves nothing about the minimum. <button type="button" class="lgo" data-lgo="standards">Read more →</button></p></li><li class="lrule"><p><strong>No condition, no number.</strong> The same grade spans annealed 4140 at HB 187 to HTSR 4140 at HB 311+. Match the cert's condition before comparing anything. <button type="button" class="lgo" data-lgo="glossary">Read more →</button></p></li><li class="lrule"><p><strong>SAE J403 / J404 are chemistry only.</strong> A "1018 yield" always belongs to a condition and a source — never to the SAE grade itself. <button type="button" class="lgo" data-lgo="standards">Read more →</button></p></li><li class="lrule"><p><strong>Tube: A513 DOM = minimums, A519 seamless = typicals.</strong> A519 strength only binds if the PO adds supplementary requirements. <button type="button" class="lgo" data-lgo="glossary">Read more →</button></p></li><li class="lrule"><p><strong>Match the delivery condition on EN tube.</strong> E355 +SR guarantees ReH ≥ 450 MPa; +N only ≥ 355 MPa. <button type="button" class="lgo" data-lgo="heat">Read more →</button></p></li><li class="lrule"><p><strong>Check the size or thickness band.</strong> Plate, aluminium and Q&amp;T bar minimums step down as the section grows. <button type="button" class="lgo" data-lgo="cert">Read more →</button></p></li><li class="lrule"><p><strong>Know the yield method.</strong> Copper alloys (B505/B16) use 0.5% extension under load; steels use 0.2% offset. Don't compare across methods. <button type="button" class="lgo" data-lgo="cert">Read more →</button></p></li><li class="lrule"><p><strong>Free-machining grades have rules.</strong> In 303/416 sulphur is a <em>minimum</em> (≥ 0.15%); 12L14 is a do-not-weld steel. <button type="button" class="lgo" data-lgo="elements">Read more →</button></p></li><li class="lrule"><p><strong>Judge weldability by carbon equivalent.</strong> IIW CE ≤ 0.40 generally weldable · 0.40–0.60 preheat likely · &gt; 0.60 procedure-qualification territory (screening only). <button type="button" class="lgo" data-lgo="elements">Read more →</button></p></li><li class="lrule"><p><strong>"Equivalent" is not "interchangeable".</strong> 4140 Mn 0.75–1.00 vs GB/T 42CrMo 0.50–0.80 — a heat can pass one and fail the other. <button type="button" class="lgo" data-lgo="standards">Read more →</button></p></li></ol></div></details>
+<details class="card lt" id="lt-elements"><summary><span class="lnum">2</span><span class="ltitle">What the elements do</span><span class="lkey">Direction and honest magnitude for each alloying element.</span></summary><div class="ldetail"><p>Each card is tied to a real row in the atlas; the only numbers are from sourced rows or the CE formula.</p><div class="elgrid" id="elGrid"></div></div></details>
+<details class="card lt" id="lt-heat"><summary><span class="lnum">3</span><span class="ltitle">Heat treatment</span><span class="lkey">The condition <em>is</em> the material.</span></summary><div class="ldetail"><p><strong>Anneal</strong> — soften, improve machinability, relieve stress; the normal supply state for 4130/4140 bar before machining. <strong>Normalize</strong> — grain refinement and uniform properties (compare the A519 normalized rows against cold-worked). <strong>Quench</strong> — form martensite; the medium matters (the sourced rows show 4130 water-quenched, 4140/4340 oil-quenched). <strong>Temper</strong> — trade hardness for toughness. <strong>Carburize</strong> — hard case, tough core: 8620 and 20CrMo core properties are <em>not</em> case properties. <strong>Age</strong> — precipitation hardening: 17-4 PH H900, aluminium T6.</p><h3>Tempering temperature vs hardness — the sourced trend (Alro, 1-in bars)</h3>
 <!-- ==== BEGIN DATA (markup): 4140 tempering-vs-hardness table ====
      What: sourced trend table (Alro, 1-in bars), Learn › Heat treatment.
      Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
@@ -525,52 +544,11 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
       <tr><td>1200 °F (650 °C)</td><td class="num">HB 269 · ≈ HRC 28</td></tr>
     </table>
 <!-- ==== END DATA (markup): 4140 tempering-vs-hardness table ==== -->
-    <p>Hotter temper → softer, tougher. All three Q&amp;T grades in the atlas (4130, 4140, 4340) show the same trend in the same source table. That is why a Q&amp;T row without a tempering temperature is not a condition at all.</p>
-    <h3>Flame-cut plate — the edge is no longer the grade you bought</h3>
-    <p>Oxy-fuel cutting leaves a heat-affected zone: a thin hardened, sometimes micro-cracked edge layer on hardenable grades — and a <em>softened</em> band in Q&amp;T plate (A514 class), where the cut heat over-tempers the edge. Higher carbon equivalent → deeper HAZ hardening and crack risk; thicker plate self-quenches the cut edge faster → harder HAZ. Check the PO/drawing for edge-condition requirements (grind or machine back the HAZ for fatigue or weld prep), and never certify a flame-cut edge's hardness as the plate's hardness.</p>
-    <h3>The E355 lesson</h3>
-    <p>EN 10305-1 delivery condition changes everything: <strong>+N</strong> (normalized) guarantees ReH ≥ 355 MPa, but <strong>+SR</strong> (stress relieved — the workhorse honed-barrel condition) guarantees ≥ 450 MPa. Online datasheets almost always quote the +N number and understate the steel by ~25%. Always match the cert's delivery condition to the row before comparing.</p>
-  </div>
-<!-- ==== BEGIN DATA (markup): conditions glossary ====
-     What: the sixteen condition terms panel (Learn › Conditions glossary).
-     Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
-     Edit data only via a verified data change — never by hand-tuning numbers.
-     Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). -->
-  <div class="panel">
-    <h2>Conditions glossary — the condition word is half the spec</h2>
-    <p class="hint">Sixteen condition terms that land on certs and POs — what each one means, and the check it demands.</p>
-    <p><strong>The discriminator that matters on the floor:</strong> 4140 annealed or as-rolled reads ≈ HB 187–197; 4140 HTSR reads HB 311–331 typical. <strong>No overlap.</strong> A hardness reading near HB 300+ can never be as-rolled 4140, whatever the paperwork says — that single check would have caught an HRR bin holding HTSR stock.</p>
-    <table>
-      <tr><th>Term</th><th>What it means</th><th>How to recognise it / why it matters</th></tr>
-      <tr><td><strong>As-rolled / hot rolled (HR)</strong></td><td>Used straight off the mill, no heat treatment after rolling.</td><td>Cheapest form; properties vary with section size. For 4140 HR expect HB ~187–197.</td></tr>
-      <tr><td><strong>HRR</strong></td><td><strong>Hot rolled round</strong> — a hot-rolled <em>round bar</em>. It is a product-form + as-rolled label, <strong>not</strong> a heat treatment.</td><td>The trap behind the 2026-11-13 mislabel: HRR stock is soft stock. Never attach Q&amp;T numbers to it.</td></tr>
-      <tr><td><strong>Annealed (+A)</strong></td><td>Heated and slow-cooled to soften and homogenise.</td><td>Softest, most machinable condition; 4140 annealed ≈ HB 187. The baseline condition for most bar purchasing.</td></tr>
-      <tr><td><strong>Normalised (+N)</strong></td><td>Heated above the transformation range, air-cooled.</td><td>Finer, more uniform grain than as-rolled; slightly harder/stronger than annealed.</td></tr>
-      <tr><td><strong>Stress relieved (+SR)</strong></td><td>Held below the transformation temperature (typically ~500–650 °C for steels) and cooled — relieves internal stress without changing hardness much.</td><td>Bought when machining stability matters. In ASTM A519, “SR” is a defined suffix condition; stress relief after cold work is <em>required</em> for DOM tube unless the buyer waives it.</td></tr>
-      <tr><td><strong>HTSR</strong></td><td>Heat treated <strong>and</strong> stress relieved — quenched &amp; tempered first, then stress relieved. A trade condition (North American bar trade), not a standard temper.</td><td>Pre-hard stock around HB 300+ (4140: HB 311–331 typical). Ready to machine; no further hardening planned.</td></tr>
-      <tr><td><strong>Pre-hardened / PH (bar trade)</strong></td><td>Supplied already hardened &amp; tempered to a working hardness (commonly 28–34 HRC / ~270–330 HB) — the same idea as HTSR.</td><td>Bought to skip in-house heat treatment. Not to confuse with PH = precipitation hardening for stainless grades like 17-4 PH.</td></tr>
-      <tr><td><strong>Quenched &amp; tempered (+QT)</strong></td><td>Hardened by quenching, then tempered to the required strength. The only condition in which most alloy-steel standards (EN ISO 683, AS 1444 U/V/W…) quote their big numbers.</td><td>Strength depends on the <strong>ruling section</strong> — big bars quench slower and test softer. Always check which section size a Q&amp;T number belongs to.</td></tr>
-      <tr><td><strong>Heat treated (HT) — copper castings</strong></td><td>In ASTM B505, the HT suffix means solution heat treated (and annealed/aged per the standard's Table 2 cycles) — the bronze equivalent of a Q&amp;T row.</td><td>Separate minimums from as-cast; never average the two.</td></tr>
-      <tr><td><strong>Temper annealed</strong></td><td>The specific B505 cycle for C95800 (≈1200–1300 °F, 6 h, air cool) that stabilises the microstructure for seawater service.</td><td>A C95800 cert for marine service should show it — B505 §6.1 makes it mandatory for seawater.</td></tr>
-      <tr><td><strong>TQ30</strong></td><td>The B505 temper designation for quenched + tempered C95520 — the <strong>only</strong> condition C95520 is supplied in.</td><td>If a C95520 cert shows any other condition, stop and ask.</td></tr>
-      <tr><td><strong>Aged (e.g. 17-4 PH H900/H1150)</strong></td><td>Precipitation hardening: solution treated, then aged at a stated temperature; the H-number <em>is</em> the aging temperature in °F.</td><td>H1150 (1150 °F) is the soft, tough, SCC-resistant end; H900 the hard end. Properties differ hugely by H-condition — always carry the suffix.</td></tr>
-      <tr><td><strong>As-cast</strong></td><td>Used straight from the mould (sand or continuous cast), no heat treatment.</td><td>The default B505 condition; HT variants are separate rows with separate minimums.</td></tr>
-      <tr><td><strong>Cold worked / cold drawn (CW, CD)</strong></td><td>Strength raised by cold deformation rather than heat treatment.</td><td>Higher strength, lower ductility; A519 CW is a defined condition.</td></tr>
-      <tr><td><strong>DOM (drawn over mandrel)</strong></td><td>Welded tube cold-drawn over a mandrel for tight tolerances; normally stress relieved as drawn (SRA).</td><td>An A519 product; its “typical” values are typicals, whatever the table layout suggests.</td></tr>
-      <tr><td><strong>HRAP</strong></td><td>Hot rolled, annealed &amp; pickled — the standard stainless plate/sheet finish condition (ASTM A240).</td><td>The default supply condition behind this atlas's A240 rows.</td></tr>
-    </table>
-    <p class="src">Glossary basis: ASTM A519 condition suffix definitions; ASTM B505 §6/Table 2 (HT, temper anneal, TQ30); EN designation practice (+A/+N/+QT); AS 1444 condition letters; bar-trade HTSR/PH usage per Vanguard Steel and Richmond Steel. HTSR has NO governing standard — no HTSR row anywhere can be a spec minimum.</p>
-  </div>
-<!-- ==== END DATA (markup): conditions glossary ==== -->
-<!-- ==== BEGIN DATA (markup): standards map ====
-     What: "Which standard can actually give you a number?" panel (Learn).
-     Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
-     Edit data only via a verified data change — never by hand-tuning numbers.
-     Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). -->
-  <div class="panel">
-    <h2>Which standard can actually give you a number?</h2>
-    <p>The most useful qualification skill is knowing which documents <em>cannot</em>. SAE J403/J404 set chemistry only — no strength values exist in them. ASTM A519's mechanical table is headed “typical.” A GB/T 3077 mechanical value exists only for the standard's own reference-bar heat treatment.</p>
-    <table>
+<p>Hotter temper → softer, tougher. All three Q&amp;T grades in the atlas (4130, 4140, 4340) show the same trend in the same source table. That is why a Q&amp;T row without a tempering temperature is not a condition at all.</p><h3>Flame-cut plate — the edge is no longer the grade you bought</h3>
+    <p>Oxy-fuel cutting leaves a heat-affected zone: a thin hardened, sometimes micro-cracked edge layer on hardenable grades — and a <em>softened</em> band in Q&amp;T plate (A514 class), where the cut heat over-tempers the edge. Higher carbon equivalent → deeper HAZ hardening and crack risk; thicker plate self-quenches the cut edge faster → harder HAZ. Check the PO/drawing for edge-condition requirements (grind or machine back the HAZ for fatigue or weld prep), and never certify a flame-cut edge's hardness as the plate's hardness.</p><h3>The E355 lesson</h3>
+    <p>EN 10305-1 delivery condition changes everything: <strong>+N</strong> (normalized) guarantees ReH ≥ 355 MPa, but <strong>+SR</strong> (stress relieved — the workhorse honed-barrel condition) guarantees ≥ 450 MPa. Online datasheets almost always quote the +N number and understate the steel by ~25%. Always match the cert's delivery condition to the row before comparing.</p></div></details>
+<details class="card lt" id="lt-glossary"><summary><span class="lnum">4</span><span class="ltitle">Conditions glossary</span><span class="lkey">16 condition words from certs and POs — what each means and the check it demands.</span></summary><div class="ldetail"><p class="lnote"><strong>The floor check:</strong> annealed 4140 reads ≈ HB 187–197; HTSR 4140 reads HB 311–331 typical. No overlap — a reading near HB 300+ on bar sold as annealed means it isn't annealed, whatever the paperwork says.</p><div class="lgloss"><div class="lgi"><h4><strong>As-rolled / hot rolled (HR)</strong></h4><p>Used straight off the mill, no heat treatment after rolling.</p><p class="lwhy"><strong>Why it matters:</strong> Properties vary with section size and cooling. Note: 4140 is normally sold hot rolled <em>and annealed</em> (≈ HB 187–197); true as-rolled 4140 is harder and less predictable — the cert must say which.</p></div><div class="lgi"><h4><strong>HRR</strong></h4><p>Hot rolled round — a hot-rolled round bar. It is a product-form + as-rolled label, not a heat treatment.</p><p class="lwhy"><strong>Why it matters:</strong> A classic mislabel trap: HRR is soft stock. Never attach Q&amp;T numbers to it — if the hardness reads HB 300+, it is not plain HRR.</p></div><div class="lgi"><h4><strong>Annealed (+A)</strong></h4><p>Heated and slow-cooled to soften and homogenise.</p><p class="lwhy"><strong>Why it matters:</strong> Softest, most machinable condition; 4140 annealed ≈ HB 187. The baseline condition for most bar purchasing.</p></div><div class="lgi"><h4><strong>Normalised (+N)</strong></h4><p>Heated above the transformation range, air-cooled.</p><p class="lwhy"><strong>Why it matters:</strong> Finer, more uniform grain than as-rolled; slightly harder/stronger than annealed.</p></div><div class="lgi"><h4><strong>Stress relieved (+SR)</strong></h4><p>Held below the transformation temperature (typically ~500–650 °C for steels) and cooled — relieves internal stress without changing hardness much.</p><p class="lwhy"><strong>Why it matters:</strong> Bought when machining stability matters. In ASTM A519, “SR” is a defined suffix condition. DOM tube (A513) is sold either as-drawn or stress relieved — the cert must say which.</p></div><div class="lgi"><h4><strong>HTSR</strong></h4><p>Heat treated <strong>and</strong> stress relieved — quenched &amp; tempered first, then stress relieved. A trade condition (North American bar trade), not a standard temper.</p><p class="lwhy"><strong>Why it matters:</strong> Pre-hard stock around HB 300+ (4140: HB 311–331 typical). Ready to machine; no further hardening planned.</p></div><div class="lgi"><h4><strong>Pre-hardened / PH (bar trade)</strong></h4><p>Supplied already hardened &amp; tempered to a working hardness (commonly 28–34 HRC / ~270–330 HB) — the same idea as HTSR.</p><p class="lwhy"><strong>Why it matters:</strong> Bought to skip in-house heat treatment. Not to confuse with PH = precipitation hardening for stainless grades like 17-4 PH.</p></div><div class="lgi"><h4><strong>Quenched &amp; tempered (+QT)</strong></h4><p>Hardened by quenching, then tempered to the required strength. The only condition in which most alloy-steel standards (EN ISO 683, AS 1444 U/V/W…) quote their big numbers.</p><p class="lwhy"><strong>Why it matters:</strong> Strength depends on the <strong>ruling section</strong> — big bars quench slower and test softer. Always check which section size a Q&amp;T number belongs to.</p></div><div class="lgi"><h4><strong>Heat treated (HT) — copper castings</strong></h4><p>In ASTM B505, the HT suffix means solution heat treated (and annealed/aged per the standard's Table 2 cycles) — the bronze equivalent of a Q&amp;T row.</p><p class="lwhy"><strong>Why it matters:</strong> Separate minimums from as-cast; never average the two.</p></div><div class="lgi"><h4><strong>Temper annealed</strong></h4><p>The specific B505 cycle for C95800 (≈1200–1300 °F, 6 h, air cool) that stabilises the microstructure for seawater service.</p><p class="lwhy"><strong>Why it matters:</strong> A C95800 cert for marine service should show it — B505 §6.1 makes it mandatory for seawater.</p></div><div class="lgi"><h4><strong>TQ30</strong></h4><p>The B505 temper designation for quenched + tempered C95520 — the <strong>only</strong> condition C95520 is supplied in.</p><p class="lwhy"><strong>Why it matters:</strong> If a C95520 cert shows any other condition, stop and ask.</p></div><div class="lgi"><h4><strong>Aged (e.g. 17-4 PH H900/H1150)</strong></h4><p>Precipitation hardening: solution treated, then aged at a stated temperature; the H-number <em>is</em> the aging temperature in °F.</p><p class="lwhy"><strong>Why it matters:</strong> H1150 (1150 °F) is the soft, tough, SCC-resistant end; H900 the hard end. Properties differ hugely by H-condition — always carry the suffix.</p></div><div class="lgi"><h4><strong>As-cast</strong></h4><p>Used straight from the mould (sand or continuous cast), no heat treatment.</p><p class="lwhy"><strong>Why it matters:</strong> The default B505 condition; HT variants are separate rows with separate minimums.</p></div><div class="lgi"><h4><strong>Cold worked / cold drawn (CW, CD)</strong></h4><p>Strength raised by cold deformation rather than heat treatment.</p><p class="lwhy"><strong>Why it matters:</strong> Higher strength, lower ductility; A519 CW is a defined condition.</p></div><div class="lgi"><h4><strong>DOM (drawn over mandrel)</strong></h4><p>Welded tube cold-drawn over a mandrel for tight tolerances — ASTM A513 Type 5.</p><p class="lwhy"><strong>Why it matters:</strong> A513 gives <strong>minimums</strong>, supplied as-drawn or stress relieved (different minimums — the cert must say which). Don't confuse it with seamless mechanical tube (ASTM A519), whose table is typicals.</p></div><div class="lgi"><h4><strong>HRAP</strong></h4><p>Hot rolled, annealed &amp; pickled — the standard stainless plate finish (finish designations per ASTM A480).</p><p class="lwhy"><strong>Why it matters:</strong> The default supply condition behind this atlas's A240 rows.</p></div></div><p class="src">Glossary basis: ASTM A519 condition suffix definitions; ASTM B505 §6/Table 2 (HT, temper anneal, TQ30); EN designation practice (+A/+N/+QT); AS 1444 condition letters; bar-trade HTSR/PH usage per Vanguard Steel and Richmond Steel. HTSR has NO governing standard — no HTSR row anywhere can be a spec minimum.</p></div></details>
+<details class="card lt" id="lt-standards"><summary><span class="lnum">5</span><span class="ltitle">Which standard gives a number?</span><span class="lkey">Know which documents set strength — and which never do.</span></summary><div class="ldetail"><p>The most useful qualification skill is knowing which documents <em>cannot</em> give you a number: SAE J403/J404 set chemistry only, ASTM A519's table is headed "typical", and a GB/T 3077 value exists only for its own reference-bar heat treatment.</p><table>
       <tr><th>Standard</th><th>Controls</th><th>Openly readable?</th></tr>
       <tr><td>SAE J403 / J404</td><td><strong>Chemistry only</strong> — carbon / alloy bar grades (J403 FEB2024, stabilized)</td><td>No — ranges widely reproduced in supplier handbooks</td></tr>
       <tr><td>ASTM A434</td><td>Chemistry + mechanicals for Q&amp;T alloy bar by strength class — cite this when bar strength must be <em>guaranteed</em></td><td>No</td></tr>
@@ -585,10 +563,8 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
       <tr><td>ASTM A513-25* / A519-24a</td><td>Mechanical tube: A513 DOM = <strong>minimums</strong> · A519 seamless = <strong>typicals</strong> unless the PO adds supplementary requirements</td><td>No — tables reproduced</td></tr>
       <tr><td>EN 10305-1</td><td>Precision tube: chemistry + mechanicals <strong>by delivery condition</strong> (+C/+LC/+SR/+A/+N)</td><td>No — table reproduced</td></tr>
       <tr><td>EN 10204</td><td>Defines cert types: 2.1 declaration · 2.2 test report · <strong>3.1 inspection certificate</strong> (mill's validated results for the delivered heat) · 3.2 independent witness</td><td>—</td></tr>
-    </table>
-    <p class="src">* Edition is the current register entry; some row data was reproduced from the immediately preceding edition and is flagged as such in the research notes. The licensed current edition always governs over any summary — including this one.</p>
-  </div>
-<!-- ==== END DATA (markup): standards map ==== -->
+    </table><p class="src">* Edition is the current register entry; some row data was reproduced from the immediately preceding edition and is flagged as such in the research notes. The licensed current edition always governs over any summary — including this one.</p></div></details>
+<details class="card lt" id="lt-cert"><summary><span class="lnum">6</span><span class="ltitle">Reading a cert</span><span class="lkey">The seven checks, in order — the full checklist lives in Check a Cert.</span></summary><div class="ldetail"><ol class="lchecks"><li>Identity &amp; traceability — heat, PO, standard + edition + grade + condition</li><li>Cert type — EN 10204 3.1 / MTR with actual results, not a 2.2 or a bare C of C</li><li>Chemistry vs the grade's window — every restricted element</li><li>Mechanicals vs the condition ordered</li><li>Product form &amp; thickness band</li><li>Test methods named — and the yield basis</li><li>Spec-minimum vs typical discipline</li></ol><p>Each check has its red flags in the full checklist. <button type="button" class="copybtn" id="learnToChecklist">Open the full checklist →</button></p></div></details>
 </section>
 
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
@@ -1003,8 +979,8 @@ const DATA=[
    Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
 /* Element explainers — qualitative, tied to sourced rows */
 const ELEMENTS=[
-{sym:"C",name:"Carbon — the master variable",body:"Raises strength, hardness and hardenability; lowers weldability and ductility. Compare 1018 (0.15–0.20% C, weld freely) with 1045 (0.43–0.50% C, check CE and preheat). Around 0.40% C is the practical weld-with-precautions line — check it under Check a cert → Step 2, where the carbon equivalent is computed from the same chemistry."},
-{sym:"Mn",name:"Manganese — cheap strength",body:"Low-cost strength and hardenability, deoxidizer, and it ties up sulphur as MnS (machinability). The GB/T 3077 Mn-steels prove the point: 20Mn2 and 40Mn2 at 1.40–1.80% Mn reach near-4140-class Q&T minimums with no Cr or Mo at all."},
+{sym:"C",name:"Carbon — the master variable",body:"Raises strength, hardness and hardenability; lowers weldability and ductility. Compare 1018 (0.15–0.20% C, welds freely) with 1045 (0.43–0.50% C, needs preheat). For welding, judge the carbon equivalent rather than carbon alone — Check a cert → Step 2 computes it from the cert chemistry: ≤ 0.40 generally weldable, 0.40–0.60 preheat likely, > 0.60 procedure-qualification territory."},
+{sym:"Mn",name:"Manganese — cheap strength",body:"Low-cost strength and hardenability, deoxidizer, and it ties up sulphur as MnS (machinability). The GB/T 3077 Mn-steels make the point: 40Mn2 (1.40–1.80% Mn, no Cr or Mo) reaches an 885 MPa minimum tensile on its Q&T reference bar — about 80% of 42CrMo's 1,080 MPa."},
 {sym:"Cr",name:"Chromium — two different jobs",body:"At ≈0.9% (4140, 40Cr) chromium is there for hardenability and wear. At 18% (304) it forms the passive film that makes steel stainless (threshold ≈10.5%). Same element, completely different purpose — read the percentage before the name."},
 {sym:"Mo",name:"Molybdenum — depth and heat",body:"Deep hardenability, temper resistance, high-temperature strength. But the 2–3% Mo in 316 is not for strength at all — its minimums are identical to 304; the Mo buys chloride pitting resistance."},
 {sym:"Ni",name:"Nickel — toughness",body:"Toughness, especially at low temperature, plus through-hardening. 4340 vs 4140 is the worked example: same carbon, but 4340 adds 1.65–2.00% Ni and holds 1,145 MPa typical yield (Q&T) in sections where 4140 falls off."},
@@ -2749,6 +2725,33 @@ qualSync();
 
 /* ============ elements ============ */
 $("elGrid").innerHTML=ELEMENTS.map(e=>'<div class="elcard"><span class="sym">'+esc(e.sym)+'</span><h3>'+esc(e.name)+'</h3><p>'+esc(e.body)+"</p></div>").join("");
+
+/* 2026-11-15 Learn rebuild: topic jump chips, search across every lesson,
+   hand-off to the full checklist in Check a Cert. Presentation only. */
+(function(){
+  const topics=[...document.querySelectorAll("#view-learn details.lt")];
+  const go=k=>{const d=$("lt-"+k);if(!d)return;d.classList.remove("lhide");d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"});};
+  document.querySelectorAll("#view-learn [data-lgo]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.lgo)));
+  const units=d=>[...d.querySelectorAll(".lrule,.elcard,.lgi,.lchecks li,table tr:not(:first-child)")];
+  const q=$("learnQ"),cnt=$("learnCount");
+  q.addEventListener("input",()=>{
+    const raw=q.value.trim(),v=raw.toLowerCase();let hits=0;
+    topics.forEach((d,i)=>{
+      const us=units(d);
+      if(!v){us.forEach(u=>u.classList.remove("lhide"));d.classList.remove("lhide");d.open=i===0;return;}
+      const titleHit=d.querySelector("summary").textContent.toLowerCase().includes(v);
+      const bodyHit=d.querySelector(".ldetail").textContent.toLowerCase().includes(v);
+      let n=0;us.forEach(u=>{if(u.textContent.toLowerCase().includes(v))n++;});
+      us.forEach(u=>u.classList.toggle("lhide",n>0&&!titleHit&&!u.textContent.toLowerCase().includes(v)));
+      const show=titleHit||bodyHit;d.classList.toggle("lhide",!show);d.open=show;if(show)hits+=Math.max(n,1);
+    });
+    cnt.textContent=v?(hits?hits+" match"+(hits>1?"es":"")+" for \u201c"+raw+"\u201d":"No lesson mentions \u201c"+raw+"\u201d \u2014 try a grade, a condition or a standard."):"";
+  });
+  $("learnToChecklist").addEventListener("click",()=>{
+    const tb=document.querySelector('nav.tabs button[data-view="check"]');if(tb)tb.click();
+    setTimeout(()=>{const h=$("qualStep");if(h)h.scrollIntoView({behavior:"smooth",block:"start"});},80);
+  });
+})();
 </script>
 </body>
 </html>

@@ -25,8 +25,9 @@ Live: https://harsh3261.github.io/materials-atlas/
   no chemistry limits (e.g. Dura-Bar cast irons, ASTM A536/A48) correctly
   return "not specified by standard" instead of a fake verdict.
 - **CE calculator** — IIW carbon equivalent for weldability.
-- **Explainers** — alloying-element effects, heat treatment, flame-cut edge
-  effects, and a standards map with editions.
+- **Learn** — one searchable page of six collapsible lessons: Quick rules,
+  alloying elements, heat treatment, conditions glossary, which standard gives
+  a number, and reading a cert (with a jump to the full checklist).
 - **Qualify a Cert** — a 7-step mill-cert checklist with red flags folded in.
 
 All processing is client-side: nothing entered or loaded into the app ever

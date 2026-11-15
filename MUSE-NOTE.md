@@ -97,3 +97,18 @@ so they don't collide with your planned v20.1 (UNJ) numbering.
     and the HB agrees with the source's own HRB 76.
   - ISO 683-3 Si 0.15–0.40. Confirmed by Ovako and Salzgitter (EN ISO 683-3).
 - Cache materials-atlas-v63-fix4.
+
+## Round 4 (2026-11-15, ~13:30): cert reader and Identify
+- Cert-paste reader (fillFromText) fixes:
+  - "C: 0,41%" (decimal comma) was read as 0 for every element; it's now read as 0.41.
+  - In a two-row table (symbols row, values row) the last symbol of the header grabbed the next row's first value: Mo = carbon's 0.41, and everything else blank. Element and value must now be on the same line, and two-row tables are mapped column by column, right-aligned so a left label column like "Heat A" is skipped.
+  - ".41" leading-dot decimals and capitalised symbols ("MN", "CR", "SI") are now read.
+  - The existing guards still pass: HRC/HB lines aren't read as C/B, "Grade B" isn't read as boron, the B505 "Cu + named" sum line is held, Ni+Co is handled, and "<x" values follow the max-only rule.
+- Identify: the "add next element" hint now uses only real candidates (not weak
+  matches) and picks the most even split. A 4140 chemistry used to suggest Mg
+  (an aluminium weak match); it now suggests P.
+- Checked and passing, no change:
+  - README anchor: 1018 with Mn 1.20 → Mn FAIL.
+  - Compare 4140 ↔ 42CrMo Mn-window note.
+  - Alias cross-references (UNS / EN / JIS) and the A572 elongation table.
+- Cache materials-atlas-v63-fix5.

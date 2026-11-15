@@ -2275,15 +2275,36 @@ function fillFromText(txt){
   /* "<x" below-detection values: count as 0 against max-only limits; they
      can never satisfy a minimum, so a min-bearing element is left unchecked
      and the gap is disclosed, never silently passed. */
-  work=work.replace(/(^|[^A-Za-z])([A-Z][a-z]?)\s*[:=]?\s*<\s*(\d+\.?\d*)/g,(m,pre,el,x)=>{
-    const lim=F[el];
+  /* 2026-11-15 audit fixes (cert reader):
+     · element symbols in capitals ("MN", "CR") are normalised to "Mn", "Cr";
+     · decimal commas ("0,41") and leading-dot decimals (".41") are read as numbers
+       (before: "0,41" was read as 0, ".41" not at all);
+     · an element and its value must be on the SAME line (before: "Mo" ending a
+       header row grabbed the first number of the next row);
+     · a two-row table (symbols row, values row) is mapped column by column. */
+  const normEl=t=>t.charAt(0)+t.slice(1).toLowerCase();
+  const numOf=t=>parseFloat(String(t).replace(",","."));
+  {const lines=work.split(/\r?\n/);
+   for(let i=0;i+1<lines.length;i++){
+     let A=lines[i].trim().split(/[\s;|]+/).filter(Boolean),B=lines[i+1].trim().split(/[\s;|]+/).filter(Boolean);
+     if(A.length<2||B.length<2)continue;
+     /* label columns ("Element" / "Heat A") sit on the left: align from the right */
+     if(B.length>A.length)B=B.slice(B.length-A.length);else if(A.length>B.length)A=A.slice(A.length-B.length);
+     const cols=A.map((t,k)=>({el:/^[A-Z][a-zA-Z]?$/.test(t)?normEl(t):null,v:B[k]})).filter(c=>c.el&&/^\d*[.,]?\d+%?$/.test(c.v));
+     if(cols.length<2)continue;
+     cols.forEach(c=>{if(F[c.el]&&!(c.el in seen))seen[c.el]=numOf(c.v);});
+     lines[i]=" ";lines[i+1]=" ";i++;
+   }
+   work=" "+lines.join("\n")+" ";}
+  work=work.replace(/(^|[^A-Za-z])([A-Z][a-zA-Z]?)[ \t]*[:=]?[ \t]*<[ \t]*(\d*[.,]?\d+)/g,(m,pre,el0,x)=>{
+    const el=normEl(el0);const lim=F[el];
     if(lim&&!lim.rem){
       if(lim.min==null&&lim.max!=null){seen[el]=0;notes.push(el+" reported as <"+x+" — counted as 0 against its max-only limit.");}
       else{notes.push(el+" reported as <"+x+" — a below-detection value can never satisfy a minimum, so "+el+" is left unchecked.");}
     }
     return " ";});
-  const re=/(^|[^A-Za-z])([A-Z][a-z]?)\s*[:=]?\s*(\d+\.?\d*)(?:\s*%)?/g;let m;
-  while((m=re.exec(work))){const el=m[2];if(F[el]&&!(el in seen))seen[el]=parseFloat(m[3]);}
+  const re=/(^|[^A-Za-z])([A-Z][a-zA-Z]?)[ \t]*[:=]?[ \t]*(\d*[.,]?\d+)(?:[ \t]*%)?/g;let m;
+  while((m=re.exec(work))){const el=normEl(m[2]);if(F[el]&&!(el in seen))seen[el]=numOf(m[3]);}
   let n=0;const filledEls=[];
   Object.entries(seen).forEach(([el,v])=>{const inp=$("in-"+el);if(inp){inp.value=v;n++;filledEls.push(el);}});
   invalidateCheck();
@@ -2494,20 +2515,25 @@ function identify(){
   /* R1 — next-element guidance: among elements not yet entered that at
      least one candidate limits, find the one whose limiter / band grouping
      splits the candidate set most unevenly. */
-  if(cands.length>=2){
+  /* 2026-11-15: guide on the real ("Could be") candidates only — weak matches
+     such as an aluminium alloy that limits none of the entered elements made
+     the suggestion "Mg" for a steel chemistry — and prefer the element that
+     splits them most evenly (smallest largest-group), not most unevenly. */
+  const pool=strong.length>=2?strong:cands;
+  if(pool.length>=2){
     let best=null;
     ID_ELS.forEach(e=>{
       if(e in entered)return;
       const groups={};
-      cands.forEach(c=>{
+      pool.forEach(c=>{
         const ent=CHEMMAP[c.key], lim=ent?ent.els[e]:null;
         const sig=(!lim||lim.rem)?"none":(lim.min+"|"+lim.max);
         groups[sig]=(groups[sig]||0)+1;
       });
       const sizes=Object.values(groups);
       if(sizes.length<2)return;
-      const uneven=Math.max.apply(null,sizes)-Math.min.apply(null,sizes);
-      if(!best||uneven>best.uneven||(uneven===best.uneven&&sizes.length>best.groups))best={el:e,uneven:uneven,groups:sizes.length};
+      const largest=Math.max.apply(null,sizes);
+      if(!best||largest<best.largest||(largest===best.largest&&sizes.length>best.groups))best={el:e,largest:largest,groups:sizes.length};
     });
     h+='<p class="note">'+(best?("To narrow this down, add: <strong>"+best.el+"</strong> (splits these candidates).")
       :"No remaining element separates these — their standard windows overlap on everything.")+"</p>";

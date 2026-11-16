@@ -246,6 +246,9 @@ details.card .props-chem .chemline{display:block;font-family:var(--mono);font-si
 #view-compare .cmpq{margin-bottom:6px}
 #view-compare .cmpcount{margin:6px 0 0;font-size:13px;color:var(--ink2);min-height:1em}
 .mechtbl{margin-top:8px}
+.verdict.v-warn{border-left:4px solid #e0a43a;background:rgba(224,164,58,.10)}
+input.ocr-check{outline:2px solid #e0a43a;outline-offset:1px;background:rgba(224,164,58,.12)}
+details.photoprev{margin:8px 0}details.photoprev img{display:block;max-width:100%;margin-top:8px;border:1px solid var(--line)}
 /* ---- Round 21 design polish (layout only; no data or behaviour change) ---- */
 .chips button{font-family:var(--sans);letter-spacing:.01em}
 .revsearch{align-items:end}
@@ -578,7 +581,7 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
       <div><label for="chkGrade">Grade to check against</label><select id="chkGrade"></select></div>
       <div><label for="chkBasis">Analysis type on the cert</label>
         <select id="chkBasis"><option value="heat">Heat (ladle / cast) analysis</option><option value="product">Product (check) analysis</option></select></div>
-      <div><label for="chkFile">…or load a cert file (PDF, .txt or .csv)</label><input id="chkFile" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain,text/csv"></div>
+      <div><label for="chkFile">…or load a cert: PDF, photo, .txt or .csv</label><input id="chkFile" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain,text/csv,image/*"></div>
     </div>
     <p class="count" id="chkLimitLine" style="margin:2px 0 10px" aria-live="polite"></p>
     <p class="note" id="chkStdNote" style="margin:2px 0 10px"></p>
@@ -592,7 +595,7 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
     </div><!-- /verifyMode -->
     <div id="identifyMode" hidden>
     <p>Type the values from a chemical analysis (wt% as reported). Blank = not entered. Every grade in the atlas's verified chemistry dataset is tested against the values you enter — an entered element a grade does not limit cannot exclude it, and is disclosed as not tested.</p>
-    <div class="controls" style="margin-top:8px"><div><label for="idFile">Load a cert file (PDF, .txt or .csv): fills the values and identifies</label><input id="idFile" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain,text/csv"></div></div>
+    <div class="controls" style="margin-top:8px"><div><label for="idFile">Load a cert (PDF, photo, .txt or .csv): fills the values and identifies</label><input id="idFile" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain,text/csv,image/*"></div></div>
     <label for="idPaste" class="chkpaste-lbl" style="font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">…or paste cert chemistry</label>
     <textarea id="idPaste" aria-label="Paste cert chemistry to identify" placeholder="e.g. C 0.42, Mn 0.67, Si 0.22, Cr 1.07, Mo 0.16, P 0.016, S 0.007"></textarea>
     <div style="margin:10px 0"><button class="copybtn" id="idParse" style="margin-top:0">Read pasted chemistry and identify ↓</button></div>
@@ -2651,28 +2654,9 @@ const CALIBRI_GID=(()=>{const m={3:" ",32:"",4:"A",17:"B",18:"C",24:"D",28:"E",3
   258:"a",271:"b",272:"c",282:"d",286:"e",296:"f",336:"g",346:"h",349:"i",364:"k",367:"l",373:"m",374:"n",381:"o",393:"p",395:"q",396:"r",400:"s",410:"t",437:"u",448:"v",449:"w",454:"x",455:"y",460:"z",
   853:",",855:":",856:".",876:"/",882:"-",890:"_",910:"*",951:"#"};for(let d=0;d<10;d++)m[1004+d]=String(d);return m;})();
 let decodedGid=false;
-async function pdfToText(file){
-  decodedGid=false;
-  const lib=await loadPdfJs();const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;const out=[];
-  for(let pn=1;pn<=Math.min(doc.numPages,10);pn++){
-    const pg=await doc.getPage(pn);const tc=await pg.getTextContent();const rows=[];
-    /* 2026-11-15 · scrambled text layers: certs "printed to PDF" with Calibri
-       embedded as a CID font with no ToUnicode map store GLYPH NUMBERS, so
-       text comes out as "ϲϮ͘ϲϬϬϬ" for 62.6000. A font is treated as
-       glyph-coded only if its items contain codes ≥ 256 or control codes; its
-       text is then decoded with the Calibri glyph table below (digits 0–9 =
-       1004–1013, "." = 856, verified on a real supplier cert). A glyph not in
-       the table becomes "?", so it can never be read as part of a number. */
-    const gidFonts=new Set();
-    /* 2026-11-16: only codes 256–0x1FFF (where Calibri glyph IDs land) or
-       control codes mark a glyph-coded font. Fullwidth/CJK punctuation such
-       as "（PC）" on Chinese-made certs is real Unicode and no longer trips
-       the "scrambled" warning. (A glyph-coded font can still contain codes
-       that look like ASCII, so ASCII presence is NOT used as a test.) */
-    tc.items.forEach(it=>{if(it.str&&[...it.str].some(c=>{const k=c.codePointAt(0);return (k>=256&&k<0x2000)||(k<32&&k!==9&&k!==10&&k!==13);}))gidFonts.add(it.fontName);});
-    if(gidFonts.size)tc.items.forEach(it=>{if(it.str&&gidFonts.has(it.fontName)){it.str=[...it.str].map(c=>{const k=c.codePointAt(0),v=CALIBRI_GID[k];return v===undefined?"?":v;}).join("");decodedGid=true;}});
-    tc.items.forEach(it=>{if(!it.str||!it.str.trim())return;const x=it.transform[4],y=it.transform[5];
-      let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r){r={y,items:[]};rows.push(r);}r.items.push({x,w:it.width||0,h:Math.abs(it.transform[3])||10,s:it.str});});
+/* Shared by the PDF reader and the photo reader (2026-11-16): rows of
+   positioned text pieces → text lines, with column tables paired by x. */
+function rowsToLines(rows,out){
     /* Pieces that touch are one word: TeX-made reports split "78.6" into
        "78" "." "6". Join by the gap to the previous piece, never blindly. */
     rows.sort((a,b)=>b.y-a.y);
@@ -2716,6 +2700,30 @@ async function pdfToText(file){
       }
       out.push(hw.map((w,q)=>(q?(w.x-hw[q-1].end<w.s.length*0.1+ (rows[k].items[0].h||10)*1.2?" ":"   "):"")+w.s).join(""));
     }
+}
+async function pdfToText(file){
+  decodedGid=false;
+  const lib=await loadPdfJs();const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;const out=[];
+  for(let pn=1;pn<=Math.min(doc.numPages,10);pn++){
+    const pg=await doc.getPage(pn);const tc=await pg.getTextContent();const rows=[];
+    /* 2026-11-15 · scrambled text layers: certs "printed to PDF" with Calibri
+       embedded as a CID font with no ToUnicode map store GLYPH NUMBERS, so
+       text comes out as "ϲϮ͘ϲϬϬϬ" for 62.6000. A font is treated as
+       glyph-coded only if its items contain codes ≥ 256 or control codes; its
+       text is then decoded with the Calibri glyph table below (digits 0–9 =
+       1004–1013, "." = 856, verified on a real supplier cert). A glyph not in
+       the table becomes "?", so it can never be read as part of a number. */
+    const gidFonts=new Set();
+    /* 2026-11-16: only codes 256–0x1FFF (where Calibri glyph IDs land) or
+       control codes mark a glyph-coded font. Fullwidth/CJK punctuation such
+       as "（PC）" on Chinese-made certs is real Unicode and no longer trips
+       the "scrambled" warning. (A glyph-coded font can still contain codes
+       that look like ASCII, so ASCII presence is NOT used as a test.) */
+    tc.items.forEach(it=>{if(it.str&&[...it.str].some(c=>{const k=c.codePointAt(0);return (k>=256&&k<0x2000)||(k<32&&k!==9&&k!==10&&k!==13);}))gidFonts.add(it.fontName);});
+    if(gidFonts.size)tc.items.forEach(it=>{if(it.str&&gidFonts.has(it.fontName)){it.str=[...it.str].map(c=>{const k=c.codePointAt(0),v=CALIBRI_GID[k];return v===undefined?"?":v;}).join("");decodedGid=true;}});
+    tc.items.forEach(it=>{if(!it.str||!it.str.trim())return;const x=it.transform[4],y=it.transform[5];
+      let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r){r={y,items:[]};rows.push(r);}r.items.push({x,w:it.width||0,h:Math.abs(it.transform[3])||10,s:it.str});});
+    rowsToLines(rows,out);
   }
   return out.join("\n");
 }
@@ -2879,6 +2887,130 @@ function certToIdentify(txt,why){
     window.scrollTo({top:o.getBoundingClientRect().top+(window.scrollY||0)-navTop-8,behavior:"smooth"});},60);
   return r;
 }
+/* ===== PHOTO CERTS (2026-11-16) =========================================
+   A photographed cert is read ON THE PHONE with Tesseract (vendor/ocr,
+   Apache-2.0; ~7 MB, downloaded only the first time a photo is chosen, then
+   kept for offline use). Pipeline: EXIF-correct draw → grayscale → scale the
+   long side to ~3000 px → deskew (projection profile, ±8°) → OCR (LSTM,
+   single-block layout) → words with positions → the SAME rowsToLines column
+   pairing the PDF reader uses → the normal fill. Nothing is ever scored from
+   a photo automatically: values the reader was unsure of (word confidence
+   < 88) and whole numbers where the limit is under 10 (a dropped decimal
+   point: ".41" read as "41") are marked on their fields, and the result
+   says to check every value against the cert. Binarising the image was
+   tested and REJECTED: it dropped decimal points on blurred photos. */
+let ocrReady=null;
+function ocrSimd(){try{return WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,15,253,98,11]));}catch(e){return false;}}
+function loadOcr(){
+  if(ocrReady)return ocrReady;
+  const abs=u=>new URL(u,location.href).href;
+  ocrReady=new Promise((ok,bad)=>{const sc=document.createElement("script");sc.src="vendor/ocr/tesseract.min.js";
+    sc.onload=async()=>{try{
+      const w=await window.Tesseract.createWorker("eng",1,{workerPath:abs("vendor/ocr/worker.min.js"),corePath:abs(ocrSimd()?"vendor/ocr/tesseract-core-simd-lstm.wasm.js":"vendor/ocr/tesseract-core-lstm.wasm.js"),
+        langPath:abs("vendor/ocr"),gzip:true,cacheMethod:"none",workerBlobURL:false});
+      await w.setParameters({tessedit_pageseg_mode:"6",preserve_interword_spaces:"1"});ok(w);}catch(e){ocrReady=null;bad(e);}};
+    sc.onerror=()=>{ocrReady=null;bad(new Error("the photo reader could not load (it needs a connection the first time)"));};document.head.appendChild(sc);});
+  return ocrReady;
+}
+function photoPrep(img){
+  const W0=img.width,H0=img.height,n0=W0*H0,d=img.data;let G={w:W0,h:H0,g:new Float32Array(n0)};
+  for(let i=0;i<n0;i++)G.g[i]=0.299*d[4*i]+0.587*d[4*i+1]+0.114*d[4*i+2];
+  const resize=(G,W,H)=>{const o=new Float32Array(W*H),sx=G.w/W,sy=G.h/H;for(let y=0;y<H;y++){const fy=(y+0.5)*sy-0.5,y0=Math.max(0,Math.floor(fy)),y1=Math.min(G.h-1,y0+1),ty=fy-y0;
+    for(let x=0;x<W;x++){const fx=(x+0.5)*sx-0.5,x0=Math.max(0,Math.floor(fx)),x1=Math.min(G.w-1,x0+1),tx=fx-x0;o[y*W+x]=(G.g[y0*G.w+x0]*(1-tx)+G.g[y0*G.w+x1]*tx)*(1-ty)+(G.g[y1*G.w+x0]*(1-tx)+G.g[y1*G.w+x1]*tx)*ty;}}return{w:W,h:H,g:o};};
+  const rotate=(G,deg,fill)=>{const r=deg*Math.PI/180,c=Math.cos(r),s=Math.sin(r),o=new Float32Array(G.w*G.h),cx=G.w/2,cy=G.h/2;
+    for(let y=0;y<G.h;y++)for(let x=0;x<G.w;x++){const dx=x-cx,dy=y-cy,sx=c*dx-s*dy+cx,sy=s*dx+c*dy+cy,x0=Math.floor(sx),y0=Math.floor(sy);
+      if(x0<0||y0<0||x0>=G.w-1||y0>=G.h-1){o[y*G.w+x]=fill;continue;}const tx=sx-x0,ty=sy-y0,i=y0*G.w+x0;o[y*G.w+x]=(G.g[i]*(1-tx)+G.g[i+1]*tx)*(1-ty)+(G.g[i+G.w]*(1-tx)+G.g[i+G.w+1]*tx)*ty;}return{w:G.w,h:G.h,g:o};};
+  const L=Math.max(G.w,G.h),sc=Math.min(3,3000/L);if(Math.abs(sc-1)>0.05)G=resize(G,Math.round(G.w*sc),Math.round(G.h*sc));
+  /* skew: dark-pixel row profile on a small copy, sharpest at the right angle */
+  const ss=Math.min(1,900/Math.max(G.w,G.h)),S=resize(G,Math.round(G.w*ss),Math.round(G.h*ss));let mean=0;for(const v of S.g)mean+=v;mean/=S.g.length;
+  const ink={w:S.w,h:S.h,g:Float32Array.from(S.g,v=>v<mean*0.75?1:0)};
+  const score=a=>{const R=rotate(ink,a,0);let m=0;const rows=new Float64Array(R.h);for(let y=0;y<R.h;y++){let t=0;for(let x=0;x<R.w;x++)t+=R.g[y*R.w+x];rows[y]=t;m+=t;}m/=R.h;let v=0;for(const t of rows)v+=(t-m)*(t-m);return v;};
+  let best=0,bv=-1;for(let a=-8;a<=8;a+=1){const v=score(a);if(v>bv){bv=v;best=a;}}for(let a=best-1;a<=best+1;a+=0.2){const v=score(a);if(v>bv){bv=v;best=a;}}
+  if(Math.abs(best)>=0.3)G=rotate(G,best,255);
+  /* table grid lines: boxed (Excel-style) certs confuse the reader, so long
+     straight ink runs are painted white. A run must be far longer than any
+     letter stroke (horizontal ≥ 3.5 %, vertical ≥ 2.5 % of the long side),
+     so characters are never touched. Ink = darker than 75 % of the local
+     mean (51-px window), which copes with uneven light. */
+  {const W=G.w,H=G.h,S=new Float64Array((W+1)*(H+1));for(let y=0;y<H;y++){let rs=0;for(let x=0;x<W;x++){rs+=G.g[y*W+x];S[(y+1)*(W+1)+x+1]=S[y*(W+1)+x+1]+rs;}}
+   const r=25,ink=new Uint8Array(W*H);for(let y=0;y<H;y++){const y0=Math.max(0,y-r),y1=Math.min(H,y+r+1);for(let x=0;x<W;x++){const x0=Math.max(0,x-r),x1=Math.min(W,x+r+1);
+     const m=(S[y1*(W+1)+x1]-S[y0*(W+1)+x1]-S[y1*(W+1)+x0]+S[y0*(W+1)+x0])/((y1-y0)*(x1-x0));ink[y*W+x]=G.g[y*W+x]<m*0.75?1:0;}}
+   const L=Math.max(W,H),LH=Math.round(0.035*L),LV=Math.round(0.025*L),kill=new Uint8Array(W*H);
+   for(let y=0;y<H;y++){let st=-1;for(let x=0;x<=W;x++){const on=x<W&&ink[y*W+x];if(on&&st<0)st=x;if(!on&&st>=0){if(x-st>=LH)for(let k=st;k<x;k++)kill[y*W+k]=1;st=-1;}}}
+   for(let x=0;x<W;x++){let st=-1;for(let y=0;y<=H;y++){const on=y<H&&ink[y*W+x];if(on&&st<0)st=y;if(!on&&st>=0){if(y-st>=LV)for(let k=st;k<y;k++)kill[k*W+x]=1;st=-1;}}}
+   /* only for real grids: at least 3 separate horizontal AND 3 vertical
+      lines. A plain cert with a title rule or two is left exactly as shot
+      (erasing there cost readings in testing). */
+   const bands=(n,get)=>{let c=0,prev=-9;for(let i=0;i<n;i++)if(get(i)){if(i-prev>3)c++;prev=i;}return c;};
+   const hRows=bands(H,y=>{let c=0;for(let x=0;x<W;x++)c+=kill[y*W+x];return c>=LH;}),vCols=bands(W,x=>{let c=0;for(let y=0;y<H;y++)c+=kill[y*W+x];return c>=LV;});
+   const grid=hRows>=3&&vCols>=3;
+   /* widen by one pixel so anti-aliased line edges go too */
+   if(grid)for(let i=0;i<W*H;i++)if(kill[i]){G.g[i]=255;const x=i%W;if(x>0)G.g[i-1]=Math.max(G.g[i-1],200);if(x<W-1)G.g[i+1]=Math.max(G.g[i+1],200);if(i>=W)G.g[i-W]=Math.max(G.g[i-W],200);if(i<W*(H-1))G.g[i+W]=Math.max(G.g[i+W],200);}}
+  const out=new ImageData(G.w,G.h);for(let i=0;i<G.w*G.h;i++){const v=G.g[i];out.data[4*i]=out.data[4*i+1]=out.data[4*i+2]=v;out.data[4*i+3]=255;}
+  return{img:out,angle:best};
+}
+/* Decimal-point recovery (tested: 150/150 decimals on 18 synthetic phone
+   photos, no false points). Tesseract's word box keeps a "." or "," it
+   failed to output (".41" → "41", "0,42" → "042"). The box is split into
+   glyphs by blank columns; a small glyph on the baseline is a point. Only if
+   the other glyphs match the digits one-for-one is the point put back. */
+function fixDots(G,b,text){if(!/^\d+$/.test(text))return text;const h=b.y1-b.y0;if(h<8)return text;
+  let lo=255,hi=0;for(let y=b.y0;y<b.y1;y++)for(let x=b.x0;x<b.x1;x++){const v=G.g[y*G.w+x];if(v<lo)lo=v;if(v>hi)hi=v;}
+  if(hi-lo<40)return text;const th=lo+(hi-lo)*0.5;
+  const pad=Math.round(0.2*h),Y0=Math.max(0,b.y0-pad),Y1=Math.min(G.h-1,b.y1+pad);
+  const runs=[];let cur=null;
+  for(let x=Math.max(0,b.x0-1);x<=Math.min(G.w-1,b.x1+1);x++){let n=0,mi=1e9,ma=-1;for(let y=Y0;y<=Y1;y++)if(G.g[y*G.w+x]<th){n++;if(y<mi)mi=y;if(y>ma)ma=y;}
+    if(n){if(!cur){cur={x0:x,n:0,mi:1e9,ma:-1};runs.push(cur);}cur.x1=x;cur.n+=n;if(mi<cur.mi)cur.mi=mi;if(ma>cur.ma)cur.ma=ma;}else cur=null;}
+  const isDot=r=>(r.x1-r.x0+1)<=0.35*h&&(r.ma-r.mi+1)<=0.45*h&&r.n>=0.006*h*h&&r.mi>=b.y0+0.45*h&&r.ma>=b.y1-0.3*h;
+  const kinds=runs.map(isDot);if(!kinds.some(k=>k)||kinds.filter(k=>!k).length!==text.length)return text;
+  let out="",d=0;kinds.forEach(k=>{out+=k?".":text[d++];});
+  if((out.match(/\./g)||[]).length>1||/\.$/.test(out))return text;return out;}
+/* OCR prints symbols in any case ("SI", "MN", "p"): restore the standard
+   spelling where a symbol is directly followed by a number. */
+function canonEls(t){const L=["Mn","Si","Cr","Ni","Mo","Cu","Al","Ti","Nb","Cb","Pb","Sn","Zn","Fe","Co","Mg","Zr","Sb","Bi","As","Se","Ca","Te","C","P","S","V","B","N","W"];
+  const map={};L.forEach(e=>map[e.toLowerCase()]=e);
+  return t.replace(/(^|[^A-Za-z0-9])([A-Za-z]{1,2})(\**)(?=[ \t]*[:=]?[ \t]*[<≤]?[ \t]*\d*[.,]?\d)/g,(m,a,sym,st)=>{const e=map[sym.toLowerCase()];return e?a+e+st:m;});}
+async function photoToText(file,status){
+  const url=URL.createObjectURL(file);
+  try{
+    const im=new Image();im.src=url;await im.decode();
+    const k=Math.min(1,3600/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");
+    c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const cx=c.getContext("2d",{willReadFrequently:true});cx.drawImage(im,0,0,c.width,c.height);
+    status("Loading the photo reader (about 7 MB the first time, then it works offline)…");
+    const w=await loadOcr();
+    status("Straightening the photo…");await new Promise(r=>setTimeout(r,30));
+    const P=photoPrep(cx.getImageData(0,0,c.width,c.height));const c2=document.createElement("canvas");c2.width=P.img.width;c2.height=P.img.height;c2.getContext("2d").putImageData(P.img,0,0);
+    status("Reading the text (10–40 seconds on a phone)…");
+    const {data}=await w.recognize(c2,{},{blocks:true,text:true});
+    const rows=[],low=[],fixed=[];const G={w:P.img.width,h:P.img.height,g:new Float32Array(P.img.width*P.img.height)};for(let i=0;i<G.g.length;i++)G.g[i]=P.img.data[4*i];
+    (data.blocks||[]).forEach(b=>(b.paragraphs||[]).forEach(pa=>(pa.lines||[]).forEach(li=>{
+      const its=(li.words||[]).filter(x=>x.text&&x.text.trim()).map(x=>{let s=x.text;const core=s.replace(/^[^\d]*|[^\d]*$/g,"");
+        if(/^\d+$/.test(core)&&core===s.replace(/[|,;:]$/,"")){const f=fixDots(G,x.bbox,core);if(f!==core){fixed.push(f);s=f;}}
+        if(/\d/.test(s)&&x.confidence<88)low.push(s.replace(/[^\d.,<]/g,""));
+        return{x:x.bbox.x0,w:x.bbox.x1-x.bbox.x0,h:Math.max(8,(x.bbox.y1-x.bbox.y0)),s:s};});
+      if(its.length)rows.push({y:-(li.bbox.y0+li.bbox.y1)/2,items:its});})));
+    const out=[];rowsToLines(rows,out);
+    return{text:canonEls(out.join("\n")),low:low.concat(fixed),fixed:fixed,conf:Math.round(data.confidence||0),angle:P.angle,url:url};
+  }catch(e){URL.revokeObjectURL(url);throw e;}
+}
+function isPhotoFile(f){return /^image\//.test(f.type||"")||/\.(jpe?g|png|webp|heic|heif|gif|bmp)$/i.test(f.name||"");}
+/* mark the fields a photo read may have got wrong; the mark clears when the field is edited */
+function photoFlag(prefix,filledEls,low,fields){
+  const lowNums=new Set(low.map(t=>{const v=parseFloat(String(t).replace(",","."));return isNaN(v)?null:v;}).filter(v=>v!=null));
+  const flagged=[];
+  filledEls.forEach(el=>{const inp=$(prefix+el);if(!inp)return;const v=parseFloat(inp.value),f=fields&&fields[el];
+    let why="";if(lowNums.has(v))why="the reader was unsure of this number, or its decimal point was restored from the image";
+    else if(!/[.,]/.test(inp.value))why="no decimal point was read"+(v>=10?" — it may be ."+inp.value+" or "+inp.value[0]+"."+inp.value.slice(1):"");
+    else if(f&&((f.max!=null&&v>f.max)||(f.min!=null&&v<f.min)))why="outside the limit — check the reading before rejecting";
+    if(why){inp.classList.add("ocr-check");inp.title="Photo read: "+why+". Check it against the cert.";flagged.push(el+" ("+why+")");
+      inp.addEventListener("input",()=>{inp.classList.remove("ocr-check");inp.title="";},{once:true});}});
+  return flagged;
+}
+function photoBannerHTML(res,flagged,name){
+  return '<div class="verdict v-warn">Read from a photo (“'+esc(name)+'”). Photo reading can misread digits and drop decimal points: check every value in the fields against the cert before you rely on the result.'+
+    (flagged.length?' Marked for a closer look: '+esc(flagged.join("; "))+'.':'')+'</div>'+
+    '<details class="photoprev"><summary>Show the photo next to the values</summary><img src="'+res.url+'" alt="The cert photo you chose"></details>';
+}
 /* 2026-11-16 · Strength on the cert vs the grade's minimums. Reads
    "YIELD 392", "TENSILE 586", "ELONGATION 11", "HARDNESS 185" (the column
    pairing in pdfToText produces these) or "Yield strength: 55 ksi" style
@@ -2941,13 +3073,15 @@ $("chkParse").addEventListener("click",()=>{
 });
 $("chkFile").addEventListener("change",async e=>{
   const f=e.target.files[0];if(!f)return;
-  const isPdf=/\.pdf$/i.test(f.name)||f.type==="application/pdf";
-  let txt="";
+  const isPdf=/\.pdf$/i.test(f.name)||f.type==="application/pdf",isPhoto=!isPdf&&isPhotoFile(f);
+  let txt="",photo=null;
   try{
     if(isPdf){$("chkOut").innerHTML='<div class="verdict v-none">Reading “'+esc(f.name)+'”…</div>';txt=await pdfToText(f);}
+    else if(isPhoto){const st=m=>{$("chkOut").innerHTML='<div class="verdict v-none">'+esc(m)+'</div>';};st("Opening the photo…");photo=await photoToText(f,st);txt=photo.text;}
     else txt=await f.text();
   }catch(err){$("chkOut").innerHTML='<div class="verdict v-none">Could not read “'+esc(f.name)+'”: '+esc(err.message||String(err))+'. Paste the chemistry text instead.</div>';e.target.value="";return;}
   e.target.value="";
+  if(isPhoto&&!/\d/.test(txt)){$("chkOut").innerHTML='<div class="verdict v-none">No text could be read from “'+esc(f.name)+'”. Retake it flat, in good light, filling the frame with the chemistry table — or type the values into the fields.</div>';return;}
   if(isPdf&&!/\d/.test(txt)){$("chkOut").innerHTML='<div class="verdict v-none">“'+esc(f.name)+'” has no readable text: it is probably a scanned image. Type the values from the cert into the fields.</div>';return;}
   /* the grade named on the cert: auto-select it if none is chosen; warn on a mismatch */
   const hits=certGradeHits(txt);let gradeNote="";
@@ -2957,9 +3091,11 @@ $("chkFile").addEventListener("change",async e=>{
     else if(curBase&&!hits.has(curBase))gradeNote="Warning: the cert names "+esc([...hits.keys()].join(", "))+", but you are checking against "+esc(curBase)+".";
   }
   $("chkPaste").value=txt;
+  if(!chkGrade.value&&photo){$("chkOut").innerHTML="";certToIdentify(txt,"“"+esc(f.name)+"” (photo) does not name a grade the atlas holds.");const fl=photoFlag("id-",ID_ELS.filter(e=>$("id-"+e)&&$("id-"+e).value!==""),photo.low,null);$("idOut").insertAdjacentHTML("afterbegin",photoBannerHTML(photo,fl,f.name));return;}
   if(!chkGrade.value){const gidPdf=isPdf&&decodedGid;certToIdentify(txt,hits.size>1?"“"+esc(f.name)+"” names more than one grade ("+esc([...hits.keys()].join(", "))+").":"“"+esc(f.name)+"” does not name a grade the atlas holds.");if(gidPdf)$("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>');return;}
   const r=fillFromText(txt);
-  $("chkOut").innerHTML=(isPdf&&decodedGid?'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>':'')+(gradeNote?'<div class="verdict v-none">'+gradeNote+'</div>':'')+'<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"”. The extracted text is in the paste box: review the fields, then run the check."):(chkGrade.value?(chkEnt&&chkEnt.ns?esc(chkEnt.std)+" sets no chemistry limits for "+esc(chkRow.g)+", so there is no chemistry to score."+(nsChemLine(txt)?" Read from the cert, for the record: "+esc(nsChemLine(txt))+".":"")+" The strength values are checked below.":"No recognisable chemistry found in “"+esc(f.name)+"”. Its text is in the paste box; check it, or type the values."):"Select the grade named on the cert, then press “Read pasted chemistry”. The cert text is in the paste box."))+"</div>"+fillNotesHTML(r)+certMechHTML(txt,chkRow);
+  const flagged=photo?photoFlag("in-",r.filledEls,photo.low,(()=>{const F={};chkFields().forEach(fd=>{F[fd.e]=fd;});return F;})()):[];
+  $("chkOut").innerHTML=(photo?photoBannerHTML(photo,flagged,f.name):'')+(isPdf&&decodedGid?'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>':'')+(gradeNote?'<div class="verdict v-none">'+gradeNote+'</div>':'')+'<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"”. The extracted text is in the paste box: review the fields, then run the check."):(chkGrade.value?(chkEnt&&chkEnt.ns?esc(chkEnt.std)+" sets no chemistry limits for "+esc(chkRow.g)+", so there is no chemistry to score."+(nsChemLine(txt)?" Read from the cert, for the record: "+esc(nsChemLine(txt))+".":"")+(certMechHTML(txt,chkRow)?" The strength values are checked below.":" No strength values were read either — check the cert by hand or type the values."):"No recognisable chemistry found in “"+esc(f.name)+"”. Its text is in the paste box; check it, or type the values."):"Select the grade named on the cert, then press “Read pasted chemistry”. The cert text is in the paste box."))+"</div>"+fillNotesHTML(r)+certMechHTML(txt,chkRow);
   ceAuto();
 });
 /* Intent: the check run. Each Verify field gets exactly one per-criterion
@@ -3222,13 +3358,17 @@ function idFromCertText(txt,label){
 $("idParse").addEventListener("click",()=>{const t=$("idPaste").value;if(!t.trim()){$("idOut").innerHTML='<div class="verdict v-none">Paste the cert chemistry first.</div>';return;}idFromCertText(t,"Pasted text:");});
 $("idFile").addEventListener("change",async e=>{
   const f=e.target.files[0];if(!f)return;e.target.value="";
-  const isPdf=/\.pdf$/i.test(f.name)||f.type==="application/pdf";let txt="";
-  try{if(isPdf){$("idOut").innerHTML='<div class="verdict v-none">Reading “'+esc(f.name)+'”…</div>';txt=await pdfToText(f);}else txt=await f.text();}
+  const isPdf=/\.pdf$/i.test(f.name)||f.type==="application/pdf",isPhoto=!isPdf&&isPhotoFile(f);let txt="",photo=null;
+  try{if(isPdf){$("idOut").innerHTML='<div class="verdict v-none">Reading “'+esc(f.name)+'”…</div>';txt=await pdfToText(f);}
+    else if(isPhoto){const st=m=>{$("idOut").innerHTML='<div class="verdict v-none">'+esc(m)+'</div>';};st("Opening the photo…");photo=await photoToText(f,st);txt=photo.text;}
+    else txt=await f.text();}
   catch(err){$("idOut").innerHTML='<div class="verdict v-none">Could not read “'+esc(f.name)+'”: '+esc(err.message||String(err))+'. Paste the chemistry instead.</div>';return;}
   if(isPdf&&!/\d/.test(txt)){$("idOut").innerHTML='<div class="verdict v-none">“'+esc(f.name)+'” has no readable text: it is probably a scanned image. Type the values into the fields.</div>';return;}
+  if(isPhoto&&!/\d/.test(txt)){$("idOut").innerHTML='<div class="verdict v-none">No text could be read from “'+esc(f.name)+'”. Retake it flat, in good light, filling the frame with the chemistry table — or type the values into the fields.</div>';return;}
   $("idPaste").value=txt;
   const gidPdf=isPdf&&decodedGid;
   idFromCertText(txt,"“"+esc(f.name)+"”:");
+  if(photo){const fl=photoFlag("id-",ID_ELS.filter(e=>$("id-"+e)&&$("id-"+e).value!==""),photo.low,null);$("idOut").insertAdjacentHTML("afterbegin",photoBannerHTML(photo,fl,f.name));}
   if(gidPdf)$("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>');
 });
 

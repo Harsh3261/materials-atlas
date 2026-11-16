@@ -534,3 +534,38 @@ Tests: e2e 61/61. Cache materials-atlas-v79-verify.
 - **Result:** about 6,800 nodes; first keystroke about 75–180 ms, clearing the search about 65 ms.
 - **Tried and dropped:** content-visibility:auto (hid card text from innerText and is risky on older Safari).
 - No data or behaviour change. Cache materials-atlas-v83-smooth.
+
+## Round 26 (2026-11-16): photographed certs (on-device OCR)
+**What:** Check and Identify now accept a photo of a cert (input accept adds image/*; on iPhone the picker offers Take Photo or Photo Library).
+
+**Engine:** tesseract.js 7.0.0 + tesseract.js-core 7.0.0 (LSTM builds: SIMD and non-SIMD; chosen by WebAssembly.validate) + English model 4.0.0_best_int. All Apache-2.0, vendored in vendor/ocr/ with licences and a README.
+- About 7 MB downloads on first use only. NOT pre-cached in sw.js; the runtime cache keeps it, and an offline second use was tested and works.
+
+**Pipeline** (photoToText → rowsToLines → normal fill):
+1. EXIF-correct draw (via <img>), capped at 3600 px.
+2. Grayscale, long side scaled to about 3000 px.
+3. Deskew by projection profile (±8°, 0.2° steps).
+4. Grid-line erase, ONLY when ≥3 horizontal AND ≥3 vertical long ink runs are present (boxed Excel certs). On plain certs it cost readings in testing, so it is gated.
+5. Tesseract PSM 6. Words with boxes → the same rowsToLines column pairing as PDFs. rowsToLines was refactored out of pdfToText; PDF behaviour is unchanged and the cert batch is identical.
+6. fixDots: Tesseract's word box keeps a "." or "," it fails to output (".41" → "41", "0,42" → "042"). Glyphs are split by blank columns; a small glyph on the baseline is a point. It is reinserted only if the other glyphs match the digits one-for-one. Result: 150/150 decimal tokens on 18 test photos, 0 false points.
+7. canonEls: "SI", "MN", "p" → Si, Mn, P when a number follows.
+
+**Binarisation (Sauvola) was tested and REJECTED:** it dropped decimal points on blurred photos.
+
+**Safety: nothing is scored automatically from a photo.**
+- A banner says "Read from a photo… check every value against the cert", with a collapsible view of the photo itself.
+- A field is marked (amber outline plus tooltip, cleared when edited) when:
+  - the word confidence is below 88, or
+  - its decimal point was restored by fixDots, or
+  - it has no decimal point at all ("may be .36 or 3.6"), or
+  - it is outside the grade's limit ("check the reading before rejecting").
+
+**Measured on 24 synthetic phone photos** (8 test certs × good/ok/messy, made by tools in /home/claude/ocr: 300-dpi render, tilt 1–5.5°, keystone, lighting gradient, noise, blur, JPEG 60–88):
+- 147 chemistry values: 123 correct, 6 wrong but flagged, **0 wrong and unflagged**, 18 not read (left blank, so "not entered").
+- The 80-55-06 Sino cert read fully from the "good" photo (chemistry for the record plus all three strength values, PASS).
+- Its "ok" and "messy" photos (tilted boxed grid) read nothing, and the result says to check by hand. Known limit: tilted boxed tables.
+- About 3–6 s per photo on desktop Chrome and about 8 s with 4× CPU throttling (first use, including the download).
+
+**Pending:** Harsh's real phone photos. Please re-measure when he sends them.
+
+**Tests:** e2e 61/61, regression 0 errors, cert batch unchanged, offline works for both pages and for photos (second use). Cache materials-atlas-v84-photo.

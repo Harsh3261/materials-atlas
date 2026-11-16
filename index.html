@@ -2196,6 +2196,15 @@ FAMS.forEach(f=>{const b=document.createElement("button");b.textContent=f;b.data
   b.addEventListener("click",()=>{activeFam=activeFam===f?"":f;syncChips();render();});chips.appendChild(b);});
 function syncChips(){[...chips.children].forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.fam||"")===activeFam)));}
 
+/* 2026-11-16 · smoothness: a card's detail (chemistry table, notes,
+   buttons) is built as text when the list renders but only put into the
+   page when the card is first opened. 343 open-ready cards were ~20,000
+   page elements; summaries alone are a fraction of that, so typing in the
+   search box no longer stalls on slower phones. Buttons inside cards are
+   handled by one delegated listener on #results. */
+const DETAIL={};
+function lazyDetail(i,html){DETAIL[i]=html;return '<div class="detail" data-lazy="'+i+'"></div>';}
+function fillDetail(card){const d=card&&card.querySelector(".detail[data-lazy]");if(!d)return;const i=d.dataset.lazy;d.innerHTML=DETAIL[i]||"";d.removeAttribute("data-lazy");}
 function cardHTML(r,i,info){
   const yTxt=r.ym==null?"—":("<b>"+esc(r.ym)+"</b> MPa"+(r.yk!=null?" · "+esc(r.yk)+" ksi":""));
   const tTxt=r.tm==null?"—":("<b>"+esc(r.tm)+"</b> MPa"+(r.tk!=null?" · "+esc(r.tk)+" ksi":""));
@@ -2212,14 +2221,14 @@ function cardHTML(r,i,info){
     '<span><span class="lbl">Tensile</span>'+tTxt+'</span>'+
     '<span><span class="lbl">Elong.</span><b>'+esc(r.el==null?"—":r.el)+'</b></span>'+
     '<span><span class="lbl">Hardness</span><b>'+esc(r.hd)+'</b></span></span></summary>')+
-    '<div class="detail"><h4>Governing standard</h4><p class="note">'+esc(r.s)+'</p>'+
+    lazyDetail(i,'<h4>Governing standard</h4><p class="note">'+esc(r.s)+'</p>'+
     '<h4>Near-equivalents (not identical)</h4><p class="note">'+esc(r.eq)+'</p>'+aliasLine+
     '<h4>Chemistry (% by weight)</h4><table>'+chemRows+'</table>'+
     (stdNoteFor(r)?'<h4>Standard-wide defaults</h4><p class="note">'+esc(stdNoteFor(r))+'</p>':"")+
     (Object.keys(r.chemMap).length?'':'')+
     '<h4>Note</h4><p class="note">'+esc(r.n)+'</p>'+
     '<button class="copybtn" data-copy="'+i+'">Copy this row</button> <button class="copybtn" data-compare="'+i+'">+ Compare</button>'+(similarVals(r)?' <button class="copybtn" data-similar="'+i+'">Similar grades →</button>':'')+
-    '<p class="src">Source: '+(editionOf(r)?esc(editionOf(r))+' · ':'')+esc(r.src)+'</p></div></details>';
+    '<p class="src">Source: '+(editionOf(r)?esc(editionOf(r))+' · ':'')+esc(r.src)+'</p>')+'</details>';
 }
 /* Intent: render() filters DATA in a fixed order (family chip → standard →
    search → min yield → min tensile → element), sorts, then groups by family in
@@ -2276,10 +2285,17 @@ function render(){
       frows.map(({r,i,info})=>cardHTML(r,i,info)).join("");
   });
   $("results").innerHTML=rows.length?html:'<div class="empty">No rows match. Loosen the filters — or the combination may be deliberately withheld as unverified.</div>';
-  document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",ev=>{ev.preventDefault();copyText(rowSummary(DATA[+b.dataset.copy]),b);}));
-  document.querySelectorAll("[data-compare]").forEach(b=>b.addEventListener("click",ev=>{ev.preventDefault();addToCompare(+b.dataset.compare,b);}));
-  document.querySelectorAll("[data-similar]").forEach(b=>b.addEventListener("click",ev=>{ev.preventDefault();findSimilar(+b.dataset.similar);}));
 }
+/* delegated: summary click fills the detail BEFORE the card opens (so it is
+   there on the same frame); the toggle event covers keyboard and scripted
+   opening; card buttons are handled here once. */
+$("results").addEventListener("click",ev=>{
+  const sm=ev.target.closest("details.card > summary");if(sm)fillDetail(sm.parentElement);
+  const b=ev.target.closest("[data-copy],[data-compare],[data-similar]");if(!b)return;ev.preventDefault();
+  if(b.dataset.copy!==undefined)copyText(rowSummary(DATA[+b.dataset.copy]),b);
+  else if(b.dataset.compare!==undefined)addToCompare(+b.dataset.compare,b);
+  else findSimilar(+b.dataset.similar);});
+$("results").addEventListener("toggle",ev=>{if(ev.target.matches&&ev.target.matches("details.card")&&ev.target.open)fillDetail(ev.target);},true);
 /* 2026-11-15 · "Similar grades →" on a Browse card: the middle of each of the
    grade's RANGED chemistry limits (min and max both set) is sent to Identify,
    which tests it against every grade. Candidates contain all those values;

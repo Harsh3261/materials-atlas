@@ -520,3 +520,17 @@ Tests: e2e 61/61. Cache materials-atlas-v79-verify.
 - sw.js: the page (navigation, index.html, manifest) is now NETWORK-FIRST with cache:'no-store'. Online, an update shows on the first reload. The cached copy is used only offline. pdf.js, fonts and icons stay cache-first.
 - Tested: a changed index.html shows after one reload; offline reload still loads 343 rows. e2e 61/61.
 - Cache materials-atlas-v82-netfirst.
+
+## Round 25 (2026-11-16): final release check + smoothness
+**Release check, all green:**
+- e2e 61/61 (phone and desktop, every tab, offline). smoke, t15–t19 and fulltest: 0 errors.
+- Cert batch: 8/8 verdicts unchanged, plus the Spectrum C86300 cert. The 80-55-06 Sino cert reads and passes its strength check.
+- deep.py: only the known, explained items. audit.js: no min>max, no unit mismatch, no YS>TS.
+- SPC: AQL 176/176, converters (t6), tools (t13), thread tables (t14), sheet import (xltest), GRR reference. Offline works for both sites.
+
+**Smoothness:** on a 4× throttled phone, the first keystroke in Browse took about 320 ms. The cause was 343 cards × full detail = about 20,000 DOM nodes and 700 KB of HTML.
+- **Fix:** card detail (chemistry table, notes, buttons) is generated as a string but only inserted when the card first opens (lazyDetail/fillDetail, DETAIL map). It fills on summary click before open, and on the toggle event for keyboard/scripted opens.
+- **Card buttons** (Copy, + Compare, Similar) are now one delegated listener on #results.
+- **Result:** about 6,800 nodes; first keystroke about 75–180 ms, clearing the search about 65 ms.
+- **Tried and dropped:** content-visibility:auto (hid card text from innerText and is risky on older Safari).
+- No data or behaviour change. Cache materials-atlas-v83-smooth.

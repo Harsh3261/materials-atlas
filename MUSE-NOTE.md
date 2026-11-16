@@ -436,3 +436,24 @@ Cache materials-atlas-v74-bronze2.
 **Tests:** smoke, t15–t19 and fulltest pass with 0 JS errors. The cert batch is unchanged. Synthetic pass/fail certs for all new grades behave as expected (A105 fail case trips all three rules).
 
 Cache materials-atlas-v75-wave1.
+
+## Round 20 (2026-11-16): full audit of data, sources and functions
+**Audit tooling** (in /home/claude/tools, not in the repo): audit.js checks every DATA row against CHEMROWS/EDITIONS/CHEMSTD/SUMMIN/CHKRULES; e2e.js runs 61 function checks on phone (390 px) and desktop (1440 px) plus an offline reload. Result: 61/61 pass, 0 JS errors.
+
+**Fixes:**
+- **A572 Grade 65 (checker accuracy):** both thickness rows share one CHEMROWS key, which carries C ≤0.26 with Mn ≤1.65. That pairing is not allowed by either row. New CHKRULES entry passes only (C ≤0.26 and Mn ≤1.35) or (C ≤0.23 and Mn ≤1.65). Plate ≤½ in with Mn >1.35 needs C ≤0.21; the rule text says to hand check that case.
+- **Display chemistry now lists every element the checker scores:** 17-4 PH (Si, P, S), C95520 (Pb, Sn, Zn, Si, Cr, Co), 303 and 416 (Mo), A519 4140 (P, S, Si). Values copied from CHEMROWS; no limit changed.
+- **42CrMo4 Si:** display said 0.10–0.40, CHEMROWS says ≤0.40. Sources disagree (Swiss Steel and Metinvest print 0.10 min citing EN ISO 683-2:2018; Kipp, steeldata and others print max only). Display now reads "Si ≤0.40 (some mill sheets print 0.10 min)". CHEMROWS unchanged. **Please settle this against the standard text.**
+- **Seven ISO 898-1 rows** had eq:"" and now show "—".
+- **Fonts are self-hosted** (vendor/fonts.css + vendor/fonts/*.woff2, SIL OFL, from @fontsource). The Google Fonts link is removed, so there is no third-party request and the offline app looks identical. Latin files are pre-cached by sw.js.
+- **.nojekyll** added so Pages serves files as-is.
+
+**Known, unchanged (flag only):**
+- A36 checker uses C ≤0.25 for all thicknesses (conservative for plate over 1½ in).
+- A311, A434 rows have no CHEMROWS; the checker says so.
+- ALIASES for 20Mn2, 40Mn2 and 44W (300W) are empty arrays.
+- Single-source rows remain flagged in their src text (A311 Table 2 band, A434 band, E355, several EN 10084 +A caps).
+
+**Counts unchanged:** R10, 343 rows, 1140 limits. Please re-pin DATA and CHKRULES hashes.
+
+Cache materials-atlas-v76-audit.

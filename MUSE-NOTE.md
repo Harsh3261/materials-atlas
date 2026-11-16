@@ -361,3 +361,24 @@ Cache materials-atlas-v66-certs.
 - **Result:** Cu 62.6, Sn 0.0172, Pb 0.0492, Zn 25.87, Fe 2.32, Ni 0.0326, Al 5.44, Mn 3.51. All match the printed cert.
 - **DATA GAP:** C86300 (ASTM B505) is not in the atlas, so Identify finds no candidate. The cert prints Cu 60–66, Zn 22–28, Al 5–7.5, Mn 2.5–5, Fe 2–4, Sn/Pb ≤ 0.2, Ni ≤ 1.0. It needs a verified data change against B505 itself before it is added.
 - Cache materials-atlas-v72-gid.
+
+## Round 17 (2026-11-15, ~20:05): DATA CHANGE, 3 B505 bronzes added + grouped selectors
+**Added** in all six tables (DATA, EDITIONS, ALIASES OFFICIAL, CHEMROWS, CHEMSTD and SUMMIN 99.0):
+- **C86300** (SAE 430B), 110/62/14:
+  - Concast B505-23 sheet, NBM sheet, copper.org UNS table and Total Materia agree.
+  - National Bronze's C86300 page was REJECTED: it shows C83600 chemistry and wrong units.
+- **C86200** (SAE 430A), 90/45/18: Concast B505-23, ICAST B505 and copper.org agree.
+- **C93700** (80-10-10), 35/20/6: Concast B505-23 and ICAST B505 agree on every element, including P ≤1.5 and Sb ≤0.50.
+  - Concast's LINE CARD prints CDA values (P 0.10, Sb 0.70), the same CDA-vs-B505 trap as TB-D1 for C83600. Do not "correct" to the line card.
+
+**SUMMIN 99.0** for all three. Sources: a copy of B505's "Copper plus named elements" table (scribd, -11 era) and copper.org footnote (17); for C86300 also NBM.
+
+**Counts:** DATAREV is now R8, 301 rows, 1023 chemistry limits (996 + 27). Please re-pin the golden hashes for the DATA, CHEMROWS, ALIASES, EDITIONS, CHEMSTD and SUMMIN fences.
+
+**NOT added** (only one B505 source found this session): C92300, C93400, C93800, C84400.
+
+**Spectrum C86300 cert:** all 8 elements pass, and the sum rule is 99.84 ≥ 99.0.
+
+**Grade and compare selectors** are now grouped in <optgroup> by material family, with a count in each label. Option text and values are unchanged.
+
+Cache materials-atlas-v73-bronze.

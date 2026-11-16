@@ -691,9 +691,9 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
      constant in the script; the © line and maker's mark stay verbatim. -->
 <footer>
-  <p>Materials Atlas — 298 verified grade-condition rows. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
+  <p>Materials Atlas — 301 verified grade-condition rows. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
   <p class="tuesday">Below a spec minimum is a rejection. Below a typical is just a Tuesday.</p>
-  <p class="datarev">DATA REV 2026-11-15 R7 · 298 GRADE-CONDITION ROWS · 996 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5</p>
+  <p class="datarev">DATA REV 2026-11-15 R8 · 301 GRADE-CONDITION ROWS · 1023 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5</p>
   <p class="stamp">BUILT BY HARSH PATEL · WITH SATUREDAY</p>
   <p class="stamp">© 2026 Harsh Patel · All rights reserved</p>
 </footer>
@@ -964,6 +964,9 @@ const DATA=[
 {f:"Copper alloy",g:"C95800",s:"ASTM B505 (continuous castings)",eq:"UNS C95800 · propeller bronze",form:"Continuous cast rod; bar; tube",c:"As cast or temper annealed",chem:"Cu ≥79.0; Al 8.5–9.5; Fe 3.5–4.5; Ni 4.0–5.0; Mn 0.8–1.5; Si ≤0.10; Pb ≤0.03",ym:241,yk:35,yb:"min-spec (0.5% extension under load)",tm:586,tk:85,el:"18%",hd:"—",n:"Table 9 footnote F: as cast or temper annealed. For seawater service B505 §6.1 requires the temper anneal 1200–1300 °F [650–705 °C] for 6 h min. Fe content shall not exceed Ni content. Typical BHN 159 per Concast — typical only.",src:"ASTM B505/B505M-23 Table 9 + §6.1 + Wieland Concast C95800 datasheet",st:"SPEC"},
 {f:"Copper alloy",g:"C95900",s:"ASTM B505 (continuous castings)",eq:"UNS C95900",form:"Continuous cast rod; bar; tube",c:"As cast (hardness-rated grade)",chem:"Cu remainder; Al 12.0–13.5; Fe 3.0–5.0; Ni ≤0.50; Mn ≤1.5",ym:null,yk:null,yb:"n/a — hardness-rated grade",tm:null,tk:null,el:"—",hd:"HB 241 min [3000 kg]",n:"B505 Table 9 sets NO tensile/yield/elongation for C95900 — hardness is the only mechanical requirement. A typical tensile near 703 MPa circulates in supplier literature (Elcas) but is NOT a spec value — do not quote it as one.",src:"ASTM B505/B505M-23 Table 9 + Wieland Concast C95900 datasheet",st:"SPEC"},
 {f:"Copper alloy",g:"C95520",s:"ASTM B505 (continuous castings)",eq:"UNS C95520",form:"Continuous cast bar / tube",c:"Quench-hardened and tempered (TQ30) — the only condition B505 permits for C95520",chem:"Cu ≥74.5; Al 10.5–11.5; Fe 4.0–5.5; Ni 4.2–6.0 (incl. Co); Mn ≤1.5",ym:655,yk:95,yb:"min-spec",tm:862,tk:125,el:"2%",hd:"HB 262 min",n:"Mechanical minimums from ASTM B505/B505M-23 Table 9. Elongation only 2% — this is a hard wear alloy; minimums reduce 10% for sections ≥4 in per Table 9 note A.",src:"ASTM B505/B505M-23 Table 9",st:"SPEC"},
+{f:"Copper alloy",g:"C86300",s:"ASTM B505 (continuous castings)",eq:"SAE 430B · manganese bronze · UNS C86300",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 60.0–66.0; Zn 22.0–28.0; Al 5.0–7.5; Mn 2.5–5.0; Fe 2.0–4.0; Sn ≤0.20; Pb ≤0.20; Ni ≤1.0 (incl. Co)",ym:427,yk:62,yb:"min-spec (0.5% extension under load)",tm:758,tk:110,el:"14%",hd:"HB 223–225 (typical, 3000 kg — not a B505 minimum)",n:"High-strength manganese bronze for heavy-load, slow-speed bushings, wear plates and gears. Sand-cast B584 C86300 charts often show 110/60/12 — this continuous-cast B505 row is 110/62/14. B505 footnote: Cu min may be calculated as Cu + Ni (the checker compares Cu alone, so a Cu just under 60.0 with Ni present needs a hand check). Cu + named elements ≥99.0 %.",src:"ASTM B505/B505M-23 via Wieland Concast C86300 sheet + NBM C86300 sheet + copper.org UNS table (agreeing)",st:"SPEC"},
+{f:"Copper alloy",g:"C86200",s:"ASTM B505 (continuous castings)",eq:"SAE 430A · manganese bronze · UNS C86200",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 60.0–66.0; Zn 22.0–28.0; Al 3.0–4.9; Mn 2.5–5.0; Fe 2.0–4.0; Sn ≤0.20; Pb ≤0.20; Ni ≤1.0 (incl. Co)",ym:310,yk:45,yb:"min-spec (0.5% extension under load)",tm:621,tk:90,el:"18%",hd:"HB 180 (typical, 3000 kg — not a B505 minimum)",n:"Lower-aluminium sister of C86300: less strength (90 vs 110 ksi), more ductility. Same chemistry window except Al 3.0–4.9 (C86300: 5.0–7.5) — Al is what tells the two apart on a cert. B505 footnote: Cu min may be calculated as Cu + Ni. Cu + named elements ≥99.0 %.",src:"ASTM B505/B505M-23 via Wieland Concast C86200 sheet + ICAST B505 C86200 sheet + copper.org UNS table (agreeing)",st:"SPEC"},
+{f:"Copper alloy",g:"C93700",s:"ASTM B505 (continuous castings)",eq:"High-leaded tin bronze 80-10-10 · UNS C93700",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 78.0–82.0; Sn 9.0–11.0; Pb 8.0–11.0; Zn ≤0.80; Fe ≤0.70 (≤0.35 for steel-backed bearings); Ni ≤0.50 (incl. Co); P ≤1.5; Sb ≤0.50; S ≤0.08; Al ≤0.005; Si ≤0.005",ym:138,yk:20,yb:"min-spec (0.5% extension under load)",tm:241,tk:35,el:"6%",hd:"HB 60 (typical, 500 kg — not a B505 minimum)",n:"80-10-10 bearing bronze: the lead gives embeddability and tolerance of poor lubrication; same 35 ksi tensile as C93200 but only 6 % elongation (C93200: 10 %). B505 allows P ≤1.5 in continuous castings, not the CDA 0.10 printed on many line cards. Fe ≤0.35 if the bronze is for steel-backed bearings. Cu + named elements ≥99.0 %.",src:"ASTM B505/B505M-23 via Wieland Concast C93700 sheet + ICAST B505 C93700 sheet (agreeing)",st:"SPEC"},
 {f:"Copper alloy",g:"C36000",s:"ASTM B16 (rod/bar)",eq:"UNS C36000 · EN CW603N near-equiv",form:"Rod / bar",c:"H02 half-hard — rod over ½ to 1 in",chem:"Cu 60.0–63.0; Pb 2.5–3.7; Fe ≤0.35; Zn remainder",ym:172,yk:25,yb:"min-spec (0.5% extension under load)",tm:379,tk:55,el:"10%",hd:"HRB ≈80 class",n:"Free-cutting brass — the machinability benchmark (100%). B16 minimums STEP DOWN with diameter: 57 ksi TS at ≤½ in; 45 ksi over 2–4 in. Pb max is 3.7% (B16 text + CDA) — an earlier 3.0 figure is superseded.",src:"ASTM B16 Table 2 (open full text; two editions agreeing) + CDA registration",st:"SPEC"},
 {f:"Copper alloy",g:"C36000",s:"ASTM B16 (rod/bar)",eq:"UNS C36000 · EN CW603N near-equiv",form:"Rod / bar",c:"O60 soft annealed — 1 in and under",chem:"Cu 60.0–63.0; Pb 2.5–3.7; Fe ≤0.35; Zn remainder",ym:138,yk:20,yb:"min-spec (0.5% extension under load)",tm:331,tk:48,el:"15%",hd:"—",n:"Same alloy as the H02 row: annealed temper drops the tensile minimum 55 → 48 ksi and is chosen for forming — temper is a purchasing decision.",src:"ASTM B16 Table 2 (open full text; two editions agreeing)",st:"SPEC"},
 {f:"Copper alloy",g:"C11000",s:"ASTM B152 (sheet/strip/plate) — typicals only",eq:"UNS C11000 · EN CW004A (Cu-ETP) · JIS C1100",form:"Sheet / strip / plate",c:"O60 soft annealed",chem:"Cu ≥99.90 (incl. Ag); O ≤0.04",ym:69,yk:10,yb:"typical",tm:220,tk:32,el:"45%",hd:"HB 42 (typical)",n:"TYPICALS ONLY: B152's own tensile requirements could not be reproduced to two-source standard, so spec-minimum rows for C11000 are withheld as unverified. Do not use for acceptance.",src:"CDA alloy data for UNS C11000 as republished (round 2)",st:"TYP"},
@@ -1216,6 +1219,9 @@ const EDITIONS={
 "C95700|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
 "C95800|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
 "C95900|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
+"C86300|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
+"C86200|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
+"C93700|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
 "C36000|ASTM B16 (rod/bar)":"ASTM B16/B16M-24 (round-1 data read in -05/-19 texts; chemistry re-confirmed vs CDA)",
 "C11000|ASTM B152 (sheet/strip/plate) — typicals only":"ASTM B152/B152M-19",
 "A36|ASTM A36/A36M-19":"ASTM A36/A36M-19",
@@ -1298,7 +1304,7 @@ function editionOf(r){return EDITIONS[r.g+"|"+r.s]||"";}
    Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
    Edit data only via a verified data change — never by hand-tuning numbers.
    Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
-const DATAREV="DATA REV 2026-11-15 R7 · 298 GRADE-CONDITION ROWS · 996 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5";
+const DATAREV="DATA REV 2026-11-15 R8 · 301 GRADE-CONDITION ROWS · 1023 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5";
 /* ==== END DATA: DATAREV ===================================================== */
 /* Intent: parseChem turns DATA's DISPLAY chemistry string into r.chemMap, which
    feeds the Browse chemistry table, the element filter and Compare only. The
@@ -1406,6 +1412,9 @@ const ALIASES={
 "C95700":["C95700","","","","OFFICIAL"],
 "C95800":["C95800","","","","OFFICIAL"],
 "C95900":["C95900","","","","OFFICIAL"],
+"C86300":["C86300","","","","OFFICIAL"],
+"C86200":["C86200","","","","OFFICIAL"],
+"C93700":["C93700","","","","OFFICIAL"],
 "D2":["T30402","1.2379","X153CrMoV12","SKD11","NEAR"],
 "E355":["","1.0580","E355","","OFFICIAL"],
 "G2":["","","EN-GJL-250","","NEAR"],
@@ -1659,6 +1668,9 @@ const CHEMROWS={
 "C95700|ASTM B505 (continuous castings)":[["Cu",71,null],["Al",7.0,8.5],["Fe",2.0,4.0],["Mn",11.0,14.0],["Ni",1.5,3.0],["Si",null,0.1],["Pb",null,0.03]],
 "C95800|ASTM B505 (continuous castings)":[["Cu",79,null],["Al",8.5,9.5],["Fe",3.5,4.5],["Ni",4.0,5.0],["Mn",0.8,1.5],["Si",null,0.1],["Pb",null,0.03]],
 "C95900|ASTM B505 (continuous castings)":[["Cu",null,null,"R"],["Al",12.0,13.5],["Fe",3.0,5.0],["Ni",null,0.5],["Mn",null,1.5]],
+"C86300|ASTM B505 (continuous castings)":[["Cu",60.0,66.0],["Zn",22.0,28.0],["Al",5.0,7.5],["Mn",2.5,5.0],["Fe",2.0,4.0],["Sn",null,0.2],["Pb",null,0.2],["Ni",null,1.0]],
+"C86200|ASTM B505 (continuous castings)":[["Cu",60.0,66.0],["Zn",22.0,28.0],["Al",3.0,4.9],["Mn",2.5,5.0],["Fe",2.0,4.0],["Sn",null,0.2],["Pb",null,0.2],["Ni",null,1.0]],
+"C93700|ASTM B505 (continuous castings)":[["Cu",78.0,82.0],["Sn",9.0,11.0],["Pb",8.0,11.0],["Zn",null,0.8],["Fe",null,0.7],["Ni",null,0.5],["P",null,1.5],["Sb",null,0.5],["S",null,0.08],["Al",null,0.005],["Si",null,0.005]],
 };
 /* ==== END DATA: CHEMROWS ==================================================== */
 /* ==== BEGIN DATA: CHEMSTD ===================================================
@@ -1745,6 +1757,9 @@ const CHEMSTD={
 "C95700|ASTM B505 (continuous castings)":"ASTM B505",
 "C95800|ASTM B505 (continuous castings)":"ASTM B505",
 "C95900|ASTM B505 (continuous castings)":"ASTM B505",
+"C86300|ASTM B505 (continuous castings)":"ASTM B505",
+"C86200|ASTM B505 (continuous castings)":"ASTM B505",
+"C93700|ASTM B505 (continuous castings)":"ASTM B505",
 "C36000|ASTM B16 (rod/bar)":"ASTM B16",
 "A36|ASTM A36/A36M-19":"ASTM A36",
 "44W (300W)|CSA G40.21-13 (reaffirmed 2023)":"CSA G40.21",
@@ -1935,7 +1950,10 @@ const SUMMIN={
 "C95520|ASTM B505 (continuous castings)":99.5,
 "C95700|ASTM B505 (continuous castings)":99.5,
 "C95800|ASTM B505 (continuous castings)":99.5,
-"C95900|ASTM B505 (continuous castings)":99.5};
+"C95900|ASTM B505 (continuous castings)":99.5,
+"C86300|ASTM B505 (continuous castings)":99.0,
+"C86200|ASTM B505 (continuous castings)":99.0,
+"C93700|ASTM B505 (continuous castings)":99.0};
 /* ==== END DATA: SUMMIN ====================================================== */
 /* v63 build items I + J — computed checker rules that a static CHEMROWS limit
    cannot express. Same pattern as the SUMMIN sum rule: a rule is scored ONLY
@@ -2229,7 +2247,9 @@ function learnHint(q){
 /* ============ compare ============ */
 const cmpA=$("cmpA"),cmpB=$("cmpB");
 cmpA.add(new Option("Select material A",""));cmpB.add(new Option("Select material B",""));
-DATA.forEach((r,i)=>{const t=rowLabel(r);cmpA.add(new Option(t,i));cmpB.add(new Option(t,i));});
+{const fams={};DATA.forEach((r,i)=>{(fams[r.f]=fams[r.f]||[]).push(i);});
+ Object.keys(fams).forEach(f=>[cmpA,cmpB].forEach(sel=>{const g=document.createElement("optgroup");g.label=f+" ("+fams[f].length+")";
+   fams[f].forEach(i=>g.appendChild(new Option(rowLabel(DATA[i]),i)));sel.appendChild(g);}));}
 /* Stage 2.1: Compare opens EMPTY — no seeded pair. Slots fill from the
    selects above or via "+ Compare" on a Browse card. */
 cmpA.value="";cmpB.value="";
@@ -2301,7 +2321,11 @@ const chkGrade=$("chkGrade");
 const gradeKeys={};
 DATA.forEach(r=>{const k=r.g+"|"+r.s;if(!gradeKeys[k])gradeKeys[k]=r;});
 chkGrade.add(new Option("Select a grade",""));
-Object.values(gradeKeys).forEach(r=>chkGrade.add(new Option(r.g+" — "+r.s,rowLabel(r)+"|"+r.s)));
+/* 2026-11-15 · grouped by material family (Harsh's idea): optgroup labels
+   make the long list easy to scan; option text and values are unchanged. */
+{const fams={};Object.values(gradeKeys).forEach(r=>{(fams[r.f]=fams[r.f]||[]).push(r);});
+ [...new Set(DATA.map(r=>r.f))].filter(f=>fams[f]).forEach(f=>{const g=document.createElement("optgroup");g.label=f+" ("+fams[f].length+")";
+   fams[f].forEach(r=>g.appendChild(new Option(r.g+" — "+r.s,rowLabel(r)+"|"+r.s)));chkGrade.appendChild(g);});}
 chkGrade.value="";
 /* key grades by label+standard for lookup */
 const gradeByKey={};Object.values(gradeKeys).forEach(r=>gradeByKey[rowLabel(r)+"|"+r.s]=r);

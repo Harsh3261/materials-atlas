@@ -693,7 +693,7 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
 <footer>
   <p>Materials Atlas — 301 verified grade-condition rows. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
   <p class="tuesday">Below a spec minimum is a rejection. Below a typical is just a Tuesday.</p>
-  <p class="datarev">DATA REV 2026-11-15 R8 · 301 GRADE-CONDITION ROWS · 1023 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5</p>
+  <p class="datarev">DATA REV 2026-11-16 R9 · 305 GRADE-CONDITION ROWS · 1067 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5</p>
   <p class="stamp">BUILT BY HARSH PATEL · WITH SATUREDAY</p>
   <p class="stamp">© 2026 Harsh Patel · All rights reserved</p>
 </footer>
@@ -967,6 +967,10 @@ const DATA=[
 {f:"Copper alloy",g:"C86300",s:"ASTM B505 (continuous castings)",eq:"SAE 430B · manganese bronze · UNS C86300",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 60.0–66.0; Zn 22.0–28.0; Al 5.0–7.5; Mn 2.5–5.0; Fe 2.0–4.0; Sn ≤0.20; Pb ≤0.20; Ni ≤1.0 (incl. Co)",ym:427,yk:62,yb:"min-spec (0.5% extension under load)",tm:758,tk:110,el:"14%",hd:"HB 223–225 (typical, 3000 kg — not a B505 minimum)",n:"High-strength manganese bronze for heavy-load, slow-speed bushings, wear plates and gears. Sand-cast B584 C86300 charts often show 110/60/12 — this continuous-cast B505 row is 110/62/14. B505 footnote: Cu min may be calculated as Cu + Ni (the checker compares Cu alone, so a Cu just under 60.0 with Ni present needs a hand check). Cu + named elements ≥99.0 %.",src:"ASTM B505/B505M-23 via Wieland Concast C86300 sheet + NBM C86300 sheet + copper.org UNS table (agreeing)",st:"SPEC"},
 {f:"Copper alloy",g:"C86200",s:"ASTM B505 (continuous castings)",eq:"SAE 430A · manganese bronze · UNS C86200",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 60.0–66.0; Zn 22.0–28.0; Al 3.0–4.9; Mn 2.5–5.0; Fe 2.0–4.0; Sn ≤0.20; Pb ≤0.20; Ni ≤1.0 (incl. Co)",ym:310,yk:45,yb:"min-spec (0.5% extension under load)",tm:621,tk:90,el:"18%",hd:"HB 180 (typical, 3000 kg — not a B505 minimum)",n:"Lower-aluminium sister of C86300: less strength (90 vs 110 ksi), more ductility. Same chemistry window except Al 3.0–4.9 (C86300: 5.0–7.5) — Al is what tells the two apart on a cert. B505 footnote: Cu min may be calculated as Cu + Ni. Cu + named elements ≥99.0 %.",src:"ASTM B505/B505M-23 via Wieland Concast C86200 sheet + ICAST B505 C86200 sheet + copper.org UNS table (agreeing)",st:"SPEC"},
 {f:"Copper alloy",g:"C93700",s:"ASTM B505 (continuous castings)",eq:"High-leaded tin bronze 80-10-10 · UNS C93700",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 78.0–82.0; Sn 9.0–11.0; Pb 8.0–11.0; Zn ≤0.80; Fe ≤0.70 (≤0.35 for steel-backed bearings); Ni ≤0.50 (incl. Co); P ≤1.5; Sb ≤0.50; S ≤0.08; Al ≤0.005; Si ≤0.005",ym:138,yk:20,yb:"min-spec (0.5% extension under load)",tm:241,tk:35,el:"6%",hd:"HB 60 (typical, 500 kg — not a B505 minimum)",n:"80-10-10 bearing bronze: the lead gives embeddability and tolerance of poor lubrication; same 35 ksi tensile as C93200 but only 6 % elongation (C93200: 10 %). B505 allows P ≤1.5 in continuous castings, not the CDA 0.10 printed on many line cards. Fe ≤0.35 if the bronze is for steel-backed bearings. Cu + named elements ≥99.0 %.",src:"ASTM B505/B505M-23 via Wieland Concast C93700 sheet + ICAST B505 C93700 sheet (agreeing)",st:"SPEC"},
+{f:"Copper alloy",g:"C84400",s:"ASTM B505 (continuous castings)",eq:"Leaded semi-red brass 81-3-7-9 · valve metal · UNS C84400",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 78.0–82.0; Sn 2.3–3.5; Pb 6.0–8.0; Zn 7.0–10.0; Fe ≤0.4; Ni ≤1.0 (incl. Co); Al ≤0.005; Sb ≤0.25; S ≤0.08; P ≤1.5; Si ≤0.005",ym:103,yk:15,yb:"min-spec (0.5% extension under load)",tm:207,tk:30,el:"16%",hd:"— (B505 sets no hardness minimum for this grade)",n:"Leaded semi-red brass (81-3-7-9) for plumbing fittings, valve bodies and low-load bushings. Weaker than C83600 (30 vs 36 ksi tensile) but cheaper. B505 footnote: Cu min may be calculated as Cu + Ni (the checker compares Cu alone, so a Cu just under 78.0 with Ni present needs a hand check). Table 9 note A: minimums reduce 10% for sections ≥4 in. The Cu + named elements floor is not loaded yet (only one source found).",src:"ASTM B505/B505M-23 Tables 9–10 (iTeh standard preview) + Wieland Concast C84400 B505-23 sheet (agreeing)",st:"SPEC"},
+{f:"Copper alloy",g:"C92300",s:"ASTM B505 (continuous castings)",eq:"SAE 621 · leaded tin bronze 87-8-1-4 (Navy G) · UNS C92300",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 85.0–89.0; Sn 7.5–9.0; Pb 0.3–1.0; Zn 2.5–5.0; Fe ≤0.25; Ni ≤1.0 (incl. Co); Al ≤0.005; Sb ≤0.25; S ≤0.05; P ≤1.5; Si ≤0.005",ym:131,yk:19,yb:"min-spec (0.5% extension under load)",tm:276,tk:40,el:"16%",hd:"— (B505 sets no hardness minimum for this grade)",n:"Leaded tin bronze for pump parts, valve bodies, gears and high-pressure fittings. Note Pb has a MINIMUM (0.3) as well as a maximum. B505 footnote: Cu min may be calculated as Cu + Ni. Table 9 note A: minimums reduce 10% for sections ≥4 in. The Cu + named elements floor is not loaded yet (only one source found).",src:"ASTM B505/B505M-23 Tables 9–10 (iTeh standard preview) + Wieland Concast C92300 B505-23 sheet (agreeing)",st:"SPEC"},
+{f:"Copper alloy",g:"C93400",s:"ASTM B505 (continuous castings)",eq:"High-leaded tin bronze 84-8-8 · UNS C93400",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 82.0–85.0; Sn 7.0–9.0; Pb 7.0–9.0; Zn ≤0.8; Fe ≤0.2; Ni ≤1.0 (incl. Co); Al ≤0.005; Sb ≤0.5; S ≤0.08; P ≤1.5; Si ≤0.005",ym:138,yk:20,yb:"min-spec (0.5% extension under load)",tm:234,tk:34,el:"8%",hd:"— (B505 sets no hardness minimum for this grade)",n:"High-leaded bearing bronze between C93200 and C93700: same 20 ksi yield, 34 ksi tensile, 8% elongation. Zn is only ≤0.80 here (C93200 needs 2.0–4.0 Zn), which separates the two on a cert. B505 footnote: Cu min may be calculated as Cu + Ni. Table 9 note A: minimums reduce 10% for sections ≥4 in. The Cu + named elements floor is not loaded yet (only one source found).",src:"ASTM B505/B505M-23 Tables 9–10 (iTeh standard preview) + Wieland Concast C93400 B505-23 sheet (agreeing)",st:"SPEC"},
+{f:"Copper alloy",g:"C93800",s:"ASTM B505 (continuous castings)",eq:"SAE 67 · high-leaded tin bronze 78-7-15 (anti-acid metal) · UNS C93800",form:"Continuous cast bar / tube",c:"As cast",chem:"Cu 75.0–79.0; Sn 6.3–7.5; Pb 13.0–16.0; Zn ≤0.8; Fe ≤0.15; Ni ≤1.0 (incl. Co); Al ≤0.005; Sb ≤0.8; S ≤0.08; P ≤1.5; Si ≤0.005",ym:110,yk:16,yb:"min-spec (0.5% extension under load)",tm:172,tk:25,el:"5%",hd:"— (B505 sets no hardness minimum for this grade)",n:"15% lead bearing bronze for high-speed, light-load or poorly lubricated bearings and acid service. Lowest strength of the B505 bearing bronzes here (25/16/5). B505 allows P ≤1.5 in continuous castings. Table 9 note A: minimums reduce 10% for sections ≥4 in. Cu + named elements ≥99.0 %.",src:"ASTM B505/B505M-23 Tables 9–10 (iTeh standard preview) + Wieland Concast C93800 B505-23 sheet (agreeing)",st:"SPEC"},
 {f:"Copper alloy",g:"C36000",s:"ASTM B16 (rod/bar)",eq:"UNS C36000 · EN CW603N near-equiv",form:"Rod / bar",c:"H02 half-hard — rod over ½ to 1 in",chem:"Cu 60.0–63.0; Pb 2.5–3.7; Fe ≤0.35; Zn remainder",ym:172,yk:25,yb:"min-spec (0.5% extension under load)",tm:379,tk:55,el:"10%",hd:"HRB ≈80 class",n:"Free-cutting brass — the machinability benchmark (100%). B16 minimums STEP DOWN with diameter: 57 ksi TS at ≤½ in; 45 ksi over 2–4 in. Pb max is 3.7% (B16 text + CDA) — an earlier 3.0 figure is superseded.",src:"ASTM B16 Table 2 (open full text; two editions agreeing) + CDA registration",st:"SPEC"},
 {f:"Copper alloy",g:"C36000",s:"ASTM B16 (rod/bar)",eq:"UNS C36000 · EN CW603N near-equiv",form:"Rod / bar",c:"O60 soft annealed — 1 in and under",chem:"Cu 60.0–63.0; Pb 2.5–3.7; Fe ≤0.35; Zn remainder",ym:138,yk:20,yb:"min-spec (0.5% extension under load)",tm:331,tk:48,el:"15%",hd:"—",n:"Same alloy as the H02 row: annealed temper drops the tensile minimum 55 → 48 ksi and is chosen for forming — temper is a purchasing decision.",src:"ASTM B16 Table 2 (open full text; two editions agreeing)",st:"SPEC"},
 {f:"Copper alloy",g:"C11000",s:"ASTM B152 (sheet/strip/plate) — typicals only",eq:"UNS C11000 · EN CW004A (Cu-ETP) · JIS C1100",form:"Sheet / strip / plate",c:"O60 soft annealed",chem:"Cu ≥99.90 (incl. Ag); O ≤0.04",ym:69,yk:10,yb:"typical",tm:220,tk:32,el:"45%",hd:"HB 42 (typical)",n:"TYPICALS ONLY: B152's own tensile requirements could not be reproduced to two-source standard, so spec-minimum rows for C11000 are withheld as unverified. Do not use for acceptance.",src:"CDA alloy data for UNS C11000 as republished (round 2)",st:"TYP"},
@@ -1222,6 +1226,10 @@ const EDITIONS={
 "C86300|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
 "C86200|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
 "C93700|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
+"C84400|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
+"C92300|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
+"C93400|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
+"C93800|ASTM B505 (continuous castings)":"ASTM B505/B505M-23",
 "C36000|ASTM B16 (rod/bar)":"ASTM B16/B16M-24 (round-1 data read in -05/-19 texts; chemistry re-confirmed vs CDA)",
 "C11000|ASTM B152 (sheet/strip/plate) — typicals only":"ASTM B152/B152M-19",
 "A36|ASTM A36/A36M-19":"ASTM A36/A36M-19",
@@ -1304,7 +1312,7 @@ function editionOf(r){return EDITIONS[r.g+"|"+r.s]||"";}
    Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
    Edit data only via a verified data change — never by hand-tuning numbers.
    Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
-const DATAREV="DATA REV 2026-11-15 R8 · 301 GRADE-CONDITION ROWS · 1023 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5";
+const DATAREV="DATA REV 2026-11-16 R9 · 305 GRADE-CONDITION ROWS · 1067 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5";
 /* ==== END DATA: DATAREV ===================================================== */
 /* Intent: parseChem turns DATA's DISPLAY chemistry string into r.chemMap, which
    feeds the Browse chemistry table, the element filter and Compare only. The
@@ -1415,6 +1423,10 @@ const ALIASES={
 "C86300":["C86300","","","","OFFICIAL"],
 "C86200":["C86200","","","","OFFICIAL"],
 "C93700":["C93700","","","","OFFICIAL"],
+"C84400":["C84400","","","","OFFICIAL"],
+"C92300":["C92300","","","","OFFICIAL"],
+"C93400":["C93400","","","","OFFICIAL"],
+"C93800":["C93800","","","","OFFICIAL"],
 "D2":["T30402","1.2379","X153CrMoV12","SKD11","NEAR"],
 "E355":["","1.0580","E355","","OFFICIAL"],
 "G2":["","","EN-GJL-250","","NEAR"],
@@ -1671,6 +1683,10 @@ const CHEMROWS={
 "C86300|ASTM B505 (continuous castings)":[["Cu",60.0,66.0],["Zn",22.0,28.0],["Al",5.0,7.5],["Mn",2.5,5.0],["Fe",2.0,4.0],["Sn",null,0.2],["Pb",null,0.2],["Ni",null,1.0]],
 "C86200|ASTM B505 (continuous castings)":[["Cu",60.0,66.0],["Zn",22.0,28.0],["Al",3.0,4.9],["Mn",2.5,5.0],["Fe",2.0,4.0],["Sn",null,0.2],["Pb",null,0.2],["Ni",null,1.0]],
 "C93700|ASTM B505 (continuous castings)":[["Cu",78.0,82.0],["Sn",9.0,11.0],["Pb",8.0,11.0],["Zn",null,0.8],["Fe",null,0.7],["Ni",null,0.5],["P",null,1.5],["Sb",null,0.5],["S",null,0.08],["Al",null,0.005],["Si",null,0.005]],
+"C84400|ASTM B505 (continuous castings)":[["Cu",78,82],["Sn",2.3,3.5],["Pb",6,8],["Zn",7,10],["Fe",null,0.4],["Ni",null,1],["Al",null,0.005],["Sb",null,0.25],["S",null,0.08],["P",null,1.5],["Si",null,0.005]],
+"C92300|ASTM B505 (continuous castings)":[["Cu",85,89],["Sn",7.5,9],["Pb",0.3,1],["Zn",2.5,5],["Fe",null,0.25],["Ni",null,1],["Al",null,0.005],["Sb",null,0.25],["S",null,0.05],["P",null,1.5],["Si",null,0.005]],
+"C93400|ASTM B505 (continuous castings)":[["Cu",82,85],["Sn",7,9],["Pb",7,9],["Zn",null,0.8],["Fe",null,0.2],["Ni",null,1],["Al",null,0.005],["Sb",null,0.5],["S",null,0.08],["P",null,1.5],["Si",null,0.005]],
+"C93800|ASTM B505 (continuous castings)":[["Cu",75,79],["Sn",6.3,7.5],["Pb",13,16],["Zn",null,0.8],["Fe",null,0.15],["Ni",null,1],["Al",null,0.005],["Sb",null,0.8],["S",null,0.08],["P",null,1.5],["Si",null,0.005]],
 };
 /* ==== END DATA: CHEMROWS ==================================================== */
 /* ==== BEGIN DATA: CHEMSTD ===================================================
@@ -1760,6 +1776,10 @@ const CHEMSTD={
 "C86300|ASTM B505 (continuous castings)":"ASTM B505",
 "C86200|ASTM B505 (continuous castings)":"ASTM B505",
 "C93700|ASTM B505 (continuous castings)":"ASTM B505",
+"C84400|ASTM B505 (continuous castings)":"ASTM B505",
+"C92300|ASTM B505 (continuous castings)":"ASTM B505",
+"C93400|ASTM B505 (continuous castings)":"ASTM B505",
+"C93800|ASTM B505 (continuous castings)":"ASTM B505",
 "C36000|ASTM B16 (rod/bar)":"ASTM B16",
 "A36|ASTM A36/A36M-19":"ASTM A36",
 "44W (300W)|CSA G40.21-13 (reaffirmed 2023)":"CSA G40.21",
@@ -1953,7 +1973,8 @@ const SUMMIN={
 "C95900|ASTM B505 (continuous castings)":99.5,
 "C86300|ASTM B505 (continuous castings)":99.0,
 "C86200|ASTM B505 (continuous castings)":99.0,
-"C93700|ASTM B505 (continuous castings)":99.0};
+"C93700|ASTM B505 (continuous castings)":99.0,
+"C93800|ASTM B505 (continuous castings)":99.0};
 /* ==== END DATA: SUMMIN ====================================================== */
 /* v63 build items I + J — computed checker rules that a static CHEMROWS limit
    cannot express. Same pattern as the SUMMIN sum rule: a rule is scored ONLY

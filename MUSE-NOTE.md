@@ -382,3 +382,25 @@ Cache materials-atlas-v66-certs.
 **Grade and compare selectors** are now grouped in <optgroup> by material family, with a count in each label. Option text and values are unchanged.
 
 Cache materials-atlas-v73-bronze.
+
+## Round 18 (2026-11-16, ~01:30 UTC): DATA CHANGE, 4 more B505 bronzes
+**Added** in DATA, EDITIONS, ALIASES (OFFICIAL), CHEMROWS and CHEMSTD: **C84400** (30/15/16), **C92300** (40/19/16, SAE 621), **C93400** (34/20/8), **C93800** (25/16/5, SAE 67). Each has 11 chemistry limits.
+- **Source 1:** the ASTM B505/B505M-23 standard itself (iTeh preview, Table 9 mechanicals and Table 10 chemistry).
+  - The preview's trailing chemistry columns were garbled, so I read each row in column order (Cu, Sn, Pb, Zn, Fe, Ni, Al, Mn, Sb, S, P, Si).
+  - Every value then matched source 2 element by element.
+- **Source 2:** the Wieland Concast B505-23 sheets for each alloy. All chemistry and all mechanical minimums agree.
+- **SUMMIN:** loaded only for **C93800** at 99.0, from Concast and Finkelstein Metals.
+  - NOT loaded for C92300 (Concast 99.3, only one source), C93400 (Concast 99.0, only one source) or C84400 (Finkelstein 99.3, and Concast prints no floor).
+  - The preview omits Table 11. Please add these floors once a second source turns up.
+- **Hardness** is "—" for all four. B505 sets no minimum, and the Concast "typical BHN" figures have only one source.
+- **Pb in C92300** has a minimum (0.3) as well as a maximum.
+- **B505 Cu + Ni footnote:** C84400, C92300 and C93400 carry it, and their notes say so (same as C86300).
+
+**Counts:** DATAREV is now R9, 305 rows, 1067 chemistry limits (1023 + 44). Please re-pin the golden hashes for the DATA, CHEMROWS, ALIASES, EDITIONS, CHEMSTD and SUMMIN fences.
+
+**Tests:**
+- smoke, t15–t19 and fulltest: 0 JS errors.
+- Cert batch: unchanged, and the Spectrum C86300 cert still passes all 8 elements.
+- Synthetic in-spec certs for all four new grades read and pass.
+
+Cache materials-atlas-v74-bronze2.

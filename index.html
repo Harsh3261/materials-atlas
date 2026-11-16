@@ -243,6 +243,9 @@ table.ndt{font-size:13px}table.ndt td{vertical-align:top}
 
 details.card .props-chem{display:block}
 details.card .props-chem .chemline{display:block;font-family:var(--mono);font-size:13px;font-weight:500;line-height:1.5;color:var(--ink)}
+#view-compare .cmpq{margin-bottom:6px}
+#view-compare .cmpcount{margin:6px 0 0;font-size:13px;color:var(--ink2);min-height:1em}
+.mechtbl{margin-top:8px}
 /* ---- Round 21 design polish (layout only; no data or behaviour change) ---- */
 .chips button{font-family:var(--sans);letter-spacing:.01em}
 .revsearch{align-items:end}
@@ -538,8 +541,12 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
     <p class="hint">Put any two grade-condition rows side by side — differing values highlight, and cross-reference pairs carry their confidence label.</p>
     <p>Pick any two grade-condition rows. Differing values are highlighted — this is where near-equivalents stop looking identical.</p>
     <div class="grid2">
-      <div class="controls" style="margin:0"><div><label for="cmpA">Material A</label><select id="cmpA"></select></div></div>
-      <div class="controls" style="margin:0"><div><label for="cmpB">Material B</label><select id="cmpB"></select></div></div>
+      <div class="controls" style="margin:0"><div><label for="cmpAq">Material A</label>
+        <input id="cmpAq" class="cmpq" type="search" placeholder="Search A: 4140, 1.7225, C93200…" autocomplete="off" aria-controls="cmpA">
+        <select id="cmpA" aria-label="Material A"></select><p class="cmpcount" id="cmpAn" aria-live="polite"></p></div></div>
+      <div class="controls" style="margin:0"><div><label for="cmpBq">Material B</label>
+        <input id="cmpBq" class="cmpq" type="search" placeholder="Search B: 42CrMo4, SCM440, S355J2…" autocomplete="off" aria-controls="cmpB">
+        <select id="cmpB" aria-label="Material B"></select><p class="cmpcount" id="cmpBn" aria-live="polite"></p></div></div>
     </div>
     <div id="cmpOut" style="margin-top:14px"></div>
   </div>
@@ -2360,9 +2367,33 @@ function learnHint(q){
 /* ============ compare ============ */
 const cmpA=$("cmpA"),cmpB=$("cmpB");
 cmpA.add(new Option("Select material A",""));cmpB.add(new Option("Select material B",""));
-{const fams={};DATA.forEach((r,i)=>{(fams[r.f]=fams[r.f]||[]).push(i);});
- Object.keys(fams).forEach(f=>[cmpA,cmpB].forEach(sel=>{const g=document.createElement("optgroup");g.label=f+" ("+fams[f].length+")";
-   fams[f].forEach(i=>g.appendChild(new Option(rowLabel(DATA[i]),i)));sel.appendChild(g);}));}
+/* Compare search (round 23): each slot has a search box that filters its
+   own select using the same matcher as Browse (grade, UNS, EN number, JIS,
+   standard, alias, typo-tolerant). Best match is auto-selected. */
+function cmpFill(sel,q){
+  const keep=sel.value, ph=sel.options[0]?sel.options[0].text:"";
+  sel.innerHTML="";sel.add(new Option(ph,""));
+  const nq=normQ(q||"");let hits=[];
+  DATA.forEach((r,i)=>{if(!q){hits.push([i,0]);return;}const m=matchRow(r,q);if(!m)return;
+    const ng=normQ(r.g);let rk=5;
+    if(m.fuzzy)rk=5;else if(ng===nq)rk=0;else if(nq.length>=3&&ng.length>=3&&(ng.indexOf(nq)===0||nq.indexOf(ng)===0))rk=1;
+    else{const A=aliasOf(r),toks=A?[A[0],A[1],A[2],A[3]].filter(Boolean).map(normQ):[];rk=toks.indexOf(nq)>=0?(A[4]==="OFFICIAL"?2:3):4;}
+    hits.push([i,rk]);});
+  const fams={},famRank={};hits.forEach(([i,rk])=>{const f=DATA[i].f;(fams[f]=fams[f]||[]).push([i,rk]);famRank[f]=Math.min(famRank[f]??9,rk);});
+  const order=Object.keys(fams).sort((a,b)=>q?famRank[a]-famRank[b]:0);
+  order.forEach(f=>{const g=document.createElement("optgroup");g.label=f+" ("+fams[f].length+")";
+    fams[f].sort((a,b)=>q?a[1]-b[1]:0).forEach(([i])=>g.appendChild(new Option(rowLabel(DATA[i]),i)));sel.appendChild(g);});
+  return hits.length;
+}
+[[cmpA,"cmpAq","cmpAn"],[cmpB,"cmpBq","cmpBn"]].forEach(([sel,qid,nid])=>{
+  cmpFill(sel,"");
+  $(qid).addEventListener("input",()=>{const q=$(qid).value.trim(),prev=sel.value;const n=cmpFill(sel,q);
+    $(nid).textContent=q?(n?n+" match"+(n===1?"":"es")+" — best match selected; change it in the list":"No grade matches “"+q+"”. Try the grade, UNS, EN number or standard."):"";
+    if(q&&n){const first=[...sel.options].find(o=>o.value!=="");sel.value=first.value;if(first.value!==prev)cmpRender();}
+    else if(!q){sel.value=prev;}
+    else {sel.value="";if(prev!=="")cmpRender();}
+  });
+});
 /* Stage 2.1: Compare opens EMPTY — no seeded pair. Slots fill from the
    selects above or via "+ Compare" on a Browse card. */
 cmpA.value="";cmpB.value="";
@@ -2418,6 +2449,7 @@ function addToCompare(i,btn){
     if(tab)tab.click();
     return;
   }
+  [[cmpA,"cmpAq","cmpAn"],[cmpB,"cmpBq","cmpBn"]].forEach(([sel,qid,nid])=>{if($(qid).value){const v=sel.value;$(qid).value="";$(nid).textContent="";cmpFill(sel,"");sel.value=v;}});
   if(cmpA.value==="")cmpA.value=i;else cmpB.value=i;
   cmpRender();
   if(btn)btn.textContent="✓ In Compare — tap again to view";
@@ -2616,7 +2648,12 @@ async function pdfToText(file){
        1004–1013, "." = 856, verified on a real supplier cert). A glyph not in
        the table becomes "?", so it can never be read as part of a number. */
     const gidFonts=new Set();
-    tc.items.forEach(it=>{if(it.str&&[...it.str].some(c=>{const k=c.codePointAt(0);return k>=256||(k<32&&k!==9&&k!==10&&k!==13);}))gidFonts.add(it.fontName);});
+    /* 2026-11-16: only codes 256–0x1FFF (where Calibri glyph IDs land) or
+       control codes mark a glyph-coded font. Fullwidth/CJK punctuation such
+       as "（PC）" on Chinese-made certs is real Unicode and no longer trips
+       the "scrambled" warning. (A glyph-coded font can still contain codes
+       that look like ASCII, so ASCII presence is NOT used as a test.) */
+    tc.items.forEach(it=>{if(it.str&&[...it.str].some(c=>{const k=c.codePointAt(0);return (k>=256&&k<0x2000)||(k<32&&k!==9&&k!==10&&k!==13);}))gidFonts.add(it.fontName);});
     if(gidFonts.size)tc.items.forEach(it=>{if(it.str&&gidFonts.has(it.fontName)){it.str=[...it.str].map(c=>{const k=c.codePointAt(0),v=CALIBRI_GID[k];return v===undefined?"?":v;}).join("");decodedGid=true;}});
     tc.items.forEach(it=>{if(!it.str||!it.str.trim())return;const x=it.transform[4],y=it.transform[5];
       let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r){r={y,items:[]};rows.push(r);}r.items.push({x,w:it.width||0,h:Math.abs(it.transform[3])||10,s:it.str});});
@@ -2632,16 +2669,34 @@ async function pdfToText(file){
        paired by POSITION (nearest x-centre), not by counting cells, so a
        two-word header ("Others each") cannot shift values onto the wrong
        element. A value farther than half a column from its header is left out. */
+    /* 2026-11-16: the value row may sit up to 5 rows below the header, past
+       a units row ("%", "(MPa)") and printed spec rows starting "min." /
+       "max." (spreadsheet-style certs). Spec rows are never paired. Strength
+       headers (YIELD, TENSILE, ELONGATION, HARDNESS…) pair the same way so
+       the checker can compare them with the grade's minimums. */
+    const MECH=/^(yield|tensile|elongation|reduction|hardness|impact)$/i;
+    const consumed=new Set();
     for(let k=0;k<rows.length;k++){
-      const hw=words(rows[k]),syms=hw.filter(w=>SYM.test(w.s.trim()));
-      if(syms.length>=3&&k+1<rows.length){
-        const vw=words(rows[k+1]).filter(w=>/^[<≤]?\s*\d*[.,]?\d+$/.test(w.s.trim()));
-        if(vw.length>=2){
-          const xs=syms.map(w=>w.c).sort((a,b)=>a-b);let pitch=Infinity;for(let q=1;q<xs.length;q++)pitch=Math.min(pitch,xs[q]-xs[q-1]);
-          const pairs=[];syms.forEach(h=>{let best=null,bd=Infinity;vw.forEach(v=>{const d=Math.abs(v.c-h.c);if(d<bd){bd=d;best=v;}});
-            if(best&&bd<pitch*0.5)pairs.push(h.s.trim()+" "+best.s.trim());});
-          if(pairs.length>=2){out.push(pairs.join("   "));k++;continue;}
+      if(consumed.has(k))continue;
+      const hw=words(rows[k]),syms=hw.filter(w=>SYM.test(w.s.trim())),mech=hw.filter(w=>MECH.test(w.s.trim()));
+      if(syms.length>=3){
+        const xs=syms.map(w=>w.c).sort((a,b)=>a-b);let pitch=Infinity;for(let q=1;q<xs.length;q++)pitch=Math.min(pitch,xs[q]-xs[q-1]);
+        const heads=syms.concat(mech);let done=false;
+        for(let j=k+1;j<=Math.min(k+5,rows.length-1)&&!done;j++){
+          const rw=words(rows[j]);if(!rw.length)continue;
+          if(/^(min|max)/i.test(rw[0].s.trim()))continue;
+          if(rw.some(w=>SYM.test(w.s.trim())))break;
+          const vw=rw.filter(w=>/^[<≤]?\s*\d*[.,]?\d+$/.test(w.s.trim()));
+          if(vw.length<2)continue;
+          const pairs=[];heads.forEach(h=>{let best=null,bd=Infinity;vw.forEach(v=>{const d=Math.abs(v.c-h.c);if(d<bd){bd=d;best=v;}});
+            const tol=MECH.test(h.s.trim())?Math.max(pitch,40)*0.6:pitch*0.5;
+            if(best&&bd<tol)pairs.push(h.s.trim()+" "+best.s.trim());});
+          if(pairs.filter(x=>SYM.test(x.split(" ")[0])).length>=2){
+            out.push(hw.map(w=>w.s).join("   "));
+            for(let m=k+1;m<j;m++){const ww=words(rows[m]);out.push(ww.map(w=>w.s).join("   "));}
+            out.push(pairs.join("   "));for(let m=k+1;m<=j;m++)consumed.add(m);done=true;}
         }
+        if(done)continue;
       }
       out.push(hw.map((w,q)=>(q?(w.x-hw[q-1].end<w.s.length*0.1+ (rows[k].items[0].h||10)*1.2?" ":"   "):"")+w.s).join(""));
     }
@@ -2808,6 +2863,56 @@ function certToIdentify(txt,why){
     window.scrollTo({top:o.getBoundingClientRect().top+(window.scrollY||0)-navTop-8,behavior:"smooth"});},60);
   return r;
 }
+/* 2026-11-16 · Strength on the cert vs the grade's minimums. Reads
+   "YIELD 392", "TENSILE 586", "ELONGATION 11", "HARDNESS 185" (the column
+   pairing in pdfToText produces these) or "Yield strength: 55 ksi" style
+   lines. Units come from the cert's own header ((MPa), N/mm², ksi, psi); if
+   none is printed, nothing is scored. Only SPEC rows are scored; typical and
+   manufacturer rows are shown for reference only. Hardness is reported, not
+   scored, because the standards here rarely set it on the same basis. */
+function certMech(txt){
+  const t=String(txt||"");const g=re=>{const m=t.match(re);return m?parseFloat(m[1].replace(",",".")):null;};
+  const v={ys:g(/\byield(?:\s*(?:strength|point|stress))?\s*(?:\([^)]*\))?\s*[:=]?\s*(\d+(?:[.,]\d+)?)/i),
+    ts:g(/\b(?:tensile|uts)(?:\s*strength)?\s*(?:\([^)]*\))?\s*[:=]?\s*(\d+(?:[.,]\d+)?)/i),
+    el:g(/\belong(?:ation)?\.?\s*(?:\([^)]*\))?\s*[:=]?\s*(\d+(?:[.,]\d+)?)/i),
+    hb:g(/\bhardness\s*(?:\([^)]*\))?\s*[:=]?\s*(\d+(?:[.,]\d+)?)/i)};
+  let unit=null;if(/\(\s*m\s*pa\s*\)|\bmpa\b|n\s*\/\s*mm/i.test(t))unit="MPa";else if(/\bksi\b/i.test(t))unit="ksi";else if(/\bpsi\b/i.test(t))unit="psi";
+  v.unit=unit;return v;
+}
+function certMechHTML(txt,r){
+  if(!r)return"";const v=certMech(txt);if(v.ys==null&&v.ts==null&&v.el==null&&v.hb==null)return"";
+  const toMPa=x=>x==null?null:v.unit==="ksi"?x*6.894757:v.unit==="psi"?x*0.006894757:x;
+  const lo=x=>{if(x==null)return null;if(typeof x==="number")return x;const m=String(x).match(/(\d+(?:\.\d+)?)/);return m?parseFloat(m[1]):null;};
+  const hi=x=>{if(x==null||typeof x==="number")return null;const m=String(x).match(/\d+(?:\.\d+)?\s*[–-]\s*(\d+(?:\.\d+)?)/);return m?parseFloat(m[1]):null;};
+  /* ASTM A536 ductile iron: the grade name IS the Table 1 minimum set
+     (tensile-yield-elongation, ksi-ksi-%), so 80-55-06 is scored as a spec
+     even where the row's other data is the bar maker's. */
+  let spec=r.st==="SPEC",ymin=lo(r.ym),tmin=lo(r.tm),tmax=hi(r.tm),emin=lo(r.el),basis=r.s;
+  const di=/^ASTM A536/.test(r.s)&&String(r.g).match(/^(\d{2,3})-(\d{2})-(\d{2})$/);
+  if(di){spec=true;tmin=Math.round(+di[1]*6.894757);ymin=Math.round(+di[2]*6.894757);tmax=null;emin=+di[3];basis="ASTM A536 Table 1 (grade "+r.g+" = "+(+di[1])+" ksi tensile, "+(+di[2])+" ksi yield, "+(+di[3])+" % elongation)";}
+  const rows=[];let fails=0,scored=0;
+  const line=(name,certV,certTxt,min,max,unitTxt)=>{
+    if(certV==null)return;
+    let res="reported",cls="";
+    if(!v.unit&&unitTxt!=="%"){res="not scored — the cert prints no unit";}
+    else if(spec&&min!=null){scored++;const okMin=certV>=min-0.5,okMax=max==null||certV<=max+0.5;const ok=okMin&&okMax;if(!ok)fails++;cls=ok?"pass":"fail";
+      res=(ok?vSym("pass")+"PASS":vSym("fail")+"FAIL")+" — "+(okMin?(max!=null?"within ":"≥ ")+min+(max!=null?"–"+max:"")+" "+unitTxt:"BELOW minimum "+min+" "+unitTxt)+(okMax?"":" · ABOVE maximum "+max+" "+unitTxt);}
+    else if(min!=null)res="typical "+min+" "+unitTxt+" — reference only, not for acceptance";
+    rows.push("<tr><td><strong>"+name+"</strong></td><td class='num'>"+(min==null?"—":(max!=null?min+"–"+max:"≥ "+min)+" "+unitTxt)+"</td><td class='num'>"+certTxt+"</td><td class='"+cls+"'>"+res+"</td></tr>");};
+  const ysM=toMPa(v.ys),tsM=toMPa(v.ts);
+  line("Yield",ysM,v.ys==null?"—":v.ys+" "+(v.unit||"(no unit)"),ymin,null,"MPa");
+  line("Tensile",tsM,v.ts==null?"—":v.ts+" "+(v.unit||"(no unit)"),tmin,tmax,"MPa");
+  line("Elongation",v.el,v.el==null?"—":v.el+" %",emin,null,"%");
+  if(v.hb!=null)rows.push("<tr><td><strong>Hardness</strong></td><td class='num'>"+esc(r.hd||"—")+"</td><td class='num'>"+v.hb+"</td><td>reported — not scored (compare with the PO if it sets hardness)</td></tr>");
+  if(!rows.length)return"";
+  const head=spec?(scored?(fails?'<div class="verdict v-fail">✕ '+fails+' STRENGTH VALUE'+(fails>1?"S":"")+' OUT OF RANGE — '+esc(r.g)+' ('+esc(r.c)+')</div>':'<div class="verdict v-pass">✓ STRENGTH VALUES MEET THE MINIMUMS — '+esc(r.g)+' ('+esc(r.c)+')</div>'):'<div class="verdict v-none">Strength read from the cert; not scored.</div>')
+    :'<div class="verdict v-none">Strength read from the cert. This row is '+(r.st==="TYP"?"typical":"manufacturer")+' data, so nothing is scored.</div>';
+  return head+(spec?'<p class="note">Basis: '+esc(basis)+'</p>':'')+'<table class="mechtbl"><thead><tr><th>Property</th><th>Spec</th><th>Cert</th><th>Result</th></tr></thead><tbody>'+rows.join("")+'</tbody></table>'+
+    (v.unit==="ksi"||v.unit==="psi"?'<p class="note">Converted to MPa for the comparison (1 ksi = 6.895 MPa).</p>':'')+
+    '<p class="note">Conversion rounding: a cert printing 380 MPa for a 55 ksi (379 MPa) minimum is treated as meeting it.</p>';
+}
+function nsChemLine(t){const L=String(t||"").split(/\n/).find(l=>(l.match(/(^|\s)(C|Si|Mn|P|S|Cr|Ni|Mo|Cu|Mg)\s+\d*\.\d+/g)||[]).length>=3);
+  return L?L.replace(/\s+(YIELD|TENSILE|ELONGATION|REDUCTION|HARDNESS|IMPACT)\b.*$/i,"").replace(/\s{2,}/g,", ").trim():"";}
 $("chkParse").addEventListener("click",()=>{
   if(!chkGrade.value){
     const t=$("chkPaste").value,hits=certGradeHits(t);
@@ -2838,7 +2943,7 @@ $("chkFile").addEventListener("change",async e=>{
   $("chkPaste").value=txt;
   if(!chkGrade.value){const gidPdf=isPdf&&decodedGid;certToIdentify(txt,hits.size>1?"“"+esc(f.name)+"” names more than one grade ("+esc([...hits.keys()].join(", "))+").":"“"+esc(f.name)+"” does not name a grade the atlas holds.");if(gidPdf)$("idOut").insertAdjacentHTML("afterbegin",'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>');return;}
   const r=fillFromText(txt);
-  $("chkOut").innerHTML=(isPdf&&decodedGid?'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>':'')+(gradeNote?'<div class="verdict v-none">'+gradeNote+'</div>':'')+'<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"”. The extracted text is in the paste box: review the fields, then run the check."):(chkGrade.value?"No recognisable chemistry found in “"+esc(f.name)+"”. Its text is in the paste box; check it, or type the values.":"Select the grade named on the cert, then press “Read pasted chemistry”. The cert text is in the paste box."))+"</div>"+fillNotesHTML(r);
+  $("chkOut").innerHTML=(isPdf&&decodedGid?'<div class="verdict v-none">This PDF\u2019s text layer is scrambled (its font has no character map, common with “Print to PDF”). It was decoded with the standard Calibri glyph table: check every value against the cert.</div>':'')+(gradeNote?'<div class="verdict v-none">'+gradeNote+'</div>':'')+'<div class="verdict v-none">'+(r.filled?("Read "+r.filled+" element values ("+r.filledEls.join(", ")+") from “"+esc(f.name)+"”. The extracted text is in the paste box: review the fields, then run the check."):(chkGrade.value?(chkEnt&&chkEnt.ns?esc(chkEnt.std)+" sets no chemistry limits for "+esc(chkRow.g)+", so there is no chemistry to score."+(nsChemLine(txt)?" Read from the cert, for the record: "+esc(nsChemLine(txt))+".":"")+" The strength values are checked below.":"No recognisable chemistry found in “"+esc(f.name)+"”. Its text is in the paste box; check it, or type the values."):"Select the grade named on the cert, then press “Read pasted chemistry”. The cert text is in the paste box."))+"</div>"+fillNotesHTML(r)+certMechHTML(txt,chkRow);
   ceAuto();
 });
 /* Intent: the check run. Each Verify field gets exactly one per-criterion
@@ -2850,7 +2955,7 @@ $("chkFile").addEventListener("change",async e=>{
    Standard-wide caps (fd.cap) are scored exactly like grade limits and only
    carry their label. Then the B505 sum rule adds one more PASS/FAIL row. */
 $("chkRun").addEventListener("click",()=>{
-  if(!chkEnt||chkEnt.ns){chkSetup();return;}
+  if(!chkEnt||chkEnt.ns){chkSetup();if(chkEnt&&chkEnt.ns){const t=$("chkPaste").value,mh=certMechHTML(t,chkRow);if(mh)$("chkOut").innerHTML='<div class="verdict v-none">'+esc(chkEnt.std)+' sets no chemistry limits for '+esc(chkRow.g)+'. Strength from the pasted cert text:</div>'+mh;}return;}
   let fails=0,checked=0,notEntered=0;const rows=[];const repLines=[];const enteredVals={};const missing=[];
   chkFields().forEach(fd=>{
     const e=fd.e, v=fd;
@@ -2901,7 +3006,7 @@ $("chkRun").addEventListener("click",()=>{
   $("chkOut").innerHTML=verdict+"<table><tr><th>Element</th><th class='num'>Spec</th><th class='num'>Cert value %</th><th>Result</th></tr>"+rows.join("")+"</table>"+
     ($("chkBasis").value==="product"?'<p class="note">Checked against heat-analysis ranges. For product analysis, confirm the general-requirements standard\'s permitted variations before rejecting on a marginal miss.</p>':"")+
     '<button class="copybtn" id="chkCopy">Copy check result</button> <button class="copybtn" id="chkReport">Copy check summary</button>'+
-    ' <button class="copybtn" id="chkMatchAll">Find grades matching these values →</button>';
+    ' <button class="copybtn" id="chkMatchAll">Find grades matching these values →</button>'+certMechHTML($("chkPaste").value,chkRow);
   /* 2026-11-15 · from a Verify result straight to Identify: the values just
      checked are tested against every grade (e.g. a "4140" cert failing Mn
      shows which grades the heat actually fits). */

@@ -494,3 +494,23 @@ Cache materials-atlas-v76-audit.
 - 1020 HR/CD Alro typicals: 55/30/25/HB 137 and 64/54/24/HB 126 match the published dataset. HB 137 is high for 55 ksi, but it is what the source prints, and the row is labeled TYPICAL.
 
 Tests: e2e 61/61. Cache materials-atlas-v79-verify.
+
+## Round 23 (2026-11-16): Compare search + cert reader fixes from a real 80-55-06 cert
+**Compare tab:** each slot (A, B) now has a search box above its list. It uses the Browse matcher (grade, UNS, EN number, JIS, standard, alias, typo-tolerant) and the Browse ranking (exact grade first, then starts-with, then OFFICIAL alias, then other alias, text and fuzzy). The best match is auto-selected, and a count line says how many matched or what to try when nothing does. "+ Compare" from Browse clears an active compare search first, so the chosen row always exists in the list.
+
+**Cert reader** (prompted by Sino Industries cert 24050501, 80-55-06, JD300117):
+1. **Value row up to 5 rows below the header.** Spreadsheet-style certs put a "%" units row and printed "min./max." rows between the C/Si/Mn header and the values. Rows starting "min"/"max" are never paired, and pairing stops at the next symbol header.
+2. **Strength headers** (YIELD, TENSILE, ELONGATION, REDUCTION, HARDNESS, IMPACT) are paired by x-position the same way.
+3. **"Scrambled PDF" false alarm fixed.** Only codes 256–0x1FFF or control codes mark a glyph-coded font, so fullwidth "（PC）" no longer trips it. Do not add an "ASCII present" test: it broke the Spectrum C86300 Calibri cert in testing, and I reverted it.
+4. **New certMechHTML:** strength on the cert is compared with the selected row's minimums.
+   - SPEC rows only; TYP/MFR rows are shown for reference.
+   - Units come from the cert ((MPa), N/mm², ksi, psi). With no unit printed, nothing is scored.
+   - Hardness is reported, not scored.
+   - A ±0.5 rounding allowance covers certs that print 380 for a 379 MPa minimum.
+   - The block appears on file load, after a chemistry check, and for chemistry-not-specified grades.
+5. **ASTM A536 grades** are scored from the grade name (Table 1: tensile-yield-elongation in ksi-ksi-%), because the A536 rows' other data is Dura-Bar MFR. The basis line says so.
+6. **For grades with no chemistry spec (A536 etc.),** the message now says the standard sets no chemistry and lists what the cert reported, for the record.
+
+**Result on the real cert:** C 3.68 / Si 2.61 / Mn 0.32 / P 0.026 / S 0.011 read correctly. Yield 392 ≥ 379, tensile 586 ≥ 552 and elongation 11 ≥ 6 all PASS. HB 185 is reported (Dura-Bar typical range 187–255; A536 sets none).
+
+**Tests:** e2e 61/61, the cert batch is unchanged, and the Spectrum C86300 cert still reads and passes all 8 elements. Cache materials-atlas-v81-mechcheck.

@@ -514,3 +514,9 @@ Tests: e2e 61/61. Cache materials-atlas-v79-verify.
 **Result on the real cert:** C 3.68 / Si 2.61 / Mn 0.32 / P 0.026 / S 0.011 read correctly. Yield 392 ≥ 379, tensile 586 ≥ 552 and elongation 11 ≥ 6 all PASS. HB 185 is reported (Dura-Bar typical range 187–255; A536 sets none).
 
 **Tests:** e2e 61/61, the cert batch is unchanged, and the Spectrum C86300 cert still reads and passes all 8 elements. Cache materials-atlas-v81-mechcheck.
+
+## Round 24 (2026-11-16): update-on-first-reload
+- Harsh's phone kept showing the old Compare tab after round 23 because the cache-first service worker served the old index.html.
+- sw.js: the page (navigation, index.html, manifest) is now NETWORK-FIRST with cache:'no-store'. Online, an update shows on the first reload. The cached copy is used only offline. pdf.js, fonts and icons stay cache-first.
+- Tested: a changed index.html shows after one reload; offline reload still loads 343 rows. e2e 61/61.
+- Cache materials-atlas-v82-netfirst.

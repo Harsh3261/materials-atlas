@@ -457,3 +457,11 @@ Cache materials-atlas-v75-wave1.
 **Counts unchanged:** R10, 343 rows, 1140 limits. Please re-pin DATA and CHKRULES hashes.
 
 Cache materials-atlas-v76-audit.
+
+## Round 21 (2026-11-16): design polish (layout only, no data or behaviour change)
+- **Find-by-strength row:** the five filter fields are now full-width grid cells (5 across on desktop, 3 on tablet, 2 on phone). Before, the inputs were squeezed and their text was cut off.
+- **Family chips** now use the site font (they were falling back to the browser's default button font).
+- **Chemistry-only rows** (SAE J403/J404 promotions, S45C, S35C, Nitralloy 135M): the card summary shows the chemistry limits line and a CHEMISTRY ONLY badge, in place of four empty strength fields and a SPEC MIN badge.
+- **Footer** row count corrected from 301 to 343.
+- **Phone:** the One Rule box is slightly smaller.
+- Tests: e2e 61/61, regression suite 0 errors. Cache materials-atlas-v77-polish.

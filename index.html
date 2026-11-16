@@ -240,6 +240,22 @@ table.ndt{font-size:13px}table.ndt td{vertical-align:top}
 .sb-none{font-size:12px;color:var(--muted)}
 @keyframes sbGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media (prefers-reduced-motion: reduce){.sb-fill{animation:none}}
+
+details.card .props-chem{display:block}
+details.card .props-chem .chemline{display:block;font-family:var(--mono);font-size:13px;font-weight:500;line-height:1.5;color:var(--ink)}
+/* ---- Round 21 design polish (layout only; no data or behaviour change) ---- */
+.chips button{font-family:var(--sans);letter-spacing:.01em}
+.revsearch{align-items:end}
+.revsearch>.controls{display:block}
+.revsearch>.controls>div{display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.revsearch>.controls label{min-height:0;line-height:1.3}
+.revsearch>.controls input,.revsearch>.controls select{width:100%;min-width:0}
+@media(min-width:760px) and (max-width:1099px){.revsearch{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){
+  .rule{font-size:11.5px;line-height:1.5;padding:10px 12px}
+  .revsearch{grid-template-columns:1fr 1fr}
+  .revsearch>.controls:first-child{grid-column:1 / -1}
+}
 </style>
 <style id="v62">
 /* ===== v62 EVOLVE polish — additive layer. The v61 sheet above is kept byte-identical
@@ -498,7 +514,7 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
       <select id="sortSel"><option value="grade">Grade A–Z</option><option value="yield-desc">Yield, high → low</option><option value="yield-asc">Yield, low → high</option><option value="tensile-desc">Tensile, high → low</option></select></div>
   </div>
   <div class="revsearch">
-    <div class="controls" style="margin:0"><div><label for="minUnit">Reverse search — strength units</label>
+    <div class="controls" style="margin:0"><div><label for="minUnit">Find by strength — units</label>
       <select id="minUnit"><option value="mpa">MPa</option><option value="ksi">ksi</option></select></div></div>
     <div class="controls" style="margin:0"><div><label for="minYield" id="minYieldLbl">…yield at least (MPa)</label>
       <input id="minYield" type="number" inputmode="decimal" placeholder="e.g. 700"></div></div>
@@ -506,8 +522,8 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
       <input id="minTensile" type="number" inputmode="decimal" placeholder="e.g. 1000"></div></div>
     <div class="controls" style="margin:0"><div><label for="elSel">…containing element</label>
       <select id="elSel"><option value="">Any element</option></select></div></div>
-    <div class="controls" style="margin:0"><div><label for="elMin">…at least (% by weight)</label>
-      <input id="elMin" type="number" inputmode="decimal" step="0.01" placeholder="e.g. 0.9 for Cr in 4140"></div></div>
+    <div class="controls" style="margin:0"><div><label for="elMin">…at least (wt %)</label>
+      <input id="elMin" type="number" inputmode="decimal" step="0.01" placeholder="e.g. 0.9"></div></div>
   </div>
   <div class="chips" id="famChips" aria-label="Filter by material family"></div>
   <p class="count" id="count"></p>
@@ -689,7 +705,7 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
      constant in the script; the © line and maker's mark stay verbatim. -->
 <footer>
-  <p>Materials Atlas — 301 verified grade-condition rows. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
+  <p>Materials Atlas — 343 grade-condition rows, two-source verified or flagged. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
   <p class="tuesday">Below a spec minimum is a rejection. Below a typical is just a Tuesday.</p>
   <p class="datarev">DATA REV 2026-11-16 R10 · 343 GRADE-CONDITION ROWS · 1140 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5</p>
   <p class="stamp">BUILT BY HARSH PATEL · WITH SATUREDAY</p>
@@ -2177,16 +2193,18 @@ function cardHTML(r,i,info){
   const yTxt=r.ym==null?"—":("<b>"+esc(r.ym)+"</b> MPa"+(r.yk!=null?" · "+esc(r.yk)+" ksi":""));
   const tTxt=r.tm==null?"—":("<b>"+esc(r.tm)+"</b> MPa"+(r.tk!=null?" · "+esc(r.tk)+" ksi":""));
   const chemRows=Object.keys(r.chemMap).length?Object.entries(r.chemMap).map(([e,v])=>"<tr><td><strong>"+e+"</strong></td><td class='num'>"+fmtRange(v)+"</td></tr>").join(""):"<tr><td colspan='2'>Not specified by the governing standard — mechanicals define this grade. The chemistry checker will not pass/fail it.</td></tr>";
+  const chemOnly=r.ym==null&&r.tm==null&&(r.el==null||r.el==="—")&&(r.hd==null||r.hd==="—")&&Object.keys(r.chemMap).length>0;
   const A=aliasOf(r);
   const desig=A?[A[0]?"UNS "+esc(A[0]):"",A[1]?"EN "+esc(A[1]):"",A[2]?esc(A[2]):"",A[3]?"JIS "+esc(A[3]):""].filter(Boolean).join(" · "):"";
   const aliasLine='<h4>Cross-reference designations</h4><p class="note">'+(desig?desig:"None verified")+(A&&A[4]?" "+scopedBadge(r,A):" — no two-source-verified cross-system designation for this grade")+'</p>';
   const viaBadge=(info&&info.via)?' <span class="badge b-tag">MATCHED VIA '+esc(info.via.toUpperCase())+(info.fuzzy?" (APPROX)":"")+'</span>':"";
   return '<details class="card"><summary><span class="fam" data-fam="'+esc(r.f)+'">'+esc(r.f)+" · "+esc(r.form)+'</span>'+
-    '<span class="ghead"><span class="grade">'+esc(r.g)+'</span><span class="cond">'+esc(r.c)+'</span>'+BADGE[r.st]+(r.flag?' <span class="badge b-typ">'+esc(r.flag)+'</span>':'')+(r.tag?' <span class="badge b-tag">'+esc(r.tag)+'</span>':'')+viaBadge+'</span>'+
+    '<span class="ghead"><span class="grade">'+esc(r.g)+'</span><span class="cond">'+esc(r.c)+'</span>'+(chemOnly?'<span class="badge b-tag">CHEMISTRY ONLY</span>':BADGE[r.st])+(r.flag?' <span class="badge b-typ">'+esc(r.flag)+'</span>':'')+(r.tag?' <span class="badge b-tag">'+esc(r.tag)+'</span>':'')+viaBadge+'</span>'+
+    (chemOnly?'<span class="props props-chem"><span><span class="lbl">Chemistry limits (wt %) — the standard sets no strength values</span><b class="chemline">'+esc(r.chem)+'</b></span></span></summary>':
     '<span class="props"><span><span class="lbl">Yield ('+esc(r.yb)+')</span>'+yTxt+'</span>'+
     '<span><span class="lbl">Tensile</span>'+tTxt+'</span>'+
     '<span><span class="lbl">Elong.</span><b>'+esc(r.el==null?"—":r.el)+'</b></span>'+
-    '<span><span class="lbl">Hardness</span><b>'+esc(r.hd)+'</b></span></span></summary>'+
+    '<span><span class="lbl">Hardness</span><b>'+esc(r.hd)+'</b></span></span></summary>')+
     '<div class="detail"><h4>Governing standard</h4><p class="note">'+esc(r.s)+'</p>'+
     '<h4>Near-equivalents (not identical)</h4><p class="note">'+esc(r.eq)+'</p>'+aliasLine+
     '<h4>Chemistry (% by weight)</h4><table>'+chemRows+'</table>'+

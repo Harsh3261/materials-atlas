@@ -404,3 +404,35 @@ Cache materials-atlas-v73-bronze.
 - Synthetic in-spec certs for all four new grades read and pass.
 
 Cache materials-atlas-v74-bronze2.
+
+## Round 19 (2026-11-16): DATA CHANGE, wave 1 (11 new grades + 27 chemistry-only grades made selectable)
+**New grades** (in DATA, EDITIONS and CHEMROWS; CHEMSTD = the standard name; ALIASES only where a UNS or EN number was two-source confirmed):
+- **S355J2** (EN 10025-2:2019, ≤16 mm): ReH 355, Rm 470–630, A 22 %, Charpy-V 27 J at −20 °C.
+  - **P/S NOT loaded:** mills quote 0.025 or 0.030.
+  - CEV is in the note only.
+- **2205 / S32205** (A479-23, not A276): 65/95 ksi, 25 %, HBW ≤290.
+- **15-5 PH H1025** (A564-19a): 145/155 ksi, 12 %, HBW ≥331 / HRC ≥35, RA 45 %.
+- **A105:** 36/70 ksi, HBW ≤187.
+  - CHKRULES (new) score three rules: Mn C-dependent max (1.05 + 0.06 per 0.01 C below 0.35, capped at 1.35), Cu+Ni+Cr+Mo+V ≤1.00 and Cr+Mo ≤0.32.
+  - That is why the CHEMROWS Mn row has a min only.
+  - Limits come from the A105-05 text, and current-edition secondary sources agree. A newer-edition hardness minimum (137 HB) is NOT loaded because only one source gives it.
+- **Nitralloy 135M** (AMS 6470): chemistry only. Mechanicals are null because sources disagree.
+- **SAE J524:** yield null, because the sources conflict.
+- **SAE J525:** 25/45 ksi, 35 %, HRB ≤65. The second mechanical source is weak but agrees exactly.
+- **S45C and S35C** (JIS G4051): chemistry only, from 2009-edition mill tables. The current edition is 2023. Ni+Cr ≤0.35 is not scored because its scope is disputed.
+- **SS400** (JIS G3101): P/S plus 245 / 400–510 MPa at ≤16 mm.
+- **Q235B** (GB/T 700-2006, ≤16 mm).
+
+**Promoted:** 27 existing SAE J403/J404 CHEMROWS keys had no DATA row, so they could not be picked in Check, Browse or Compare: 1010 1015 1022 1025 1030 1035 1040 1050 1117 1144 1215 4142 4150 4320 4620 5120 5130 5140 5150 5160 6150 8617 8622 8640 8720 8822 9260.
+- They now have chemistry-only DATA rows (mechanicals null, note says so).
+- Their chemistry is unchanged.
+
+**Held back** (disagreeing sources or only one): SCM440, SCM435 (Mn 0.60–0.90 vs 0.60–0.85), GB 45, Q355B.
+
+**Scope note from Harsh:** North America first. Further worldwide (JIS/GB/EN) research only where needed, and always verified.
+
+**Counts:** DATAREV is now R10, 343 rows, 1140 chemistry limits. Please re-pin all golden hashes, including CHKRULES.
+
+**Tests:** smoke, t15–t19 and fulltest pass with 0 JS errors. The cert batch is unchanged. Synthetic pass/fail certs for all new grades behave as expected (A105 fail case trips all three rules).
+
+Cache materials-atlas-v75-wave1.

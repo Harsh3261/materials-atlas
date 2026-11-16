@@ -465,3 +465,32 @@ Cache materials-atlas-v76-audit.
 - **Footer** row count corrected from 301 to 343.
 - **Phone:** the One Rule box is slightly smaller.
 - Tests: e2e 61/61, regression suite 0 errors. Cache materials-atlas-v77-polish.
+
+## Round 22 (2026-11-16): second verification pass + footer credit
+**Footer:** "with Satureday" removed from the Atlas and SPC Tools footers and from the page comments, at Harsh's request.
+
+**Deep consistency checks over all 343 rows** (tools/deep.py):
+- YS ≤ TS on every row.
+- Hardness agrees with tensile (TS ≈ 3.45×HB, all steel typicals within 0.80–1.02).
+- Elongation is plausible on every row.
+- The SAE number matches the carbon range.
+- UNS G-numbers match SAE grades.
+- Same SAE grade has identical chemistry across J403/J404/A519/A311.
+- No sum of minimums exceeds 100 %, and no element appears twice with different limits.
+- Strength never rises with section size, except EN 755-2 6082 T6 (5–25 mm wall is higher than ≤5 mm). That is what the standard prints, so it is left as is.
+
+**Fixed:** A514 Grades E, P and Q each had two rows with the same condition text ("Quenched and tempered") and different values. The condition now names the thickness band: t ≤2½ in is 100/110–130 ksi with 18 %; over 2½–6 in is 90/100–130 ksi with 16 %. Values unchanged.
+
+**Independent re-check of a sample (about 40 rows across 15 standards)** against fresh sources and the standard texts. All agree:
+- B7 (three size bands), B8M Class 1 and Class 2 (four bands), 2H, A574 (HRC 39–44 / 37–44; A574-17 and later match the row, while A574-00 printed 45 as the upper limit).
+- ISO 898-1 8.8 (both bands), 10.9 and 12.9.
+- 304, 304L, 316L and 410 (A240 and A276).
+- 17-4 H900 and H1150.
+- 42CrMo4 +QT (all five bands).
+- 40Cr; A36; A572 Gr 50; 350W; A513 DOM 1026 (as drawn and SR).
+- E355 +SR and +N.
+- 6061 (B209 and B221); 7075-T6 0.040–0.125 (78/68/9, confirmed against the B209 table reproduction).
+- C95400 (as cast and HT), C90500, A356.0-T6.
+- 1020 HR/CD Alro typicals: 55/30/25/HB 137 and 64/54/24/HB 126 match the published dataset. HB 137 is high for 55 ksi, but it is what the source prints, and the row is labeled TYPICAL.
+
+Tests: e2e 61/61. Cache materials-atlas-v79-verify.

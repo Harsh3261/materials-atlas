@@ -610,3 +610,13 @@ Same `<style id="titanium">` layer, colours only: base #08070A, panels #141017 /
 - **Hardness:** reviewed every steel row with a Brinell-only value. Only one is in the HRC range without an HRC figure: 4140 HTSR "HB 311–331" now reads "HB 311–331 (≈ HRC 33–35.5)" (ASTM E140 Table 1, interpolated: 301→32, 318→34, 335→36; same basis as the existing 4130/4140/4340 "≈ HRC" rows). Display string only. **Deliberately not added:** HRC on annealed caps (HB ≤229 is at/below HRC 20, where the C scale is not valid) and any HB→HRB figure (E140 Table 2 uses a different Brinell basis than the app's HBW column, ~3 HRB apart at HB 137). Non-steel families untouched (E140 steel tables do not apply).
 - **Start here** opens on the first visit and collapses to its title afterwards (localStorage `atlas.startSeen`, try/catch; tap or Enter/Space on the title toggles). Small script before </body>.
 - Cache materials-atlas-v88-start.
+
+## Round 31 (2026-11-16): history, reports and SPC hand-off (Harsh's list)
+All in one new script block before </body> plus CSS in the theme layer; no DATA, CHEMROWS or checker logic changed. localStorage keys: `atlas.recent` (8 keys, g␁c␁s), `atlas.checks` (≤200 records), `atlas.ref` (checked-by name).
+- **Recently viewed:** cards now carry `data-i` (DATA index). Opening a card records it; chips above the results re-search the grade and open that card. Stale keys (row no longer in DATA) are dropped.
+- **Save this check:** after chkRun a save box (heat, PO, supplier, checked by) appears under the result. A record stores the check lines, disposition (parsed from buildQualReport, so the CONFORMS / NOT FULLY CHECKED / DOES NOT CONFORM honesty rule is unchanged), entered values, the limits in force and DATAREV. invalidateCheck still wipes the box, so a stale result can't be saved.
+- **Saved checks panel** (Check tab) grouped by grade; each record has Report / PDF and Delete.
+- **Report / PDF:** fills #printReport and prints with `body.print-report` (everything else hidden, white page, signature line, chemistry-only disclaimer, DEMO banner when relevant).
+- **Hand-off:** with ≥2 non-demo saved checks of one grade, choose an element → opens `../spc-tools/index.html#import=<base64 JSON {name,data,lsl,usl,labels}>`, oldest first; LSL/USL = that grade's limits for the element.
+- Tested (Chrome, 390 px): recent chips, 3 saves, report PDF (1 page), edit-after-run removes the save box, hand-off opens SPC with values and limits; 0 JS errors on every tab.
+- Cache materials-atlas-v89-history.

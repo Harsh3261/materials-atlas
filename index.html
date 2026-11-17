@@ -557,6 +557,46 @@ a{color:var(--teal)}
 .starthere.sh-min .sh-title{margin:0}
 .starthere.sh-min .sh-title::after{content:" ▸  tap to show the shortcuts";font-family:var(--sans);font-weight:400;font-size:13px;letter-spacing:0;text-transform:none;-webkit-text-fill-color:var(--muted);color:var(--muted)}
 .starthere.sh-min .sh-routes{display:none}
+/* ===== 2026-11-16 history + report ===== */
+.recent{margin:4px 0 10px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.recent-lbl{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.recent-chips{display:flex;flex-wrap:wrap;gap:8px}
+.recent-chips button{font:inherit;font-size:13.5px;min-height:40px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer}
+.recent-chips button b{color:var(--teal)}
+.recent-chips .recent-clear{color:var(--muted);background:transparent}
+.savebox{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--panel2)}
+.savebox-t{margin:0 0 8px;font-weight:700}
+.savegrid{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:6px}
+@media(min-width:760px){.savegrid{grid-template-columns:repeat(4,1fr)}}
+.savegrid label{font-size:12px;color:var(--muted);display:block}
+.savegrid input{width:100%;margin-top:4px;padding:10px;font-size:16px;background:var(--panel);color:var(--ink);border:1px solid var(--field)}
+.svgroup{border-top:1px solid var(--hair);padding:10px 0}
+.svg-h{margin:0 0 6px}.svg-h span{color:var(--muted);font-size:13px}
+.svrow{display:grid;gap:4px 10px;grid-template-columns:1fr;padding:8px 0;border-bottom:1px dashed var(--hair);font-size:14px}
+@media(min-width:760px){.svrow{grid-template-columns:150px 1fr auto auto;align-items:center}}
+.svw{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.svd{font-weight:700;font-size:13px}.svd.good{color:var(--green)}.svd.bad{color:var(--red)}.svd.warn{color:var(--amber)}
+.svb{display:flex;gap:6px}.svb .copybtn{margin:0;min-height:40px}
+.svspc{margin-top:8px;font-size:14px}.svspc select{margin-left:6px;padding:6px 8px;background:var(--panel2);color:var(--ink);border:1px solid var(--field);border-radius:6px}
+#printReport{display:none}
+@media print{
+  body.print-report > *:not(#printReport){display:none!important}
+  body.print-report #printReport{display:block!important}
+  html,body.print-report{background:#fff!important;color:#000}
+  .pr{font-family:Arial,Helvetica,sans-serif;color:#000;font-size:11pt}
+  .pr *{font-family:Arial,Helvetica,sans-serif!important;text-transform:none!important;letter-spacing:0!important}
+  @page{margin:14mm}
+  .pr h1{font-size:18pt;margin:0;color:#000;-webkit-text-fill-color:#000;background:none;text-transform:none}
+  .pr-sub{margin:2px 0 10px;font-size:8.5pt;color:#444}
+  .pr-warn{border:2px solid #000;padding:6px;font-weight:700}
+  .pr table{width:100%;border-collapse:collapse;margin:8px 0}
+  .pr th,.pr td{border:1px solid #888;padding:5px 7px;text-align:left;color:#000;background:#fff!important;font-size:10pt}
+  .pr th{background:#eee!important;font-weight:700}
+  .pr td.f{font-weight:700}
+  .pr-disp{font-size:12.5pt;margin:12px 0}
+  .pr-small{font-size:8.5pt;color:#333}
+  .pr-sign td{border:none;padding-top:22px}
+}
 /* sticky strips: translucent glass instead of a flat black band */
 #view-browse > .controls,#view-compare .grid2{background:rgba(8,7,10,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 @media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(8,7,10,.0)}}
@@ -609,6 +649,7 @@ a{color:var(--teal)}
       <input id="elMin" type="number" inputmode="decimal" step="0.01" placeholder="e.g. 0.9"></div></div>
   </div>
   <div class="chips" id="famChips" aria-label="Filter by material family"></div>
+  <div class="recent" id="recentBox" hidden><span class="recent-lbl">Recently viewed</span><div class="recent-chips" id="recentChips"></div></div>
   <p class="count" id="count"></p>
   <p class="learnhint" id="learnHint" hidden></p>
   <div id="results"></div>
@@ -680,6 +721,11 @@ a{color:var(--teal)}
     <button class="copybtn" id="idRun">Identify material</button>
     <div id="idOut" aria-live="polite"></div>
     </div><!-- /identifyMode -->
+  </div>
+  <div class="panel" id="savedPanel">
+    <h2>Saved checks — on this device</h2>
+    <p class="hint">After you run a check, press <strong>Save this check</strong> under the result. Saved checks stay in this browser on this device only (nothing is uploaded) and are lost if you clear the browser's site data. Open any of them as a printable report (choose "Save as PDF" in the print dialog). With two or more saved checks of the same grade you can send one element's values to SPC Tools as a run chart.</p>
+    <div id="savedList"></div>
   </div>
   <div class="panel" id="cePanel">
     <h2>Step 2 · Carbon equivalent — computed from Step 1</h2>
@@ -2299,7 +2345,7 @@ function cardHTML(r,i,info){
   const desig=A?[A[0]?"UNS "+esc(A[0]):"",A[1]?"EN "+esc(A[1]):"",A[2]?esc(A[2]):"",A[3]?"JIS "+esc(A[3]):""].filter(Boolean).join(" · "):"";
   const aliasLine='<h4>Cross-reference designations</h4><p class="note">'+(desig?desig:"None verified")+(A&&A[4]?" "+scopedBadge(r,A):" — no two-source-verified cross-system designation for this grade")+'</p>';
   const viaBadge=(info&&info.via)?' <span class="badge b-tag">MATCHED VIA '+esc(info.via.toUpperCase())+(info.fuzzy?" (APPROX)":"")+'</span>':"";
-  return '<details class="card"><summary><span class="fam" data-fam="'+esc(r.f)+'">'+esc(r.f)+" · "+esc(r.form)+'</span>'+
+  return '<details class="card" data-i="'+i+'"><summary><span class="fam" data-fam="'+esc(r.f)+'">'+esc(r.f)+" · "+esc(r.form)+'</span>'+
     '<span class="ghead"><span class="grade">'+esc(r.g)+'</span><span class="cond">'+esc(r.c)+'</span>'+(chemOnly?'<span class="badge b-tag">CHEMISTRY ONLY</span>':BADGE[r.st])+(r.flag?' <span class="badge b-typ">'+esc(r.flag)+'</span>':'')+(r.tag?' <span class="badge b-tag">'+esc(r.tag)+'</span>':'')+viaBadge+'</span>'+
     (chemOnly?'<span class="props props-chem"><span><span class="lbl">Chemistry limits (wt %) — the standard sets no strength values</span><b class="chemline">'+esc(r.chem)+'</b></span></span></summary>':
     '<span class="props"><span><span class="lbl">Yield ('+esc(r.yb)+')</span>'+yTxt+'</span>'+
@@ -3661,6 +3707,137 @@ var seen=false;try{seen=localStorage.getItem("atlas.startSeen")==="1";localStora
 set(seen);
 function tog(){set(!box.classList.contains("sh-min"));}
 t.addEventListener("click",tog);t.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}});})();
+</script>
+<div id="printReport" aria-hidden="true"></div>
+<script>
+/* ===== 2026-11-16 · on-device history: recently viewed grades, saved cert checks,
+   printable (PDF) report and the hand-off to SPC Tools. Everything is kept in
+   localStorage on this device; nothing is sent anywhere. Failures (private mode,
+   storage full) degrade silently to "not saved" with a message. ===== */
+(function(){
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
+          set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}};
+const H=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const keyOf=r=>r.g+"\u0001"+r.c+"\u0001"+r.s;
+const findRow=k=>{const i=DATA.findIndex(r=>keyOf(r)===k);return i<0?null:i;};
+
+/* ---- recently viewed ---- */
+function drawRecent(){
+  const list=LS.get("atlas.recent",[]).filter(k=>findRow(k)!==null);
+  const box=$("recentBox");if(!box)return;
+  box.hidden=!list.length;
+  $("recentChips").innerHTML=list.map(k=>{const r=DATA[findRow(k)];return '<button type="button" data-k="'+H(k)+'"><b>'+H(r.g)+'</b> '+H(r.c.length>34?r.c.slice(0,33)+"…":r.c)+'</button>';}).join("")+
+    '<button type="button" class="recent-clear" id="recentClear">Clear</button>';
+}
+function addRecent(i){const k=keyOf(DATA[i]);let l=LS.get("atlas.recent",[]).filter(x=>x!==k);l.unshift(k);LS.set("atlas.recent",l.slice(0,8));drawRecent();}
+$("results").addEventListener("toggle",ev=>{const d=ev.target;if(d.matches&&d.matches("details.card[data-i]")&&d.open)addRecent(+d.dataset.i);},true);
+$("recentBox").addEventListener("click",ev=>{
+  const b=ev.target.closest("button");if(!b)return;
+  if(b.id==="recentClear"){LS.set("atlas.recent",[]);drawRecent();return;}
+  const i=findRow(b.dataset.k);if(i===null)return;
+  $("q").value=DATA[i].g;$("q").dispatchEvent(new Event("input",{bubbles:true}));
+  setTimeout(()=>{const c=document.querySelector('#results details.card[data-i="'+i+'"]');
+    if(c){c.open=true;c.scrollIntoView({block:"start",behavior:"smooth"});}},60);
+});
+drawRecent();
+
+/* ---- saved cert checks ---- */
+const REF=LS.get("atlas.ref",{by:""});
+function dispositionOf(txt){const m=/Disposition: ([^\n]*)/.exec(txt);return m?m[1]:"";}
+function enteredValues(){const v={};chkFields().forEach(fd=>{const inp=$("in-"+fd.e);if(!inp)return;const raw=inp.value.trim(),x=parseFloat(raw);if(raw!==""&&!isNaN(x))v[fd.e]=x;});return v;}
+function limitsNow(){const o={};chkFields().forEach(fd=>{if(!fd.rem)o[fd.e]=[fd.min==null?null:fd.min,fd.max==null?null:fd.max];});return o;}
+function saveBox(){
+  return '<div class="savebox" id="saveBox"><p class="savebox-t">Save or print this check</p><div class="savegrid">'+
+    '<label>Heat / lot no.<input id="svHeat" autocomplete="off"></label>'+
+    '<label>PO no.<input id="svPo" autocomplete="off"></label>'+
+    '<label>Supplier / mill<input id="svSup" autocomplete="off"></label>'+
+    '<label>Checked by<input id="svBy" autocomplete="off" value="'+H(REF.by||"")+'"></label></div>'+
+    '<button type="button" class="copybtn" id="svSave">Save this check</button> <button type="button" class="copybtn" id="svPrint">Report / PDF</button>'+
+    '<p class="note" id="svMsg" aria-live="polite"></p></div>';
+}
+function snapshot(){
+  if(!lastCheck||!chkRow)return null;
+  const by=$("svBy").value.trim();REF.by=by;LS.set("atlas.ref",REF);
+  const txt=buildQualReport();
+  return {id:Date.now().toString(36),when:new Date().toISOString(),key:keyOf(chkRow),g:chkRow.g,c:chkRow.c,s:chkRow.s,
+    basis:$("chkBasis").value,heat:$("svHeat").value.trim(),po:$("svPo").value.trim(),sup:$("svSup").value.trim(),by:by,
+    lines:lastCheck.lines,demo:!!lastCheck.demo,disp:dispositionOf(txt),vals:enteredValues(),lim:limitsNow(),rev:DATAREV,
+    missing:lastCheck.missing||[]};
+}
+$("chkRun").addEventListener("click",()=>{
+  setTimeout(()=>{
+    if(!lastCheck||!chkRow||$("saveBox"))return;
+    $("chkOut").insertAdjacentHTML("beforeend",saveBox());
+    $("svSave").addEventListener("click",()=>{
+      const rec=snapshot();if(!rec){$("svMsg").textContent="The check changed after it was run. Run it again, then save.";return;}
+      const all=LS.get("atlas.checks",[]);all.unshift(rec);
+      if(LS.set("atlas.checks",all.slice(0,200))){$("svMsg").textContent="Saved on this device ("+new Date(rec.when).toLocaleString()+").";drawSaved();}
+      else $("svMsg").textContent="Could not save: this browser is blocking storage (private mode or storage full).";
+    });
+    $("svPrint").addEventListener("click",()=>{const rec=snapshot();if(!rec){$("svMsg").textContent="The check changed after it was run. Run it again first.";return;}printCheck(rec);});
+  },0);
+});
+function fmtWhen(iso){const d=new Date(iso);return d.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"})+" "+d.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});}
+function dispClass(d){return /DOES NOT/.test(d)?"bad":/^CONFORMS/.test(d)?"good":"warn";}
+function drawSaved(){
+  const all=LS.get("atlas.checks",[]);const out=$("savedList");if(!out)return;
+  if(!all.length){out.innerHTML='<p class="empty">No saved checks yet.</p>';return;}
+  const groups={};all.forEach(r=>{(groups[r.key]=groups[r.key]||[]).push(r);});
+  let h="";
+  Object.values(groups).forEach(g=>{
+    const r0=g[0];
+    h+='<div class="svgroup"><p class="svg-h"><b>'+H(r0.g)+'</b> · '+H(r0.c)+' <span>'+H(r0.s)+' · '+g.length+' saved</span></p>';
+    h+=g.map(r=>'<div class="svrow"><span class="svw">'+H(fmtWhen(r.when))+'</span><span>'+(r.heat?"Heat "+H(r.heat):"No heat no.")+(r.po?" · PO "+H(r.po):"")+(r.demo?" · DEMO VALUES":"")+'</span>'+
+      '<span class="svd '+dispClass(r.disp)+'">'+H(r.disp||"—")+'</span>'+
+      '<span class="svb"><button type="button" class="copybtn" data-act="print" data-id="'+r.id+'">Report / PDF</button><button type="button" class="copybtn" data-act="del" data-id="'+r.id+'">Delete</button></span></div>').join("");
+    const real=g.filter(r=>!r.demo);
+    const els=[...new Set(real.flatMap(r=>Object.keys(r.vals||{})))].filter(e=>real.filter(r=>e in r.vals).length>=2);
+    if(els.length)h+='<div class="svspc"><label>Trend one element across these heats in SPC Tools <select data-key="'+H(r0.key)+'">'+els.map(e=>'<option>'+H(e)+'</option>').join("")+'</select></label> <button type="button" class="copybtn" data-act="spc" data-key="'+H(r0.key)+'">Open in SPC Tools →</button></div>';
+    h+='</div>';
+  });
+  out.innerHTML=h;
+}
+$("savedList").addEventListener("click",ev=>{
+  const b=ev.target.closest("button[data-act]");if(!b)return;
+  const all=LS.get("atlas.checks",[]);
+  if(b.dataset.act==="del"){if(!confirmDel())return;LS.set("atlas.checks",all.filter(r=>r.id!==b.dataset.id));drawSaved();return;}
+  if(b.dataset.act==="print"){const r=all.find(x=>x.id===b.dataset.id);if(r)printCheck(r);return;}
+  if(b.dataset.act==="spc"){
+    const sel=b.parentElement.querySelector("select"),el=sel.value;
+    const g=all.filter(r=>r.key===b.dataset.key&&!r.demo&&r.vals&&el in r.vals).sort((a,c)=>a.when<c.when?-1:1);
+    const lim=(g[g.length-1].lim||{})[el]||[null,null];
+    const pay={name:g[0].g+" "+el+" % — "+g.length+" saved cert checks (oldest first), from Materials Atlas",
+      data:g.map(r=>r.vals[el]),lsl:lim[0],usl:lim[1],labels:g.map(r=>r.heat||fmtWhen(r.when))};
+    const enc=btoa(unescape(encodeURIComponent(JSON.stringify(pay))));
+    window.open("../spc-tools/index.html#import="+enc,"_blank","noopener");
+  }
+});
+function confirmDel(){try{return window.confirm("Delete this saved check from this device?");}catch(e){return true;}}
+drawSaved();
+
+/* ---- printable report ---- */
+function printCheck(r){
+  const rows=r.lines.map(x=>'<tr><td>'+H(x.el)+'</td><td>'+H(x.val)+'</td><td>'+H(x.spec)+'</td><td class="'+(/FAIL/.test(x.res)?"f":/PASS/.test(x.res)?"p":"")+'">'+H(x.res)+'</td></tr>').join("");
+  $("printReport").innerHTML='<div class="pr">'+
+    '<h1>Chemistry check report</h1><p class="pr-sub">Materials Atlas · '+H(r.rev||DATAREV)+'</p>'+
+    (r.demo?'<p class="pr-warn">DEMO / EXAMPLE VALUES — NOT A REAL CERT</p>':'')+
+    '<table class="pr-meta"><tr><th>Grade</th><td>'+H(r.g)+'</td><th>Date checked</th><td>'+H(fmtWhen(r.when))+'</td></tr>'+
+    '<tr><th>Condition</th><td>'+H(r.c)+'</td><th>Standard</th><td>'+H(r.s)+'</td></tr>'+
+    '<tr><th>Heat / lot no.</th><td>'+H(r.heat||"—")+'</td><th>PO no.</th><td>'+H(r.po||"—")+'</td></tr>'+
+    '<tr><th>Supplier / mill</th><td>'+H(r.sup||"—")+'</td><th>Analysis</th><td>'+(r.basis==="product"?"Product (check)":"Heat (ladle / cast)")+'</td></tr></table>'+
+    '<table class="pr-res"><tr><th>Element / rule</th><th>Cert value</th><th>Allowed</th><th>Result</th></tr>'+rows+'</table>'+
+    (r.missing&&r.missing.length?'<p>Not entered, so not checked: '+H(r.missing.join(", "))+'.</p>':'')+
+    (r.basis==="product"?'<p>Checked against heat-analysis ranges; product-analysis permitted variations were not applied.</p>':'')+
+    '<p class="pr-disp">Disposition: <b>'+H(r.disp||"—")+'</b></p>'+
+    '<p class="pr-small">Chemistry only. Reference aid: acceptance is against the current licensed standard and the purchase order. Mechanical properties, heat treatment and marking are verified separately (Step 3 checklist).</p>'+
+    '<table class="pr-sign"><tr><td>Checked by: '+H(r.by||"")+'</td><td>Signature: ____________________</td><td>Date: ____________</td></tr></table></div>';
+  document.body.classList.add("print-report");
+  const done=()=>{document.body.classList.remove("print-report");window.removeEventListener("afterprint",done);};
+  window.addEventListener("afterprint",done);
+  window.print();
+  setTimeout(done,1500);
+}
+})();
 </script>
 </body>
 </html>

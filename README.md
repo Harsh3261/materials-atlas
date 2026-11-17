@@ -29,9 +29,14 @@ Live: https://harsh3261.github.io/materials-atlas/
   alloying elements, heat treatment, conditions glossary, which standard gives
   a number, and reading a cert (with a jump to the full checklist).
 - **Qualify a Cert** — a 7-step mill-cert checklist with red flags folded in.
+- **Saved checks and reports** — save a cert check (heat no., PO, supplier,
+  checked by) on this device, reopen it as a printable report / PDF, and send
+  one element's values from several saved heats to SPC Tools as a run chart.
+- **Recently viewed** — the last 8 grades opened, as chips in Browse.
 
 All processing is client-side: nothing entered or loaded into the app ever
-leaves the device. Certs can be loaded as pasted text, PDF or a photo. Photos
+leaves the device. Saved checks and recently viewed grades live in the
+browser's localStorage on that device only. Certs can be loaded as pasted text, PDF or a photo. Photos
 are read on-device (tesseract.js, vendored) and are never scored
 automatically: every value read from a photo is shown back and low-confidence
 or decimal-point-restored readings are flagged for checking against the cert
@@ -82,7 +87,7 @@ sourced from an older edition, the row says so.
 
 - `index.html` — the whole app (single file, data embedded in readable tables).
 - `manifest.json`, `sw.js`, `icon.svg` — PWA install/offline support.
-  Service-worker cache name is versioned (currently `materials-atlas-v88-start`);
+  Service-worker cache name is versioned (currently `materials-atlas-v89-history`);
   bump it on every published change.
 
 ## Look

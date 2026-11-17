@@ -31,9 +31,11 @@ Live: https://harsh3261.github.io/materials-atlas/
 - **Qualify a Cert** — a 7-step mill-cert checklist with red flags folded in.
 
 All processing is client-side: nothing entered or loaded into the app ever
-leaves the device. Cert photos/PDFs are intentionally NOT OCR'd in-app
-(a misread 0.08 vs 0.008 is the failure that matters) — they are analysed
-through chat instead, with every extracted field shown back for confirmation.
+leaves the device. Certs can be loaded as pasted text, PDF or a photo. Photos
+are read on-device (tesseract.js, vendored) and are never scored
+automatically: every value read from a photo is shown back and low-confidence
+or decimal-point-restored readings are flagged for checking against the cert
+(a misread 0.08 vs 0.008 is the failure that matters).
 
 ## The badges (read this first)
 
@@ -52,11 +54,12 @@ through chat instead, with every extracted field shown back for confirmation.
 Data lives in two verified research files (kept outside this repo, in the
 owner's Muse workspace: `research_notes/materials-app/`):
 
-- `starter-data.csv` + `starter-data-round2.csv` — 66 grade-condition rows
-  (31 spec-minimum / 30 typical-published / 5 manufacturer).
-- `chemistry-ranges.csv` — 193 element ranges across 45 grade–standard
-  combinations: 183 verified against two independent sources, 5 flagged
-  single-source (E355/EN 10305-1), 5 not-specified (cast irons).
+- The original build started from 66 grade-condition rows and 193 element
+  ranges; the app now carries **343 grade-condition rows**, each with its
+  standard, condition, trust badge and named source. Single-source values are
+  flagged in their source text; anything not verifiable is withheld.
+- Audit history (corrections, open items, test results) is logged round by
+  round in `MUSE-NOTE.md`.
 
 Rules used throughout: every value carries a source and a status; conflicts
 between sources are logged (D1–D18 in the research files), never averaged;
@@ -79,8 +82,14 @@ sourced from an older edition, the row says so.
 
 - `index.html` — the whole app (single file, data embedded in readable tables).
 - `manifest.json`, `sw.js`, `icon.svg` — PWA install/offline support.
-  Service-worker cache name is versioned (`materials-atlas-v1`); bump it on
-  every published change.
+  Service-worker cache name is versioned (currently `materials-atlas-v85-titanium`);
+  bump it on every published change.
+
+## Look
+
+Dark "anodized titanium" theme (2026-11-16): near-black navy, electric cyan
+accent with a cyan→violet gradient. Pass = green, fail = red, warning = amber
+(meanings unchanged). Grade names keep their real case (42CrMo4).
 
 ## Publish workflow (for whoever maintains this next)
 

@@ -569,3 +569,30 @@ Tests: e2e 61/61. Cache materials-atlas-v79-verify.
 **Pending:** Harsh's real phone photos. Please re-measure when he sends them.
 
 **Tests:** e2e 61/61, regression 0 errors, cert batch unchanged, offline works for both pages and for photos (second use). Cache materials-atlas-v84-photo.
+
+## Round 27 (2026-11-16): "Anodized titanium" theme (Harsh's choice) + readability
+**Design (presentation only, no behaviour change):** new last style layer `<style id="titanium">`.
+Near-black navy base (#070A14 / panels #0F1424, #161C30), electric cyan accent #2EE6D6
+(kept in `--teal` so every component follows), violet #8B7BFF as the second gradient stop.
+Gradient header bar, gradient "Atlas" wordmark, gradient selected tab/chips/run buttons,
+rounder panels, translucent sticky strips. Pass/fail/warning colours unchanged.
+Family colours re-spaced so none collides with the accent (stainless now silver #E6EDF7,
+plate #C38BFF, copper #E0A867, cast iron #FF7AC8). Icon re-coloured to match (PNGs re-rendered).
+manifest + theme-color #070A14.
+
+**Readability fixes:**
+- Grade names were forced to uppercase: "42CrMo4" showed as "42CRMO4" (Cr and Mo are element
+  symbols). Grade titles, Identify names and Compare column headers now keep their real case.
+- The One Rule box is normal sans text (was small monospace).
+
+**Data (one display string, 5 rows):** 42CrMo4 Si now reads "Si 0.10–0.40 (EN 10083-3:2006
+printed ≤0.40 only; checker scores the 0.40 max)". EN ISO 683-2:2018-based mill sheets
+(Swiss Steel 42CrMoS4 datasheet, Metinvest, a DIN EN ISO 683-2 supplier spec) print 0.10 min;
+the max-only sources cite EN 10083-3:2006. CHEMROWS and checker scoring unchanged.
+
+**Spot re-check, no change needed:** A105 (Mn handled by the C-dependent rule), C93200 (P ≤1.5
+is the continuous-casting allowance used across the B505 tin bronzes), 304 A240, 6061-T6 B209
+sheet, 17-4 H900 A564.
+
+README: stale lines fixed (photos ARE now read on-device; row count 343; cache name).
+Cache materials-atlas-v85-titanium.

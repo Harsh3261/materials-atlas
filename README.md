@@ -82,7 +82,7 @@ sourced from an older edition, the row says so.
 
 - `index.html` — the whole app (single file, data embedded in readable tables).
 - `manifest.json`, `sw.js`, `icon.svg` — PWA install/offline support.
-  Service-worker cache name is versioned (currently `materials-atlas-v87-molten`);
+  Service-worker cache name is versioned (currently `materials-atlas-v88-start`);
   bump it on every published change.
 
 ## Look

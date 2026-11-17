@@ -550,6 +550,13 @@ a{color:var(--teal)}
 .rule strong{color:var(--teal)}
 .disclaim{color:var(--muted);font-size:13.5px;margin:8px 0 0}
 .sister{margin:14px 0;font-size:15px;color:var(--ink)}
+/* Start here collapses to its title after the first visit; tap the title to reopen */
+.starthere .sh-title{cursor:pointer}
+.starthere .sh-title::after{content:" ▾";-webkit-text-fill-color:var(--teal);color:var(--teal);font-size:.8em}
+.starthere.sh-min{padding-top:10px;padding-bottom:10px}
+.starthere.sh-min .sh-title{margin:0}
+.starthere.sh-min .sh-title::after{content:" ▸  tap to show the shortcuts";font-family:var(--sans);font-weight:400;font-size:13px;letter-spacing:0;text-transform:none;-webkit-text-fill-color:var(--muted);color:var(--muted)}
+.starthere.sh-min .sh-routes{display:none}
 /* sticky strips: translucent glass instead of a flat black band */
 #view-browse > .controls,#view-compare .grid2{background:rgba(8,7,10,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 @media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(8,7,10,.0)}}
@@ -574,7 +581,7 @@ a{color:var(--teal)}
 <!-- ============ BROWSE ============ -->
 <section class="view on" id="view-browse">
   <div class="starthere">
-    <p class="sh-title">Start here</p>
+    <p class="sh-title" id="shTitle" role="button" tabindex="0" aria-expanded="true">Start here</p>
     <div class="sh-routes">
       <button type="button" class="sh-route" data-goto="check"><strong>I have a mill cert to check</strong><span>Chemistry verdicts, carbon equivalent and the qualify checklist →</span></button>
       <button type="button" class="sh-route" data-goto="browse"><strong>I need a grade's numbers</strong><span>Search below by grade, UNS, EN number or alias ↓</span></button>
@@ -962,7 +969,7 @@ const DATA=[
 {f:"Alloy steel bar",g:"4140",s:"SAE J404 chemistry — no mechanical spec for bar",eq:"UNS G41400 · EN 42CrMo4 (1.7225) · GB 42CrMo near-equiv",form:"Bar / rod / shafting",c:"Hot rolled, annealed",chem:"C 0.38–0.43; Mn 0.75–1.00; Si 0.15–0.35; Cr 0.80–1.10; Mo 0.15–0.25",ym:427,yk:62,yb:"typical",tm:614,tk:89,el:"26%",hd:"HB 187",n:"The default supply condition for machining before heat treat.",src:"Alro Metals Guide — Average Mechanical Properties + SAE chemistry list",st:"TYP"},
 {f:"Alloy steel bar",g:"4140",s:"SAE J404 chemistry — no mechanical spec for bar",eq:"UNS G41400 · EN 42CrMo4 (1.7225) · GB 42CrMo near-equiv",form:"Bar / rod",c:"Cold drawn, annealed",chem:"C 0.38–0.43; Mn 0.75–1.00; Si 0.15–0.35; Cr 0.80–1.10; Mo 0.15–0.25",ym:621,yk:90,yb:"typical",tm:703,tk:102,el:"18%",hd:"HB 223",n:"Typical values on a 1-in bar basis.",src:"Alro Metals Guide — Average Mechanical Properties",st:"TYP"},
 {f:"Alloy steel bar",g:"4140",s:"SAE J404 chemistry — no mechanical spec for bar",eq:"UNS G41400 · EN 42CrMo4 (1.7225) · GB 42CrMo near-equiv",form:"Bar / rod",c:"Q&T — oil quench from 845 °C, temper 540 °C (1000 °F)",chem:"C 0.38–0.43; Mn 0.75–1.00; Si 0.15–0.35; Cr 0.80–1.10; Mo 0.15–0.25",ym:903,yk:131,yb:"typical",tm:1055,tk:153,el:"16%",hd:"HB 311 (≈ HRC 33)",n:"Tempering trend (Alro): 540 °C → HB 311; 595 °C → HB 285; 650 °C → HB 269. Section size matters — values are 1-in bar.",src:"Alro Metals Guide — Average Mechanical Properties (heat-treat schedule columns)",st:"TYP"},
-{f:"Alloy steel bar",g:"4140",s:"TRADE CONDITION — no governing standard (chemistry per SAE J404)",eq:"UNS G41400 · EN 42CrMo4 near · JIS SCM440 near",form:"Bar / rod",c:"HTSR — heat treated + stress relieved (quenched & tempered, then stress relieved)",chem:"C 0.38–0.43; Mn 0.75–1.00; P ≤0.030; S ≤0.040; Si 0.15–0.35; Cr 0.80–1.10; Mo 0.15–0.25",ym:"766–973",yk:"111–141",yb:"typical",tm:"942–1077",tk:"137–156",el:"15.5–18.1%",hd:"HB 311–331",n:"TYPICAL values only — HTSR is a trade condition with NO standard minimums; never use for acceptance. Range spans Vanguard's published diameter table (3¼–8 in bars); Richmond Steel's HTSR typicals (137 ksi TS / 115 ksi YS / HB 315) fall inside it. Hardness discriminator vs hot rolled/annealed stock (~HB 187–197): an HTSR bar reads near HB 300+ — the two can never be interchanged.",src:"Vanguard Steel specialty steel manual — 4140 HTSR typical averages + Richmond Steel Canada 4140 HTSR typicals",st:"TYP"},
+{f:"Alloy steel bar",g:"4140",s:"TRADE CONDITION — no governing standard (chemistry per SAE J404)",eq:"UNS G41400 · EN 42CrMo4 near · JIS SCM440 near",form:"Bar / rod",c:"HTSR — heat treated + stress relieved (quenched & tempered, then stress relieved)",chem:"C 0.38–0.43; Mn 0.75–1.00; P ≤0.030; S ≤0.040; Si 0.15–0.35; Cr 0.80–1.10; Mo 0.15–0.25",ym:"766–973",yk:"111–141",yb:"typical",tm:"942–1077",tk:"137–156",el:"15.5–18.1%",hd:"HB 311–331 (≈ HRC 33–35.5)",n:"TYPICAL values only — HTSR is a trade condition with NO standard minimums; never use for acceptance. Range spans Vanguard's published diameter table (3¼–8 in bars); Richmond Steel's HTSR typicals (137 ksi TS / 115 ksi YS / HB 315) fall inside it. Hardness discriminator vs hot rolled/annealed stock (~HB 187–197): an HTSR bar reads near HB 300+ — the two can never be interchanged.",src:"Vanguard Steel specialty steel manual — 4140 HTSR typical averages + Richmond Steel Canada 4140 HTSR typicals",st:"TYP"},
 {f:"Alloy steel bar",g:"4340",s:"SAE J404 chemistry — no mechanical spec for bar",eq:"UNS G43400 · EN 34CrNiMo6 approx",form:"Bar / rod",c:"Hot rolled, annealed",chem:"C 0.38–0.43; Mn 0.60–0.80; Si 0.15–0.35; Ni 1.65–2.00; Cr 0.70–0.90; Mo 0.20–0.30",ym:476,yk:69,yb:"typical",tm:696,tk:101,el:"21%",hd:"HB 207",n:"The Ni addition vs 4140 buys toughness and through-hardening in larger sections.",src:"Alro Metals Guide — Average Mechanical Properties + SAE chemistry list",st:"TYP"},
 {f:"Alloy steel bar",g:"4340",s:"SAE J404 chemistry — no mechanical spec for bar",eq:"UNS G43400 · EN 34CrNiMo6 approx",form:"Bar / rod",c:"Q&T — oil quench from 800 °C, temper 540 °C (1000 °F)",chem:"C 0.38–0.43; Mn 0.60–0.80; Si 0.15–0.35; Ni 1.65–2.00; Cr 0.70–0.90; Mo 0.20–0.30",ym:1145,yk:166,yb:"typical",tm:1207,tk:175,el:"14%",hd:"HB 352 (≈ HRC 38)",n:"Same carbon as 4140; Ni-Cr-Mo hardenability holds these properties in heavier sections where 4140 falls off.",src:"Alro Metals Guide — Average Mechanical Properties (heat-treat schedule columns)",st:"TYP"},
 {f:"Alloy steel bar",g:"8620",s:"SAE J404 chemistry — no mechanical spec for bar",eq:"UNS G86200 · EN 21NiCrMo2 approx",form:"Bar / rod",c:"Hot rolled",chem:"C 0.18–0.23; Mn 0.70–0.90; Si 0.15–0.35; Ni 0.40–0.70; Cr 0.40–0.60; Mo 0.15–0.25",ym:441,yk:64,yb:"typical",tm:634,tk:92,el:"25%",hd:"HB 192",n:"Carburizing grade: these are CORE properties. Case hardness after carburizing (≈ HRC 58–62 class) is a different property — never quote core yield as case performance.",src:"Alro Metals Guide — Average Mechanical Properties + SAE chemistry list",st:"TYP"},
@@ -3645,6 +3652,15 @@ $("elGrid").innerHTML=ELEMENTS.map(e=>'<div class="elcard"><span class="sym">'+e
    atlas never worked offline. It is registered now (cache-first; bump CACHE
    in sw.js on every publish). The PDF reader in vendor/ is pre-cached. */
 if("serviceWorker" in navigator){window.addEventListener("load",()=>{try{navigator.serviceWorker.register("sw.js").catch(()=>{});}catch(e){}});}
+</script>
+<script>
+/* Start here: open on the first visit, collapsed to its title afterwards (remembered on this device only). */
+(function(){var box=document.querySelector(".starthere"),t=document.getElementById("shTitle");if(!box||!t)return;
+function set(min){box.classList.toggle("sh-min",min);t.setAttribute("aria-expanded",min?"false":"true");}
+var seen=false;try{seen=localStorage.getItem("atlas.startSeen")==="1";localStorage.setItem("atlas.startSeen","1");}catch(e){}
+set(seen);
+function tog(){set(!box.classList.contains("sh-min"));}
+t.addEventListener("click",tog);t.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}});})();
 </script>
 </body>
 </html>

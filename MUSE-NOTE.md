@@ -605,3 +605,8 @@ Cache materials-atlas-v85-titanium.
 
 ## Round 29 (2026-11-16): theme recoloured to "Molten metal" (Harsh's choice)
 Same `<style id="titanium">` layer, colours only: base #08070A, panels #141017 / #1D1722, accent #FF7A1A (in `--teal`), second stop #FF3D7F. Icon, manifest and theme-color match. Pass/fail/warning colours unchanged. Cache materials-atlas-v87-molten.
+
+## Round 30 (2026-11-16): hardness cross-scale review + Start here collapse
+- **Hardness:** reviewed every steel row with a Brinell-only value. Only one is in the HRC range without an HRC figure: 4140 HTSR "HB 311–331" now reads "HB 311–331 (≈ HRC 33–35.5)" (ASTM E140 Table 1, interpolated: 301→32, 318→34, 335→36; same basis as the existing 4130/4140/4340 "≈ HRC" rows). Display string only. **Deliberately not added:** HRC on annealed caps (HB ≤229 is at/below HRC 20, where the C scale is not valid) and any HB→HRB figure (E140 Table 2 uses a different Brinell basis than the app's HBW column, ~3 HRB apart at HB 137). Non-steel families untouched (E140 steel tables do not apply).
+- **Start here** opens on the first visit and collapses to its title afterwards (localStorage `atlas.startSeen`, try/catch; tap or Enter/Space on the title toggles). Small script before </body>.
+- Cache materials-atlas-v88-start.

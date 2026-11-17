@@ -596,3 +596,9 @@ sheet, 17-4 H900 A564.
 
 README: stale lines fixed (photos ARE now read on-device; row count 343; cache name).
 Cache materials-atlas-v85-titanium.
+
+## Round 28 (2026-11-16): clarity pass (Harsh's request: tabs, units, One Rule)
+- **ksi on every row.** Rows whose standard prints no ksi (48 EN/ISO/GB rows) showed MPa only. New `ksiTxt(m,k)`: the published ksi when the row has one, otherwise MPa ÷ 6.894757 rounded to 1 ksi and always prefixed "≈". Used in cards, Copy text and Compare. Display only; DATA, filters and checker unchanged.
+- **One Rule reworded** to one idea ("a strength means nothing without its condition", with the 1045 HR vs Q&T example); the disclaimer is now its own line (`.disclaim`).
+- **Header intro, rule and disclaimer show on Browse only** (CSS `:has()`); other tabs get a compact title so the tool starts at the top of the phone screen.
+- Footer link to SPC Tools. Cache materials-atlas-v86-clarity.

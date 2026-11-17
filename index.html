@@ -543,6 +543,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);outline-of
 a{color:var(--teal)}
 /* grade names keep their real case: 42CrMo4, not 42CRMO4 (Cr and Mo are element symbols) */
 .grade,.idcand .idg,.idnear .idg,#cmpOut th{text-transform:none;letter-spacing:.01em}
+/* intro text only on Browse: the other tabs start with their own tool, not a repeat of the header */
+.wrap:has(#view-browse:not(.on)) header.top .sub,.wrap:has(#view-browse:not(.on)) header.top .rule,.wrap:has(#view-browse:not(.on)) header.top .disclaim{display:none}
+.wrap:has(#view-browse:not(.on)) header.top{padding-top:18px}
+.wrap:has(#view-browse:not(.on)) h1{font-size:clamp(26px,5vw,34px)}
+.rule strong{color:var(--teal)}
+.disclaim{color:var(--muted);font-size:13.5px;margin:8px 0 0}
+.sister{margin:14px 0;font-size:15px;color:var(--ink)}
 /* sticky strips: translucent glass instead of a flat black band */
 #view-browse > .controls,#view-compare .grid2{background:rgba(7,10,20,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 @media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(7,10,20,.0)}}
@@ -553,7 +560,8 @@ a{color:var(--teal)}
 <header class="top">
   <h1>Materials <span class="atlas">Atlas</span></h1>
   <p class="sub">Yield, tensile, elongation, hardness and chemistry for the steels, cast irons, aluminium, bronzes and tube you actually qualify — every number tied to a <strong>grade + condition + product form</strong>, labelled as a spec minimum, a published typical, or manufacturer data, with its source named.</p>
-  <p class="rule">THE ONE RULE — there is no single “strength of 1045.” A strength with no condition attached is not data. This atlas never shows one without the other. Reference &amp; qualification aid only: acceptance is always against the licensed current standard + the PO.</p>
+  <p class="rule"><strong>The one rule:</strong> a strength means nothing without its condition. 1045 hot rolled and 1045 quenched &amp; tempered are different numbers, so every value here is shown with its condition and product form.</p>
+  <p class="disclaim">Reference aid only. Accept or reject against the current licensed standard and your purchase order.</p>
 </header>
 
 <nav class="tabs" role="tablist" aria-label="Atlas sections">
@@ -780,6 +788,7 @@ a{color:var(--teal)}
   <p>Materials Atlas — 343 grade-condition rows, two-source verified or flagged. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
   <p class="tuesday">Below a spec minimum is a rejection. Below a typical is just a Tuesday.</p>
   <p class="datarev">DATA REV 2026-11-16 R10 · 343 GRADE-CONDITION ROWS · 1140 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5</p>
+  <p class="sister">Need SPC, Gage R&amp;R, AQL, thread limits or unit and hardness converters? <a href="https://harsh3261.github.io/spc-tools/">Open SPC Tools →</a></p>
   <p class="stamp">BUILT BY HARSH PATEL</p>
   <p class="stamp">© 2026 Harsh Patel · All rights reserved</p>
 </footer>
@@ -2212,8 +2221,8 @@ function fallbackCopy(txt,done){
 }
 function rowSummary(r){
   const lines=[r.g+" — "+r.c,r.f+" · "+r.form,r.s+" · "+r.eq,
-    "Yield: "+(r.ym==null?"not specified":r.ym+" MPa"+(r.yk!=null?" / "+r.yk+" ksi":""))+" ("+r.yb+")",
-    "Tensile: "+(r.tm==null?"not specified":r.tm+" MPa"+(r.tk!=null?" / "+r.tk+" ksi":"")),
+    "Yield: "+(r.ym==null?"not specified":r.ym+" MPa / "+ksiTxt(r.ym,r.yk))+" ("+r.yb+")",
+    "Tensile: "+(r.tm==null?"not specified":r.tm+" MPa / "+ksiTxt(r.tm,r.tk)),
     "Elongation: "+(r.el==null?"—":r.el)+" · Hardness: "+r.hd,"Chemistry: "+r.chem,"Note: "+r.n,
     "Status: "+({SPEC:"SPEC MINIMUM",TYP:"TYPICAL-PUBLISHED",MFR:"MANUFACTURER"})[r.st]+" · Source: "+(editionOf(r)?editionOf(r)+" · ":"")+r.src];
   return lines.join("\n");
@@ -2270,9 +2279,13 @@ function syncChips(){[...chips.children].forEach(b=>b.setAttribute("aria-pressed
 const DETAIL={};
 function lazyDetail(i,html){DETAIL[i]=html;return '<div class="detail" data-lazy="'+i+'"></div>';}
 function fillDetail(card){const d=card&&card.querySelector(".detail[data-lazy]");if(!d)return;const i=d.dataset.lazy;d.innerHTML=DETAIL[i]||"";d.removeAttribute("data-lazy");}
+/* ksi for every row: the standard's own published ksi where it prints one; otherwise a
+   conversion from MPa (÷ 6.894757, rounded to 1 ksi) that is always marked "≈" so it can
+   never be mistaken for a published value. Display only — filters and the checker are unchanged. */
+function ksiTxt(m,k){if(k!=null)return k+" ksi";if(m==null)return"";return"≈ "+String(m).replace(/\d+(\.\d+)?/g,n=>Math.round(n/6.894757))+" ksi";}
 function cardHTML(r,i,info){
-  const yTxt=r.ym==null?"—":("<b>"+esc(r.ym)+"</b> MPa"+(r.yk!=null?" · "+esc(r.yk)+" ksi":""));
-  const tTxt=r.tm==null?"—":("<b>"+esc(r.tm)+"</b> MPa"+(r.tk!=null?" · "+esc(r.tk)+" ksi":""));
+  const yTxt=r.ym==null?"—":("<b>"+esc(r.ym)+"</b> MPa · "+esc(ksiTxt(r.ym,r.yk)));
+  const tTxt=r.tm==null?"—":("<b>"+esc(r.tm)+"</b> MPa · "+esc(ksiTxt(r.tm,r.tk)));
   const chemRows=Object.keys(r.chemMap).length?Object.entries(r.chemMap).map(([e,v])=>"<tr><td><strong>"+e+"</strong></td><td class='num'>"+fmtRange(v)+"</td></tr>").join(""):"<tr><td colspan='2'>Not specified by the governing standard — mechanicals define this grade. The chemistry checker will not pass/fail it.</td></tr>";
   const chemOnly=r.ym==null&&r.tm==null&&(r.el==null||r.el==="—")&&(r.hd==null||r.hd==="—")&&Object.keys(r.chemMap).length>0;
   const A=aliasOf(r);
@@ -2489,7 +2502,7 @@ function cmpRender(){
   const els=[...new Set([...Object.keys(a.chemMap),...Object.keys(b.chemMap)])];
   const chemRows=els.map(e=>{const va=a.chemMap[e]?fmtRange(a.chemMap[e]):"—",vb=b.chemMap[e]?fmtRange(b.chemMap[e]):"—";
     return "<tr><th>"+e+" %</th>"+cell(va,vb,true)+cell(vb,va,true)+"</tr>";}).join("");
-  const tStr=r=>r.tm==null?"not specified":r.tm+" MPa"+(r.tk!=null?" / "+r.tk+" ksi":"");
+  const tStr=r=>r.tm==null?"not specified":r.tm+" MPa / "+ksiTxt(r.tm,r.tk);
   const pairGs=[a.g,b.g].sort().join("|");
   /* Cross-reference confidence for the pair, from ALIASES: a pair is linked
      when either grade's verified designations name the other. Where the two
@@ -2510,7 +2523,7 @@ function cmpRender(){
   $("cmpOut").innerHTML=nearBanner+"<table><tr><th></th><th>"+esc(rowLabel(a))+"</th><th>"+esc(rowLabel(b))+"</th></tr>"+
     pair("Status",{SPEC:"SPEC MIN",TYP:"TYPICAL",MFR:"MANUFACTURER"}[a.st],{SPEC:"SPEC MIN",TYP:"TYPICAL",MFR:"MANUFACTURER"}[b.st])+
     pair("Standard",a.s,b.s)+pair("Product form",a.form,b.form)+
-    pair("Yield",a.ym==null?"not specified":a.ym+" MPa"+(a.yk!=null?" / "+a.yk+" ksi":"")+" ("+a.yb+")",b.ym==null?"not specified":b.ym+" MPa"+(b.yk!=null?" / "+b.yk+" ksi":"")+" ("+b.yb+")",true)+
+    pair("Yield",a.ym==null?"not specified":a.ym+" MPa / "+ksiTxt(a.ym,a.yk)+" ("+a.yb+")",b.ym==null?"not specified":b.ym+" MPa / "+ksiTxt(b.ym,b.yk)+" ("+b.yb+")",true)+
     pair("Tensile",tStr(a),tStr(b),true)+
     pair("Elongation",a.el==null?"—":a.el,b.el==null?"—":b.el,true)+pair("Hardness",a.hd,b.hd,true)+chemRows+
     "</table>"+cmpBarsHTML(a,b)+"<p class='note' style='margin-top:10px'><strong>A:</strong> "+esc(a.n)+"</p><p class='note'><strong>B:</strong> "+esc(b.n)+"</p>"+

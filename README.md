@@ -82,13 +82,13 @@ sourced from an older edition, the row says so.
 
 - `index.html` — the whole app (single file, data embedded in readable tables).
 - `manifest.json`, `sw.js`, `icon.svg` — PWA install/offline support.
-  Service-worker cache name is versioned (currently `materials-atlas-v86-clarity`);
+  Service-worker cache name is versioned (currently `materials-atlas-v87-molten`);
   bump it on every published change.
 
 ## Look
 
-Dark "anodized titanium" theme (2026-11-16): near-black navy, electric cyan
-accent with a cyan→violet gradient. Pass = green, fail = red, warning = amber
+Dark "molten metal" theme (2026-11-16): true black, molten orange accent
+with an orange→magenta gradient. Pass = green, fail = red, warning = amber
 (meanings unchanged). Grade names keep their real case (42CrMo4).
 
 ## Publish workflow (for whoever maintains this next)

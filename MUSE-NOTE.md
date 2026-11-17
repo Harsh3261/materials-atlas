@@ -602,3 +602,6 @@ Cache materials-atlas-v85-titanium.
 - **One Rule reworded** to one idea ("a strength means nothing without its condition", with the 1045 HR vs Q&T example); the disclaimer is now its own line (`.disclaim`).
 - **Header intro, rule and disclaimer show on Browse only** (CSS `:has()`); other tabs get a compact title so the tool starts at the top of the phone screen.
 - Footer link to SPC Tools. Cache materials-atlas-v86-clarity.
+
+## Round 29 (2026-11-16): theme recoloured to "Molten metal" (Harsh's choice)
+Same `<style id="titanium">` layer, colours only: base #08070A, panels #141017 / #1D1722, accent #FF7A1A (in `--teal`), second stop #FF3D7F. Icon, manifest and theme-color match. Pass/fail/warning colours unchanged. Cache materials-atlas-v87-molten.

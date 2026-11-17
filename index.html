@@ -6,7 +6,7 @@
 <meta name="author" content="Harsh Patel" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="dark" />
-<meta name="theme-color" content="#070A14" />
+<meta name="theme-color" content="#08070A" />
 <link rel="icon" href="data:," />
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
@@ -487,59 +487,59 @@ input:not([type=checkbox]):not([type=radio]):not(:focus),select:not(:focus),text
 }
 </style>
 <style id="titanium">
-/* ===== 2026-11-16 "Anodized titanium" theme (Harsh's choice) — presentation only, no data or
-   behaviour change. Last style layer, so it wins by cascade order. Near-black navy base, electric
-   cyan interactive accent (--teal keeps its old name), violet as the second gradient stop.
+/* ===== 2026-11-16 "Molten metal" theme (was Anodized titanium earlier the same day) (Harsh's choice) — presentation only, no data or
+   behaviour change. Last style layer, so it wins by cascade order. True-black base, molten
+   orange interactive accent (--teal keeps its old name), magenta as the second gradient stop.
    Pass/fail/warning colours are unchanged in meaning. ===== */
 :root{
-  --bg:#070A14; --panel:#0F1424; --panel2:#161C30; --steel:#161C30;
-  --ink:#E9EDF7; --ink2:#AEB8CE; --muted:#AEB8CE;
-  --line:#2A3352; --hair:#1F2742; --field:#66739A;
-  --teal:#2EE6D6; --teal-soft:rgba(46,230,214,.10); --violet:#8B7BFF;
-  --grad:linear-gradient(100deg,#2EE6D6 0%,#5FB4F0 45%,#8B7BFF 100%);
-  --on-accent:#041219;
-  --fam-steel:#7C9BFF; --fam-plate:#C38BFF; --fam-stainless:#E6EDF7; --fam-copper:#E0A867; --fam-alu:#9FB0C6; --fam-iron:#FF7AC8;
+  --bg:#08070A; --panel:#141017; --panel2:#1D1722; --steel:#1D1722;
+  --ink:#F4EEE8; --ink2:#BDB2AE; --muted:#BDB2AE;
+  --line:#3A2F3A; --hair:#2A222C; --field:#85748A;
+  --teal:#FF7A1A; --teal-soft:rgba(255,122,26,.10); --violet:#FF3D7F;
+  --grad:linear-gradient(100deg,#FF7A1A 0%,#FF5A4A 45%,#FF3D7F 100%);
+  --on-accent:#1A0A02;
+  --fam-steel:#7C9BFF; --fam-plate:#C38BFF; --fam-stainless:#E6EDF7; --fam-copper:#E8C98A; --fam-alu:#9FB0C6; --fam-iron:#FF7AC8;
 }
 html{background:
-  radial-gradient(ellipse 70% 45% at 0% 0%, rgba(46,230,214,.10) 0%, transparent 60%),
-  radial-gradient(ellipse 60% 40% at 100% 0%, rgba(139,123,255,.12) 0%, transparent 60%),
-  #070A14}
+  radial-gradient(ellipse 70% 45% at 0% 0%, rgba(255,122,26,.10) 0%, transparent 60%),
+  radial-gradient(ellipse 60% 40% at 100% 0%, rgba(255,61,127,.12) 0%, transparent 60%),
+  #08070A}
 body{background:transparent}
-::selection{background:rgba(46,230,214,.30);color:#fff}
+::selection{background:rgba(255,122,26,.30);color:#fff}
 /* header: gradient bar + gradient wordmark */
 header.top{border-top:0}
-header.top::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;border-radius:4px;background:var(--grad);box-shadow:0 0 18px rgba(46,230,214,.35)}
+header.top::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;border-radius:4px;background:var(--grad);box-shadow:0 0 18px rgba(255,122,26,.35)}
 h1 .atlas{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .sub b,.sub strong{color:#fff}
 /* the One Rule: readable sans text instead of small monospace */
-.rule{font-family:var(--sans);font-size:15px;line-height:1.5;color:var(--ink);background:linear-gradient(100deg,rgba(46,230,214,.08),rgba(139,123,255,.08));
-  border:1px solid rgba(46,230,214,.45);border-left:4px solid var(--teal);border-radius:8px;box-shadow:none;padding:12px 14px}
+.rule{font-family:var(--sans);font-size:15px;line-height:1.5;color:var(--ink);background:linear-gradient(100deg,rgba(255,122,26,.08),rgba(255,61,127,.08));
+  border:1px solid rgba(255,122,26,.45);border-left:4px solid var(--teal);border-radius:8px;box-shadow:none;padding:12px 14px}
 /* rounder, softer surfaces */
 .starthere,.card,.panel,.elcard,.idcand,.idnear,.formula,.lgi,.warnbox{border-radius:10px}
 .sh-route,.copybtn,input,select,textarea,#learnQ{border-radius:8px}
 .starthere{border-left:0;position:relative;overflow:hidden}
 .starthere::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--grad)}
 .starthere .sh-title{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;display:inline-block}
-.sh-route:hover,.sh-route:focus-visible{border-color:var(--teal);box-shadow:0 0 0 1px rgba(46,230,214,.25),0 6px 22px rgba(46,230,214,.10)}
+.sh-route:hover,.sh-route:focus-visible{border-color:var(--teal);box-shadow:0 0 0 1px rgba(255,122,26,.25),0 6px 22px rgba(255,122,26,.10)}
 /* tabs and pressed controls: gradient fill, dark text */
-nav.tabs{background:rgba(15,20,36,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top-color:transparent;border-image:none}
+nav.tabs{background:rgba(20,16,23,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top-color:transparent;border-image:none}
 nav.tabs::before{content:"";position:absolute;left:0;right:0;top:-3px;height:3px;background:var(--grad)}
 @media (min-width:1024px){nav.tabs{border-bottom-color:transparent;border-radius:12px}nav.tabs::before{top:auto;bottom:-3px;left:10px;right:10px;border-radius:3px}}
 nav.tabs button{border-radius:8px}
 nav.tabs button[aria-selected="true"],.chips button[aria-pressed="true"],.modetoggle button[aria-pressed="true"],
 nav.tabs button[aria-selected="true"]:hover,.chips button[aria-pressed="true"]:hover,.modetoggle button[aria-pressed="true"]:hover,
 nav.tabs button[aria-selected="true"]:active,.chips button[aria-pressed="true"]:active,.modetoggle button[aria-pressed="true"]:active{
-  background:var(--grad);color:var(--on-accent);border-color:transparent;box-shadow:0 4px 18px rgba(46,230,214,.22)}
+  background:var(--grad);color:var(--on-accent);border-color:transparent;box-shadow:0 4px 18px rgba(255,122,26,.22)}
 .chips button{border-radius:8px}
 #chkRun,#idRun{background:var(--grad)!important;color:var(--on-accent)!important;border-color:transparent!important;font-weight:700}
 /* cards */
-.card[open]{border-left-color:var(--teal);box-shadow:0 0 0 1px rgba(46,230,214,.18),0 10px 30px rgba(0,0,0,.35)}
+.card[open]{border-left-color:var(--teal);box-shadow:0 0 0 1px rgba(255,122,26,.18),0 10px 30px rgba(0,0,0,.35)}
 .famhead{letter-spacing:.06em}
 /* checker gauge window in the new accent */
 .g-win{background:var(--teal);opacity:.45}
 /* focus */
 button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal);box-shadow:0 0 0 4px rgba(46,230,214,.12)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal);box-shadow:0 0 0 4px rgba(255,122,26,.12)}
 a{color:var(--teal)}
 /* grade names keep their real case: 42CrMo4, not 42CRMO4 (Cr and Mo are element symbols) */
 .grade,.idcand .idg,.idnear .idg,#cmpOut th{text-transform:none;letter-spacing:.01em}
@@ -551,8 +551,8 @@ a{color:var(--teal)}
 .disclaim{color:var(--muted);font-size:13.5px;margin:8px 0 0}
 .sister{margin:14px 0;font-size:15px;color:var(--ink)}
 /* sticky strips: translucent glass instead of a flat black band */
-#view-browse > .controls,#view-compare .grid2{background:rgba(7,10,20,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-@media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(7,10,20,.0)}}
+#view-browse > .controls,#view-compare .grid2{background:rgba(8,7,10,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+@media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(8,7,10,.0)}}
 </style>
 </head>
 <body>

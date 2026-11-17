@@ -1,5 +1,5 @@
 {
-  "background_color": "#070A14",
+  "background_color": "#08070A",
   "description": "Engineering materials reference: chemistry, strength and hardness by standard and condition, with a mill-cert chemistry checker.",
   "display": "standalone",
   "icons": [
@@ -23,5 +23,5 @@
   "scope": "./",
   "short_name": "Materials",
   "start_url": "./",
-  "theme_color": "#070A14"
+  "theme_color": "#08070A"
 }

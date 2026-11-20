@@ -1,3 +1,19 @@
+# Note for Muse — cert units fix (2026-11-20, pass 2)
+
+Bug: certMech() read "80,500 psi" as 80.5 psi (comma taken as a decimal), so a
+real Acuren tensile report (20CrMo, 80,500 / 104,000 psi) failed by 1000×.
+Fix: MECH_NUM / mechNumParse() treat 1,234 / 1 234 groups as thousands; units
+are read next to each value first, then the header; psi < 1000 or ksi ≥ 1000
+is reported as a unit slip. kgf/mm² supported (× 9.80665). certMech() now also
+returns ra, gauge, dia and yield method (ym) for Step 1b "Fill".
+Step 1b: units MPa / ksi / psi / kgf/mm²; inputs are text (accept 80,500);
+unit-slip check; specimen auto-set from gauge ÷ diameter (4D / 5D).
+GB/T 3077 rows: minimums apply only to the reference-treated test bar, so both
+the upload path and Step 1b no longer score them unless the user confirms the
+specimen got the reference treatment (#mechRef). Cache v95.
+
+---
+
 # Note for Muse — Check a Cert: Step 1b Mechanicals (2026-11-20)
 
 New panel #mechPanel between Step 1 (chemistry) and Saved checks. Code is

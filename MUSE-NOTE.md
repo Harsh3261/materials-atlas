@@ -25,6 +25,10 @@ source-checked. The property table is NAVAIR/DoD test data, badged TYPICAL — N
 ACCEPTANCE. The spec's own numeric limits (P %, hardness, grain size) are NOT in the
 app: the MIL-DTL-32502 PDF couldn't be read. Add them only after reading the free
 ASSIST copy. Anodize and Measuring renumbered to 8 and 9.
+Pass 4 (2026-11-20): card 9 "Measuring & testing" expanded — method-selection
+table, method details (B499, B530, B244, E376, B568, B567, B504, B487), B578 / B571 /
+B117 / B602 notes and inspection traps. All taken from each ASTM method's own
+scope / significance text. New CSS rule: #view-coat h3.
 
 Please carry the new section into your research files before your next build.
 

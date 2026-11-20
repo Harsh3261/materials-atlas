@@ -604,6 +604,7 @@ a{color:var(--teal)}
 #view-coat .tscroll{overflow-x:auto;margin:10px 0}
 #view-coat .tscroll table{min-width:300px}
 #view-coat code{font-family:var(--mono);font-size:13px;background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:4px;color:var(--ink)}
+#view-coat h3{font-family:var(--disp);font-weight:600;font-size:17px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin:18px 0 6px}
 #view-coat .coatlist{margin:8px 0;padding-left:20px;font-size:14px}
 #view-coat .coatlist li{margin:6px 0}
 #view-coat details.lt{scroll-margin-top:84px}
@@ -1048,26 +1049,52 @@ a{color:var(--teal)}
 <p class="src">Basis: MIL-PRF-8625F w/Amd 2 text — §1.2, §3.4.3, §3.7.1.1 Table I, §3.7.1.2, §3.7.2.1, §3.7.2.1.1, §3.8, §4.5.3, Table III. Cross-checked: MIL-A-8625F and MIL-A-8625E texts and a 2020 industry summary of the Amd 2 changes.</p>
 </div></details>
 
-<details class="card lt" id="ct-meas"><summary><span class="lnum">9</span><span class="ltitle">Measuring &amp; testing</span><span class="lkey">Which ASTM method for which coating</span></summary><div class="ldetail">
+<details class="card lt" id="ct-meas"><summary><span class="lnum">9</span><span class="ltitle">Measuring &amp; testing</span><span class="lkey">Pick the right gauge, avoid the classic traps</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Everything in this card comes from the scope and significance sections of each ASTM method.</p>
+
+<h3>1 · Which thickness method for which coating?</h3>
 <div class="tscroll"><table>
-<tr><th>Method</th><th>What it does</th></tr>
-<tr><td>ASTM B499</td><td>Magnetic: non-magnetic coating on a magnetic base (zinc or chrome on steel)</td></tr>
-<tr><td>ASTM B530</td><td>Magnetic: electroplated nickel on magnetic or non-magnetic bases</td></tr>
-<tr><td>ASTM B244</td><td>Eddy current: anodize on aluminium and other non-conductive coatings on non-magnetic metals</td></tr>
-<tr><td>ASTM B568</td><td>X-ray fluorescence (XRF)</td></tr>
-<tr><td>ASTM B504</td><td>Coulometric (destructive)</td></tr>
-<tr><td>ASTM B487</td><td>Cross-section under a microscope (destructive)</td></tr>
-<tr><td>ASTM B567</td><td>Beta backscatter</td></tr>
-<tr><td>ASTM B556</td><td>Spot test for thin chromium coatings</td></tr>
-<tr><td>ASTM B137</td><td>Coating mass (weight) on anodized aluminium</td></tr>
-<tr><td>ASTM B578</td><td>Microhardness of electroplated coatings</td></tr>
-<tr><td>ASTM B571</td><td>Adhesion of metallic coatings (qualitative)</td></tr>
-<tr><td>ASTM B117</td><td>Salt spray (fog) test</td></tr>
-<tr><td>ASTM B602</td><td>Attribute sampling for coatings inspection</td></tr>
-<tr><td>ASTM B849 / B850</td><td>Pre- and post-plating treatments of steel to reduce hydrogen embrittlement risk</td></tr>
+<tr><th>Coating on base metal</th><th>Use</th><th>Don't use</th></tr>
+<tr><td>Zinc, zinc-cobalt, hard chrome on steel</td><td>B499 magnetic</td><td>—</td></tr>
+<tr><td>Electroplated nickel on steel <em>or</em> on non-magnetic metal</td><td>B530 magnetic (nickel version)</td><td>B499</td></tr>
+<tr><td>Electroless nickel, &gt; 8 % P, on steel</td><td>B499, <strong>before</strong> any heat treatment</td><td>B530</td></tr>
+<tr><td>Anodize on aluminium</td><td>B244 eddy current</td><td>—</td></tr>
+<tr><td>Cobalt / cobalt-phosphorus on steel</td><td>B487 cross-section or B568 XRF</td><td>B499 (cobalt is magnetic)</td></tr>
+<tr><td>Two layers, e.g. nickel + chrome or nickel + cobalt</td><td>B487 cross-section (reads each layer)</td><td>Any magnetic / eddy gauge for per-layer thickness</td></tr>
+<tr><td>Chromate / conversion coatings</td><td>Not by B244 — too thin</td><td>B244</td></tr>
 </table></div>
-<p class="note"><strong>Quick rule:</strong> zinc, zinc alloys and chrome on steel → magnetic gauge (B499). Cobalt-phosphorus is magnetic → XRF (B568) or cross-section (B487). Anodize on aluminium → eddy current (B244). Destructive check → cross-section (B487).</p>
-<p class="src">Basis: referenced-document lists of ASTM B633, B689, B733, B840, B841, MIL-PRF-8625 and SAE AMS 2428A.</p>
+
+<h3>2 · The methods</h3>
+<div class="tscroll"><table>
+<tr><th>Method</th><th>Destroys part?</th><th>What to know</th></tr>
+<tr><td>B499 magnetic</td><td>No</td><td>Non-magnetic coatings on a magnetic base. Reliable for most non-ferrous coatings on steel and suitable for acceptance and SPC. Complies with ISO 2178.</td></tr>
+<tr><td>B530 magnetic, nickel</td><td>No</td><td>Electroplated nickel on magnetic (Type A) or non-magnetic (Type B) bases. Pull-off gauges reach about 50 µm on A and 25 µm on B; electronic gauges reach 1 mm or more.</td></tr>
+<tr><td>B244 eddy current</td><td>No</td><td>Non-conductive coatings on non-magnetic metals; the go-to method for anodize.</td></tr>
+<tr><td>E376</td><td>No</td><td>The umbrella practice for magnetic and eddy-current gauges. B244, B499 and B530 are its specific methods. Named in MIL-PRF-8625 Amd 2 for Type III.</td></tr>
+<tr><td>B568 XRF</td><td>No (no contact)</td><td>Metallic and some non-metallic coatings, roughly 0.01–75 µm depending on the coating and base. Handles combinations other methods can't. Measures mass per area, so thickness needs the coating density.</td></tr>
+<tr><td>B567 beta backscatter</td><td>No</td><td>Works only if the coating's and base's atomic numbers differ enough. Measures mass per area. Not for acceptance when the drawing specifies thickness and the coating density varies or is unknown.</td></tr>
+<tr><td>B504 coulometric</td><td>Yes — a small spot</td><td>Electrochemically strips the coating over about 0.1 cm². Only where a bare spot is acceptable or the piece is scrap. An alloy layer at the interface can make it read high.</td></tr>
+<tr><td>B487 cross-section</td><td>Yes</td><td>Local thickness under an optical microscope; suitable for acceptance. About 0.8 µm accuracy under good conditions, as a guideline. A tapered section or rounded edge gives a false reading.</td></tr>
+</table></div>
+
+<h3>3 · Hardness, adhesion, corrosion</h3>
+<ul class="coatlist">
+<li><strong>B578 coating microhardness (Knoop):</strong> taken on a cross-section, not the surface; readings made on the plated surface aren't reportable. The coating must be at least <strong>25 µm</strong> for hard coatings (nickel, cobalt, iron, hard gold) and 38 µm for soft ones (gold, copper, silver). A thin SC1 or SC2 electroless nickel can't be hardness tested on the part, so use a thicker test panel run with the parts.</li>
+<li><strong>B571 adhesion:</strong> qualitative tests (bend, file, grind/saw, heat-quench, impact, peel, push, scribe and others), each suited to certain coatings. For acceptance, the method <strong>must be specified</strong>. If more than one test is used, failing any one is a reject. If parts are baked or heat treated after plating, test adhesion after that treatment too.</li>
+<li><strong>B117 salt spray:</strong> the fog test behind the hours in B633, MIL-PRF-8625 and others. It's a process check against the spec's hours, and applies only if the order calls for it.</li>
+<li><strong>B602 sampling:</strong> attribute sampling plans for coating inspection. MIL-PRF-8625 Amd 2 requires MIL-STD-1916 instead.</li>
+</ul>
+
+<h3>4 · Traps that catch good inspectors</h3>
+<ul class="coatlist">
+<li><strong>Gauges read the total, not the layers.</strong> Magnetic gauges measure the combined thickness of every layer down to the base metal. A nickel + chrome or nickel + cobalt rod needs a cross-section for each layer.</li>
+<li><strong>Calibrate on the same base metal.</strong> B499 requires the calibration base to have the same magnetic properties as the part, and B244 the same electrical conductivity. Zeroing on mild steel and measuring an alloy-steel rod, or on 6061 and measuring 7075, builds in an error.</li>
+<li><strong>Electroless nickel changes after heat treatment.</strong> High-phosphorus EN is non-magnetic enough for B499 only <em>before</em> heat treatment, so measure before any Class 2 hardening bake.</li>
+<li><strong>XRF and beta give mass, not microns.</strong> The microns on the screen assume a density. For alloys like zinc-nickel or cobalt-phosphorus, check the instrument's calibration is set up for that alloy.</li>
+<li><strong>A cross-section is only as good as its prep.</strong> At ±0.8 µm, B487 is already a meaningful share of a 5 µm SC1 zinc, so a poor section on thin coatings can decide accept or reject.</li>
+</ul>
+<p class="note"><strong>Quick rule:</strong> zinc and chrome on steel → B499. Nickel → B530. Anodize → B244. Cobalt, or anything with two layers → B487 cross-section (or B568 XRF).</p>
+<p class="src">Basis: scope / significance sections of ASTM B499-09(2026), B530-09(2021), B244-09(2021), E376-26, B568-98(2021), B567-98(2021), B504-90(2023), B487-24, B578-21, B571-23; MIL-PRF-8625F Amd 2 (§4.4, sampling).</p>
 </div></details>
 </section>
 

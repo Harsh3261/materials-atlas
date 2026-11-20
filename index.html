@@ -13,8 +13,8 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <title>Materials Atlas</title>
-<!-- MAP: single-file app. The style element = all CSS · body = header, 4 tab views
-     (BROWSE · COMPARE · CHECK A CERT · LEARN), footer · one script element at the end
+<!-- MAP: single-file app. The style element = all CSS · body = header, 5 tab views
+     (BROWSE · COMPARE · CHECK A CERT · LEARN · COATINGS), footer · one script element at the end
      (read its SCRIPT MAP header first). README.md documents architecture,
      provenance and the publish workflow; selftest/run.js is the pre-publish gate. -->
 <link rel="stylesheet" href="vendor/fonts.css"><!-- self-hosted fonts: no third-party request, identical offline -->
@@ -600,6 +600,14 @@ a{color:var(--teal)}
 /* sticky strips: translucent glass instead of a flat black band */
 #view-browse > .controls,#view-compare .grid2{background:rgba(8,7,10,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 @media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(8,7,10,.0)}}
+/* ===== 2026-11-20 coatings & finishes tab ===== */
+#view-coat .tscroll{overflow-x:auto;margin:10px 0}
+#view-coat .tscroll table{min-width:300px}
+#view-coat code{font-family:var(--mono);font-size:13px;background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:4px;color:var(--ink)}
+#view-coat .coatlist{margin:8px 0;padding-left:20px;font-size:14px}
+#view-coat .coatlist li{margin:6px 0}
+#view-coat details.lt{scroll-margin-top:84px}
+@media (max-width:380px){#view-coat table{font-size:12px}#view-coat td,#view-coat th{padding-left:4px;padding-right:4px}#view-coat th{letter-spacing:0}}
 </style>
 </head>
 <body>
@@ -616,6 +624,7 @@ a{color:var(--teal)}
   <button role="tab" aria-selected="false" data-view="compare">Compare</button>
   <button role="tab" aria-selected="false" data-view="check">Check a Cert</button>
   <button role="tab" aria-selected="false" data-view="learn">Learn</button>
+  <button role="tab" aria-selected="false" data-view="coat">Coatings</button>
 </nav>
 
 <!-- ============ BROWSE ============ -->
@@ -834,6 +843,176 @@ a{color:var(--teal)}
 <details class="card lt" id="lt-ndt"><summary><span class="lnum">13</span><span class="ltitle">NDT basics</span><span class="lkey">Which inspection finds which defect.</span></summary><div class="ldetail"><table class="ndt"><tr><th>Method</th><th>Finds</th><th>Works on</th><th>Misses / limits</th><th>Typical standards</th></tr><tr><td>Visual (VT)</td><td>Surface defects you can see</td><td>Any</td><td>Hidden or tiny defects</td><td>ASME V, AWS D1.1</td></tr><tr><td>Magnetic particle (MT)</td><td>Surface and slightly sub-surface cracks</td><td>Ferromagnetic material only (carbon, alloy, martensitic/ferritic stainless)</td><td>Austenitic stainless, aluminium, copper; deep flaws</td><td>ASTM E3024 (general industry), E1444 (aerospace), E709 (guide)</td></tr><tr><td>Liquid penetrant (PT)</td><td>Surface-breaking cracks and porosity</td><td>Any non-porous material</td><td>Sub-surface flaws, closed cracks under paint or plating</td><td>ASTM E1417, E165</td></tr><tr><td>Ultrasonic (UT)</td><td>Internal flaws, laminations, wall thickness</td><td>Most metals</td><td>Very thin or coarse-grained parts need special technique</td><td>ASTM E114, E797, A388</td></tr><tr><td>Radiography (RT)</td><td>Internal porosity, inclusions, lack of fusion</td><td>Any</td><td>Planar cracks lying across the beam</td><td>ASTM E94, E1742</td></tr><tr><td>Eddy current (ET)</td><td>Surface and near-surface cracks, tube wall defects</td><td>Electrically conductive</td><td>Deep flaws; ferromagnetic material needs magnetic saturation or special probes</td><td>Tubing: ASTM E309 (steel, magnetic saturation), E426 (austenitic stainless, Ti, Ni alloys)</td></tr></table><div class="lgloss"><div class="lgi htc"><h4><strong>Personnel qualification</strong> <span class="htcode">SNT-TC-1A · ISO 9712</span></h4><p>NDT inspectors are certified Level I, II or III per the employer's written practice (ASNT SNT-TC-1A) or a central scheme (ISO 9712).</p><p class="lwhy"><strong>On a cert:</strong> An NDT report should name the inspector's level and the procedure used.</p></div><div class="lgi htc"><h4><strong>Pick the method for the defect</strong></h4><p>Surface cracks on steel → MT. Surface cracks on austenitic stainless, aluminium or copper alloys → PT. Internal flaws or wall thickness → UT. Weld volume → UT or RT. Tube → ET.</p><p class="lwhy"><strong>Rule of thumb:</strong> MT on austenitic stainless is a common mistake: it isn't magnetic, so MT finds nothing.</p></div></div><p class="src">Basis: ASTM E3024, E1444, E709, E1417, E165, E114, E797, A388, E94, E1742, E309, E426; ASME Section V; AWS D1.1; ASNT SNT-TC-1A; ISO 9712.</p></div></details>
 
 </section>
+
+<!-- ============ COATINGS & FINISHES (added 2026-11-20) ============
+     Plating / anodizing thickness and acceptance requirements for incoming
+     inspection. Values were checked against the standards' own text (official
+     previews or the free MIL spec). Anything not confirmed carries a
+     CHECK YOUR COPY badge and must not be used for acceptance until verified
+     against the licensed standard. Edit data only via a verified data change. -->
+<section class="view" id="view-coat">
+<div class="panel">
+<h2>Coatings &amp; finishes</h2>
+<p class="hint">Plating and anodizing callouts as a quality person reads them: the standard, its classes and types, the thickness it requires, and how to measure it.</p>
+<p class="note"><span class="badge b-spec">SOURCE CHECKED</span> value matches the standard's own text. <span class="badge b-typ">CHECK YOUR COPY</span> not confirmed yet — confirm against your licensed copy before using it to accept or reject.</p>
+<p class="note">Minimum thickness applies to <strong>significant surfaces</strong> (marked on the drawing or PO). Holes, recesses and inside corners usually can't meet it unless the drawing says so.</p>
+<div class="lchips coatjump" role="group" aria-label="Jump to a coating"><button type="button" data-cgo="ct-zn">Zinc</button><button type="button" data-cgo="ct-znni">Zinc-nickel</button><button type="button" data-cgo="ct-znco">Zinc-cobalt</button><button type="button" data-cgo="ct-en">Electroless nickel</button><button type="button" data-cgo="ct-ni">Nickel</button><button type="button" data-cgo="ct-cr">Hard chrome</button><button type="button" data-cgo="ct-anod">Anodize</button><button type="button" data-cgo="ct-meas">Measuring</button></div>
+<p class="disclaim">Reference aid only. Accept or reject against the current licensed standard, the drawing and your purchase order.</p>
+</div>
+
+<details class="card lt" id="ct-zn" open><summary><span class="lnum">1</span><span class="ltitle">Zinc on iron &amp; steel</span><span class="lkey">ASTM B633-23 · incl. non-hex Types V &amp; VI</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Current edition ASTM B633-23 (Jan 2023). The order must state B633, the issue date, the service condition and the Type.</p>
+<p class="note"><strong>Example callout:</strong> <code>ASTM B633-23, Fe/Zn 12, SC 3, Type V</code></p>
+<div class="tscroll"><table>
+<tr><th>Classification</th><th>Service condition</th><th class="num">Min thickness</th></tr>
+<tr><td>Fe/Zn 5</td><td>SC 1 — mild</td><td class="num">5 µm (≈0.0002 in)</td></tr>
+<tr><td>Fe/Zn 8</td><td>SC 2 — moderate</td><td class="num">8 µm (≈0.0003 in)</td></tr>
+<tr><td>Fe/Zn 12</td><td>SC 3 — severe</td><td class="num">12 µm (≈0.0005 in)</td></tr>
+<tr><td>Fe/Zn 25</td><td>SC 4 — very severe</td><td class="num">25 µm (≈0.0010 in)</td></tr>
+</table></div>
+<div class="tscroll"><table>
+<tr><th>Type</th><th>Supplementary finish</th><th class="num">Min salt spray</th></tr>
+<tr><td>I</td><td>As plated, no supplementary treatment</td><td class="num">—</td></tr>
+<tr><td>II</td><td>Colored chromate (hexavalent)</td><td class="num">96 h</td></tr>
+<tr><td>III</td><td>Colorless chromate</td><td class="num">12 h</td></tr>
+<tr><td>IV</td><td>Phosphate conversion coating</td><td class="num">—</td></tr>
+<tr><td><strong>V</strong></td><td><strong>Colorless passivate — no hexavalent chromium</strong></td><td class="num">72 h</td></tr>
+<tr><td><strong>VI</strong></td><td><strong>Colored passivate — no hexavalent chromium</strong></td><td class="num">120 h</td></tr>
+</table></div>
+<ul class="coatlist">
+<li><strong>Non-hex / RoHS:</strong> Types V and VI were added so passivates without hexavalent chromium can replace chromate. If a drawing still says Type II and your company runs non-hex, that's a drawing or deviation question, not a plater's choice.</li>
+<li><strong>Thickness is measured after</strong> the supplementary treatment for Types II–VI.</li>
+<li><strong>High-strength steel:</strong> don't zinc plate to B633 above 1700 MPa (247 ksi, ≈46 HRC). Stress-relief and hydrogen-embrittlement relief treatments follow ASTM B849 and B850.</li>
+<li><strong>Fasteners:</strong> B633 points you to ASTM F1941/F1941M instead.</li>
+<li>Salt spray hours are a <em>process</em> test per ASTM B117 and only apply if the order calls for them.</li>
+</ul>
+<p class="src">Basis: ASTM B633-23 scope and Tables 1–2 (official preview and prior editions; service-condition thicknesses match earlier editions; Types V and VI added in B633-13).</p>
+</div></details>
+
+<details class="card lt" id="ct-znni"><summary><span class="lnum">2</span><span class="ltitle">Zinc-nickel</span><span class="lkey">ASTM B841-18 (reapproved 2024)</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Order by Class, Type and Grade.</p>
+<div class="tscroll"><table>
+<tr><th>Class</th><th>Nickel content</th></tr>
+<tr><td>Class 1</td><td>5–12 % Ni, balance zinc</td></tr>
+<tr><td>Class 2</td><td>12–16 % Ni, balance zinc</td></tr>
+</table></div>
+<div class="tscroll"><table>
+<tr><th>Grade</th><th class="num">Min thickness</th><th>Old grade</th></tr>
+<tr><td>5</td><td class="num">5 µm</td><td>1</td></tr>
+<tr><td>8</td><td class="num">8 µm</td><td>2</td></tr>
+<tr><td>10</td><td class="num">10 µm</td><td>3</td></tr>
+</table></div>
+<p class="note"><strong>Types</strong> (conversion coating or passivate): A colorless (blue bright) · B yellow iridescent · C bronze · D black · E any of these plus an organic topcoat.</p>
+<p class="note">Old drawings may call Grade 1/2/3. Those are the same 5/8/10 µm grades under the old numbering.</p>
+<p class="src">Basis: ASTM B841-18 §4.1–4.3 (official preview); current edition B841-18(2024).</p>
+</div></details>
+
+<details class="card lt" id="ct-znco"><summary><span class="lnum">3</span><span class="ltitle">Zinc-cobalt</span><span class="lkey">ASTM B840-22</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Class 1 is about 99 % zinc with at least 0.5 % cobalt. Five coating types; Type A is a colorless (blue bright) chromate conversion coating.</p>
+<p><span class="badge b-typ">CHECK YOUR COPY</span> B840 defines three thickness grades. Their values weren't visible in any free source, so they're <strong>not listed here yet</strong>. Read them off your licensed copy.</p>
+<p class="note">This card is zinc-cobalt alloy plating. Pure cobalt plating is a different process and isn't covered here yet.</p>
+<p class="src">Basis: ASTM B840-22 §1, §4.1–4.2 (official preview).</p>
+</div></details>
+
+<details class="card lt" id="ct-en"><summary><span class="lnum">4</span><span class="ltitle">Electroless nickel</span><span class="lkey">ASTM B733-22 (reapproved 2026)</span></summary><div class="ldetail">
+<p>Ordered by Type (phosphorus content), service condition (thickness) and Class (post-plate heat treatment).</p>
+<div class="tscroll"><table>
+<tr><th>Service condition</th><th class="num">Min thickness</th><th>Status</th></tr>
+<tr><td>SC0 — minimum service</td><td class="num">0.1 µm</td><td><span class="badge b-spec">CHECKED</span></td></tr>
+<tr><td>SC1 — light service</td><td class="num">5 µm (0.0002 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
+<tr><td>SC2 — mild service</td><td class="num">13 µm (0.0005 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
+<tr><td>SC3 — moderate service</td><td class="num">25 µm (0.001 in)</td><td><span class="badge b-typ">CHECK COPY</span></td></tr>
+<tr><td>SC4 — severe service</td><td class="num">75 µm (0.003 in)</td><td><span class="badge b-typ">CHECK COPY</span></td></tr>
+</table></div>
+<div class="tscroll"><table>
+<tr><th>Type</th><th>Phosphorus, wt %</th></tr>
+<tr><td>I</td><td>No requirement</td></tr>
+<tr><td>II</td><td>1–3</td></tr>
+<tr><td>III</td><td>2–4</td></tr>
+<tr><td>IV</td><td>5–9</td></tr>
+<tr><td>V</td><td>10 and above</td></tr>
+</table></div>
+<p><span class="badge b-typ">CHECK YOUR COPY</span> SC3, SC4 and the Type table come from the B733-97 text. Some much older editions used different SC numbers, so <strong>always read the edition on the drawing.</strong></p>
+<p class="note">Aerospace electroless nickel is often called out to AMS 2404 instead.</p>
+<p class="src">Basis: ASTM B733-22 §4.2 (official preview) and B733-97 Tables 1–2.</p>
+</div></details>
+
+<details class="card lt" id="ct-ni"><summary><span class="lnum">5</span><span class="ltitle">Electroplated nickel</span><span class="lkey">ASTM B689-97 (reapproved 2023) · engineering nickel</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> For engineering use (wear, buildup of worn or mis-machined parts, electronics), not decorative.</p>
+<div class="tscroll"><table>
+<tr><th>Type</th><th>What it is</th></tr>
+<tr><td>1</td><td>Plated from a bath with no hardeners, brighteners or stress-control additives</td></tr>
+<tr><td>2</td><td>Contains sulfur or other co-deposited elements to raise hardness, refine grain or control stress</td></tr>
+<tr><td>3</td><td>Contains dispersed sub-micron particles (e.g. silicon carbide, tungsten carbide)</td></tr>
+</table></div>
+<p class="note"><strong>Thickness:</strong> B689 has no thickness classes. The drawing must state the thickness and the significant surfaces.</p>
+<p class="note">Thickness may be measured destructively (cross-section, coulometric) or non-destructively (magnetic, X-ray).</p>
+<p class="src">Basis: ASTM B689-97(2023) scope and §4.1 (official preview).</p>
+</div></details>
+
+<details class="card lt" id="ct-cr"><summary><span class="lnum">6</span><span class="ltitle">Hard chrome (cylinder rods)</span><span class="lkey">SAE AMS 2460 · replaces QQ-C-320</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> AMS 2460 superseded AMS-QQ-C-320 in 2007, which itself replaced federal QQ-C-320. Old drawings calling QQ-C-320 should be read as AMS 2460.</p>
+<div class="tscroll"><table>
+<tr><th>Class</th><th>Use</th></tr>
+<tr><td>Class 1</td><td>Corrosion-protective (thin chrome, usually over nickel and/or copper)</td></tr>
+<tr><td><strong>Class 2</strong></td><td><strong>Engineering / hard chrome — wear, abrasion, friction. This is the rod callout.</strong></td></tr>
+</table></div>
+<p class="note"><strong>Thickness:</strong> set on the drawing, not by the spec. Check whether the drawing means <em>as-plated</em> or <em>after grinding</em>. NASA PRC-5003, for example, writes the Class 2 note as a final thickness after grinding.</p>
+<p class="note"><strong>Related specs:</strong> AMS 2406 (hard chrome deposit) · AMS 2438F (thin, hard, dense chrome, Dec 2021) · MIL-STD-1501 (low-embrittlement hard chrome on high-strength steel).</p>
+<p><span class="badge b-typ">CHECK YOUR COPY</span> Supplier sources list AMS 2460B as the current revision. Confirm the revision on SAE MOBILUS.</p>
+<p class="src">Basis: SAE AMS 2460 scope and supersession notice; NASA JSC PRC-5003 rev E.</p>
+</div></details>
+
+<details class="card lt" id="ct-anod"><summary><span class="lnum">7</span><span class="ltitle">Anodize (aluminium)</span><span class="lkey">MIL-PRF-8625F Amd 2 · free on DLA ASSIST</span></summary><div class="ldetail">
+<p>MIL-PRF-8625F (Amendment 2, 23 Nov 2020) superseded MIL-A-8625F. It's a free government document, so the full spec is available from assist.dla.mil.</p>
+<p class="note"><strong>Example callout:</strong> <code>MIL-PRF-8625, Type III, Class 2 black, 0.002 in</code></p>
+<div class="tscroll"><table>
+<tr><th>Type</th><th>Process</th><th>Requirement (unsealed)</th></tr>
+<tr><td>I</td><td>Chromic acid</td><td class="num">≥ 200 mg/ft²</td></tr>
+<tr><td>IB</td><td>Chromic acid, low voltage (22 ± 2 V)</td><td class="num">≥ 200 mg/ft²</td></tr>
+<tr><td>IC</td><td>Non-chromic alternative to I / IB</td><td class="num">200–700 mg/ft²</td></tr>
+<tr><td>II</td><td>Sulfuric acid</td><td class="num">≥ 1000 mg/ft²</td></tr>
+<tr><td>IIB</td><td>Thin sulfuric, non-chromate alternative to I / IB</td><td class="num">200–1000 mg/ft²</td></tr>
+<tr><td><strong>III</strong></td><td><strong>Hard anodic coating</strong></td><td class="num"><strong>Thickness — see below</strong></td></tr>
+</table></div>
+<p class="note"><strong>Class 1</strong> = non-dyed · <strong>Class 2</strong> = dyed.</p>
+<div class="tscroll"><table>
+<tr><th>Type III thickness</th><th class="num">Requirement</th></tr>
+<tr><td>Not specified on drawing / PO</td><td class="num">0.002 in (2 mil) nominal</td></tr>
+<tr><td>Tolerance, coatings up to 0.002 in</td><td class="num">± 20 %</td></tr>
+<tr><td>Tolerance, coatings over 0.002 in</td><td class="num">± 0.0004 in</td></tr>
+</table></div>
+<ul class="coatlist">
+<li>Types I–IIB are accepted on <strong>coating weight</strong>, not thickness. Type III is accepted on thickness, unless the buyer chooses coating weight instead.</li>
+<li><strong>Sealing:</strong> Types I–IIB are fully sealed unless the drawing says otherwise. Type III is not sealed when wear resistance is the purpose.</li>
+<li><strong>Salt spray:</strong> 336 h per ASTM B117 for the sealed types, judged by an isolated-pit count.</li>
+</ul>
+<p><span class="badge b-typ">CHECK YOUR COPY</span> These values were read from the MIL-A-8625F text. Confirm them against the Amendment 2 PDF on ASSIST; it's free.</p>
+<p class="src">Basis: MIL-A-8625F §1.2, §3.7.1.1 Table I, §3.7.2.1, §3.8, §4.5.3.1; MIL-PRF-8625F Amd 2 title page.</p>
+</div></details>
+
+<details class="card lt" id="ct-meas"><summary><span class="lnum">8</span><span class="ltitle">Measuring &amp; testing</span><span class="lkey">Which ASTM method for which coating</span></summary><div class="ldetail">
+<div class="tscroll"><table>
+<tr><th>Method</th><th>What it does</th></tr>
+<tr><td>ASTM B499</td><td>Magnetic: non-magnetic coating on a magnetic base (zinc or chrome on steel)</td></tr>
+<tr><td>ASTM B530</td><td>Magnetic: electroplated nickel on magnetic or non-magnetic bases</td></tr>
+<tr><td>ASTM B244</td><td>Eddy current: anodize on aluminium and other non-conductive coatings on non-magnetic metals</td></tr>
+<tr><td>ASTM B568</td><td>X-ray fluorescence (XRF)</td></tr>
+<tr><td>ASTM B504</td><td>Coulometric (destructive)</td></tr>
+<tr><td>ASTM B487</td><td>Cross-section under a microscope (destructive)</td></tr>
+<tr><td>ASTM B567</td><td>Beta backscatter</td></tr>
+<tr><td>ASTM B556</td><td>Spot test for thin chromium coatings</td></tr>
+<tr><td>ASTM B137</td><td>Coating mass (weight) on anodized aluminium</td></tr>
+<tr><td>ASTM B571</td><td>Adhesion of metallic coatings (qualitative)</td></tr>
+<tr><td>ASTM B117</td><td>Salt spray (fog) test</td></tr>
+<tr><td>ASTM B602</td><td>Attribute sampling for coatings inspection</td></tr>
+<tr><td>ASTM B849 / B850</td><td>Pre- and post-plating treatments of steel to reduce hydrogen embrittlement risk</td></tr>
+</table></div>
+<p class="note"><strong>Quick rule:</strong> zinc, zinc alloys and chrome on steel → magnetic gauge (B499). Anodize on aluminium → eddy current (B244). Destructive check → cross-section (B487).</p>
+<p class="src">Basis: referenced-document lists of ASTM B633, B689, B733, B840, B841 and MIL-PRF-8625.</p>
+</div></details>
+</section>
+
 
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
      constant in the script; the © line and maker's mark stay verbatim. -->
@@ -2297,6 +2476,11 @@ document.querySelectorAll("nav.tabs button").forEach(b=>{
        the old scroll position against a taller previous view. */
     window.scrollTo({top:0,left:0,behavior:"instant"});
   });
+});
+
+/* ============ coatings tab: jump chips (2026-11-20) ============ */
+document.querySelectorAll("#view-coat [data-cgo]").forEach(b=>{
+  b.addEventListener("click",()=>{const d=document.getElementById(b.dataset.cgo);if(!d)return;d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"});});
 });
 
 /* ============ start-here routes ============ */

@@ -1,3 +1,28 @@
+# Note for Muse — Coatings & Finishes tab added (2026-11-20)
+
+Harsh asked Claude to add a fifth tab, **Coatings** (`data-view="coat"`,
+`#view-coat`), directly on GitHub. It is self-contained: one new section before
+the footer, one nav button, a CSS block marked `2026-11-20 coatings`, and a small
+jump-chip script just above "start-here routes". No existing data fence, DATAREV,
+or hashed literal was touched. Cache bumped to `materials-atlas-v90-coatings`.
+
+Content: ASTM B633-23 (zinc, incl. non-hex Types V/VI), B841-18(2024) Zn-Ni,
+B840-22 Zn-Co, B733-22(2026) electroless Ni, B689-97(2023) Ni, SAE AMS 2460
+hard chrome, MIL-PRF-8625F Amd 2 anodize, and a thickness-measurement method map.
+
+Open items (shown in the tab with a CHECK YOUR COPY badge — do not remove the
+badge until Harsh confirms each value against his licensed copy):
+- B840 zinc-cobalt thickness grades: not listed (not in any free source).
+- B733 SC3 (25 µm), SC4 (75 µm) and the Type I–V phosphorus table: read from
+  B733-97 text; confirm against B733-22.
+- AMS 2460 current revision (supplier sources say B).
+- MIL-PRF-8625 values read from MIL-A-8625F text; confirm against Amd 2 PDF.
+- "Cobalt plating" at Hydra-Dyne may be pure cobalt, not Zn-Co — ask Harsh.
+
+Please carry the new section into your research files before your next build.
+
+---
+
 # Note for Muse — external audit corrections (2026-11-15)
 
 Harsh asked Claude to audit both live sites against independent sources. Four

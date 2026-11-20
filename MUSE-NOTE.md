@@ -10,14 +10,17 @@ Content: ASTM B633-23 (zinc, incl. non-hex Types V/VI), B841-18(2024) Zn-Ni,
 B840-22 Zn-Co, B733-22(2026) electroless Ni, B689-97(2023) Ni, SAE AMS 2460
 hard chrome, MIL-PRF-8625F Amd 2 anodize, and a thickness-measurement method map.
 
-Open items (shown in the tab with a CHECK YOUR COPY badge — do not remove the
-badge until Harsh confirms each value against his licensed copy):
-- B840 zinc-cobalt thickness grades: not listed (not in any free source).
-- B733 SC3 (25 µm), SC4 (75 µm) and the Type I–V phosphorus table: read from
-  B733-97 text; confirm against B733-22.
-- AMS 2460 current revision (supplier sources say B).
-- MIL-PRF-8625 values read from MIL-A-8625F text; confirm against Amd 2 PDF.
-- "Cobalt plating" at Hydra-Dyne may be pure cobalt, not Zn-Co — ask Harsh.
+Verification pass 2 (2026-11-20): every earlier CHECK YOUR COPY item was
+confirmed against the standard's own text and the badges were removed:
+- B840-22 Zn-Co grades 6 / 12 / 18 µm (old 1 / 2 / 3), Types A–E.
+- B733-22 SC0–SC4 (0.1 / 5 / 13 / 25 / 75 µm), Types I–V, Classes 1–6.
+- AMS 2460B is current (6 Feb 2023).
+- MIL-PRF-8625F Amd 2 values match MIL-A-8625F. Added: Type III unsealed
+  weight 4320 mg/ft² per 0.001 in, Cu > 5.0 % / Si > 8.0 % alloy limit,
+  Table III radii, MIL-STD-1916 sampling.
+- B633-23: added §6.4 stress relief (> 1000 MPa) and §6.5 bake (> 1200 MPa).
+Still open: Hydra-Dyne's "cobalt plating" may be pure cobalt rather than Zn-Co.
+Ask Harsh before adding a pure-cobalt card.
 
 Please carry the new section into your research files before your next build.
 

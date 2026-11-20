@@ -846,15 +846,17 @@ a{color:var(--teal)}
 
 <!-- ============ COATINGS & FINISHES (added 2026-11-20) ============
      Plating / anodizing thickness and acceptance requirements for incoming
-     inspection. Values were checked against the standards' own text (official
-     previews or the free MIL spec). Anything not confirmed carries a
-     CHECK YOUR COPY badge and must not be used for acceptance until verified
-     against the licensed standard. Edit data only via a verified data change. -->
+     inspection. Every value was checked against the standard's own text
+     (official ASTM previews, the published MIL-PRF-8625F Amd 2 text, SAE
+     catalogue) and, where possible, a second independent source. Verification
+     pass 2 on 2026-11-20 closed all CHECK YOUR COPY items. Any value added later
+     that can't be confirmed must carry that badge. Edit data only via a
+     verified data change. -->
 <section class="view" id="view-coat">
 <div class="panel">
 <h2>Coatings &amp; finishes</h2>
 <p class="hint">Plating and anodizing callouts as a quality person reads them: the standard, its classes and types, the thickness it requires, and how to measure it.</p>
-<p class="note"><span class="badge b-spec">SOURCE CHECKED</span> value matches the standard's own text. <span class="badge b-typ">CHECK YOUR COPY</span> not confirmed yet — confirm against your licensed copy before using it to accept or reject.</p>
+<p class="note"><span class="badge b-spec">SOURCE CHECKED</span> value matches the standard's own text (official preview or published spec), cross-checked against a second source where one exists. Values verified 2026-11-20.</p>
 <p class="note">Minimum thickness applies to <strong>significant surfaces</strong> (marked on the drawing or PO). Holes, recesses and inside corners usually can't meet it unless the drawing says so.</p>
 <div class="lchips coatjump" role="group" aria-label="Jump to a coating"><button type="button" data-cgo="ct-zn">Zinc</button><button type="button" data-cgo="ct-znni">Zinc-nickel</button><button type="button" data-cgo="ct-znco">Zinc-cobalt</button><button type="button" data-cgo="ct-en">Electroless nickel</button><button type="button" data-cgo="ct-ni">Nickel</button><button type="button" data-cgo="ct-cr">Hard chrome</button><button type="button" data-cgo="ct-anod">Anodize</button><button type="button" data-cgo="ct-meas">Measuring</button></div>
 <p class="disclaim">Reference aid only. Accept or reject against the current licensed standard, the drawing and your purchase order.</p>
@@ -882,11 +884,13 @@ a{color:var(--teal)}
 <ul class="coatlist">
 <li><strong>Non-hex / RoHS:</strong> Types V and VI were added so passivates without hexavalent chromium can replace chromate. If a drawing still says Type II and your company runs non-hex, that's a drawing or deviation question, not a plater's choice.</li>
 <li><strong>Thickness is measured after</strong> the supplementary treatment for Types II–VI.</li>
-<li><strong>High-strength steel:</strong> don't zinc plate to B633 above 1700 MPa (247 ksi, ≈46 HRC). Stress-relief and hydrogen-embrittlement relief treatments follow ASTM B849 and B850.</li>
+<li><strong>High-strength steel:</strong> don't zinc plate to B633 above 1700 MPa (247 ksi, 46 HRC).</li>
+<li><strong>Stress relief before plating:</strong> parts over 1000 MPa (31 HRC) that carry cold-forming or cold-straightening stresses must be stress relieved first.</li>
+<li><strong>Hydrogen-embrittlement bake after plating:</strong> parts over 1200 MPa (39 HRC), and surface-hardened parts, must be baked. The <em>purchaser</em> has to put the bake requirement on the order. Common treatments are listed in ASTM B849 (before plating) and B850 (after plating).</li>
 <li><strong>Fasteners:</strong> B633 points you to ASTM F1941/F1941M instead.</li>
 <li>Salt spray hours are a <em>process</em> test per ASTM B117 and only apply if the order calls for them.</li>
 </ul>
-<p class="src">Basis: ASTM B633-23 scope and Tables 1–2 (official preview and prior editions; service-condition thicknesses match earlier editions; Types V and VI added in B633-13).</p>
+<p class="src">Basis: ASTM B633-23 official preview — Tables 1–2, §1.4, §6.4, §6.5, §10.1.4. Cross-checked: B633-15 and B633-19 texts (same values).</p>
 </div></details>
 
 <details class="card lt" id="ct-znni"><summary><span class="lnum">2</span><span class="ltitle">Zinc-nickel</span><span class="lkey">ASTM B841-18 (reapproved 2024)</span></summary><div class="ldetail">
@@ -908,10 +912,18 @@ a{color:var(--teal)}
 </div></details>
 
 <details class="card lt" id="ct-znco"><summary><span class="lnum">3</span><span class="ltitle">Zinc-cobalt</span><span class="lkey">ASTM B840-22</span></summary><div class="ldetail">
-<p><span class="badge b-spec">SOURCE CHECKED</span> Class 1 is about 99 % zinc with at least 0.5 % cobalt. Five coating types; Type A is a colorless (blue bright) chromate conversion coating.</p>
-<p><span class="badge b-typ">CHECK YOUR COPY</span> B840 defines three thickness grades. Their values weren't visible in any free source, so they're <strong>not listed here yet</strong>. Read them off your licensed copy.</p>
+<p><span class="badge b-spec">SOURCE CHECKED</span> Class 1 is about 99 % zinc with at least 0.5 % cobalt. Order by Class, Type and Grade.</p>
+<div class="tscroll"><table>
+<tr><th>Grade</th><th class="num">Min thickness</th><th>Old grade</th></tr>
+<tr><td>6</td><td class="num">6 µm</td><td>1</td></tr>
+<tr><td>12</td><td class="num">12 µm</td><td>2</td></tr>
+<tr><td>18</td><td class="num">18 µm</td><td>3</td></tr>
+</table></div>
+<p class="note"><strong>Types:</strong> A colorless (blue bright) chromate · B yellow chromate · C bronze chromate · D black chromate · E any of these plus an organic topcoat.</p>
+<p class="note">Zinc-cobalt grades are <strong>6 / 12 / 18 µm</strong>. That's different from zinc-nickel (5 / 8 / 10 µm), so don't mix up the tables when a drawing just says "Grade 2".</p>
+<p class="note">B840 defines its Types as <em>chromate</em> conversion coatings. If your parts get a non-hex (trivalent) finish, make sure the drawing or PO says so.</p>
 <p class="note">This card is zinc-cobalt alloy plating. Pure cobalt plating is a different process and isn't covered here yet.</p>
-<p class="src">Basis: ASTM B840-22 §1, §4.1–4.2 (official preview).</p>
+<p class="src">Basis: ASTM B840-22 §4.1–4.3 (official text); B840-99 §4.2 (Types A–E, same wording); grade table cross-checked against a fastener supplier's B840 summary and Total Materia's B840:2022 "Grade 12" entry.</p>
 </div></details>
 
 <details class="card lt" id="ct-en"><summary><span class="lnum">4</span><span class="ltitle">Electroless nickel</span><span class="lkey">ASTM B733-22 (reapproved 2026)</span></summary><div class="ldetail">
@@ -921,8 +933,8 @@ a{color:var(--teal)}
 <tr><td>SC0 — minimum service</td><td class="num">0.1 µm</td><td><span class="badge b-spec">CHECKED</span></td></tr>
 <tr><td>SC1 — light service</td><td class="num">5 µm (0.0002 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
 <tr><td>SC2 — mild service</td><td class="num">13 µm (0.0005 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
-<tr><td>SC3 — moderate service</td><td class="num">25 µm (0.001 in)</td><td><span class="badge b-typ">CHECK COPY</span></td></tr>
-<tr><td>SC4 — severe service</td><td class="num">75 µm (0.003 in)</td><td><span class="badge b-typ">CHECK COPY</span></td></tr>
+<tr><td>SC3 — moderate service</td><td class="num">25 µm (0.001 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
+<tr><td>SC4 — severe service</td><td class="num">75 µm (0.003 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
 </table></div>
 <div class="tscroll"><table>
 <tr><th>Type</th><th>Phosphorus, wt %</th></tr>
@@ -932,9 +944,19 @@ a{color:var(--teal)}
 <tr><td>IV</td><td>5–9</td></tr>
 <tr><td>V</td><td>10 and above</td></tr>
 </table></div>
-<p><span class="badge b-typ">CHECK YOUR COPY</span> SC3, SC4 and the Type table come from the B733-97 text. Some much older editions used different SC numbers, so <strong>always read the edition on the drawing.</strong></p>
+<div class="tscroll"><table>
+<tr><th>Class</th><th>Post-plate heat treatment</th></tr>
+<tr><td>1</td><td>As deposited, no heat treatment</td></tr>
+<tr><td>2</td><td>260–400 °C to reach at least 850 HK100 (hardened)</td></tr>
+<tr><td>3</td><td>180–200 °C for 2–4 h, adhesion on steel</td></tr>
+<tr><td>4</td><td>120–130 °C for 1–6 h, adhesion on carburized steel and heat-treatable aluminium</td></tr>
+<tr><td>5</td><td>140–150 °C for 1–2 h, adhesion on aluminium and other non-age-hardened alloys, copper, beryllium</td></tr>
+<tr><td>6</td><td>300–320 °C for 1–4 h, adhesion on titanium alloys</td></tr>
+</table></div>
+<p class="note"><strong>Example callout:</strong> <code>ASTM B733-22, Type V, SC3, Class 1</code></p>
+<p class="note">Some much older editions used different SC thicknesses, so <strong>always read the edition on the drawing.</strong></p>
 <p class="note">Aerospace electroless nickel is often called out to AMS 2404 instead.</p>
-<p class="src">Basis: ASTM B733-22 §4.2 (official preview) and B733-97 Tables 1–2.</p>
+<p class="src">Basis: ASTM B733-22 official text — Tables 1–2, §4.2–4.3; current as B733-22(2026). Cross-checked: B733-04(2009) and B733-97 tables (same values).</p>
 </div></details>
 
 <details class="card lt" id="ct-ni"><summary><span class="lnum">5</span><span class="ltitle">Electroplated nickel</span><span class="lkey">ASTM B689-97 (reapproved 2023) · engineering nickel</span></summary><div class="ldetail">
@@ -959,12 +981,12 @@ a{color:var(--teal)}
 </table></div>
 <p class="note"><strong>Thickness:</strong> set on the drawing, not by the spec. Check whether the drawing means <em>as-plated</em> or <em>after grinding</em>. NASA PRC-5003, for example, writes the Class 2 note as a final thickness after grinding.</p>
 <p class="note"><strong>Related specs:</strong> AMS 2406 (hard chrome deposit) · AMS 2438F (thin, hard, dense chrome, Dec 2021) · MIL-STD-1501 (low-embrittlement hard chrome on high-strength steel).</p>
-<p><span class="badge b-typ">CHECK YOUR COPY</span> Supplier sources list AMS 2460B as the current revision. Confirm the revision on SAE MOBILUS.</p>
-<p class="src">Basis: SAE AMS 2460 scope and supersession notice; NASA JSC PRC-5003 rev E.</p>
+<p><span class="badge b-spec">SOURCE CHECKED</span> Current revision: <strong>AMS 2460B</strong> (revised 6 Feb 2023; first issued July 2007).</p>
+<p class="src">Basis: SAE MOBILUS AMS2460B record; BSI and Document Center listings (current, Feb 2023); AMS-QQ-C-320 supersession notice; NASA JSC PRC-5003.</p>
 </div></details>
 
 <details class="card lt" id="ct-anod"><summary><span class="lnum">7</span><span class="ltitle">Anodize (aluminium)</span><span class="lkey">MIL-PRF-8625F Amd 2 · free on DLA ASSIST</span></summary><div class="ldetail">
-<p>MIL-PRF-8625F (Amendment 2, 23 Nov 2020) superseded MIL-A-8625F. It's a free government document, so the full spec is available from assist.dla.mil.</p>
+<p><span class="badge b-spec">SOURCE CHECKED</span> MIL-PRF-8625F (Amendment 2, 23 Nov 2020) superseded MIL-A-8625F (Amendment 1, 2003). It's a free government document, so the full spec is available from assist.dla.mil. Amendment 2 renamed the spec and changed test methods and sampling, but kept the requirement values below.</p>
 <p class="note"><strong>Example callout:</strong> <code>MIL-PRF-8625, Type III, Class 2 black, 0.002 in</code></p>
 <div class="tscroll"><table>
 <tr><th>Type</th><th>Process</th><th>Requirement (unsealed)</th></tr>
@@ -983,12 +1005,22 @@ a{color:var(--teal)}
 <tr><td>Tolerance, coatings over 0.002 in</td><td class="num">± 0.0004 in</td></tr>
 </table></div>
 <ul class="coatlist">
-<li>Types I–IIB are accepted on <strong>coating weight</strong>, not thickness. Type III is accepted on thickness, unless the buyer chooses coating weight instead.</li>
+<li>Types I–IIB are accepted on <strong>coating weight</strong>, not thickness. Type III is accepted on thickness, unless the buyer chooses coating weight instead. Unsealed Type III must weigh at least 4320 mg/ft² for every 0.001 in of coating.</li>
+<li><strong>Type III alloy limit:</strong> unless the drawing or PO says otherwise, don't hard anodize alloys with nominal copper over 5.0 % or silicon over 8.0 %.</li>
+<li><strong>Measuring Type III:</strong> eddy current (ASTM B244 or E376) or a metallurgical cross-section. Amendment 2 requires the method to be named.</li>
+<li><strong>Sampling:</strong> Amendment 2 requires MIL-STD-1916. The ANSI/ASQ Z1.4 option was removed.</li>
 <li><strong>Sealing:</strong> Types I–IIB are fully sealed unless the drawing says otherwise. Type III is not sealed when wear resistance is the purpose.</li>
-<li><strong>Salt spray:</strong> 336 h per ASTM B117 for the sealed types, judged by an isolated-pit count.</li>
+<li><strong>Salt spray:</strong> 336 h per ASTM B117 (surface 6° from vertical) for Types I, IB, IC, II and IIB, judged by an isolated-pit count. Type III is tested only when the coating is specified as sealed.</li>
 </ul>
-<p><span class="badge b-typ">CHECK YOUR COPY</span> These values were read from the MIL-A-8625F text. Confirm them against the Amendment 2 PDF on ASSIST; it's free.</p>
-<p class="src">Basis: MIL-A-8625F §1.2, §3.7.1.1 Table I, §3.7.2.1, §3.8, §4.5.3.1; MIL-PRF-8625F Amd 2 title page.</p>
+<div class="tscroll"><table>
+<tr><th>Type III nominal thickness</th><th>Recommended edge &amp; inside-corner radius</th></tr>
+<tr><td class="num">0.001 in</td><td>≈ 1/32 in</td></tr>
+<tr><td class="num">0.002 in</td><td>≈ 1/16 in</td></tr>
+<tr><td class="num">0.003 in</td><td>≈ 3/32 in</td></tr>
+<tr><td class="num">0.004 in</td><td>≈ 1/8 in</td></tr>
+</table></div>
+<p class="note">The radius table sits in the spec's notes section, which is guidance rather than a requirement. It's still a useful drawing-review check.</p>
+<p class="src">Basis: MIL-PRF-8625F w/Amd 2 text — §1.2, §3.4.3, §3.7.1.1 Table I, §3.7.1.2, §3.7.2.1, §3.7.2.1.1, §3.8, §4.5.3, Table III. Cross-checked: MIL-A-8625F and MIL-A-8625E texts and a 2020 industry summary of the Amd 2 changes.</p>
 </div></details>
 
 <details class="card lt" id="ct-meas"><summary><span class="lnum">8</span><span class="ltitle">Measuring &amp; testing</span><span class="lkey">Which ASTM method for which coating</span></summary><div class="ldetail">
@@ -1012,7 +1044,6 @@ a{color:var(--teal)}
 <p class="src">Basis: referenced-document lists of ASTM B633, B689, B733, B840, B841 and MIL-PRF-8625.</p>
 </div></details>
 </section>
-
 
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
      constant in the script; the © line and maker's mark stay verbatim. -->

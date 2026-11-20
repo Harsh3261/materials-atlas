@@ -1,3 +1,27 @@
+# Note for Muse — Check a Cert: Step 1b Mechanicals (2026-11-20)
+
+New panel #mechPanel between Step 1 (chemistry) and Saved checks. Code is
+SECTION 11, appended at the end of the last script block; CSS block
+"2026-11-20 Step 1b mechanicals". It reads the same grade-condition row as
+Step 1 (chkGrade → gradeByKey). No DATA, hashed literal, DATAREV or existing
+checker function was changed (certMech() is only called, for "Fill from pasted
+cert text").
+
+Scoring rules (mechLimits):
+- Only st:"SPEC" rows are scored, plus ASTM A536 grade-name minimums (same
+  rule as certMechHTML). TYP/MFR rows: NOT EVALUATED.
+- Yield: 0.2 % offset vs 0.5 % EUL mismatch → NOT SCORED. ReH / not stated → flag.
+- Elongation: plain "N%" → 5D for EN/ISO/GB/JIS, 2 in / 4D for ASTM/SAE/AMS/CSA.
+  Two-gauge strings parsed per gauge; size-dependent strings → CHECK BY HAND.
+- RA parsed from r.n ("Reduction of area (Z) ≥ N%", "N% min", "RA ≥", flat/round).
+- Hardness parsed strictly per scale; never converted. GB/T 3077 hardness is
+  delivery-condition → not scored. Qualified/typical text → not scored.
+- Disposition honesty: MEETS only when every limited property is entered and
+  passed; yield > tensile → CHECK THE VALUES.
+Tested on 15 real rows + all 343 rows parse without error. Cache v94.
+
+---
+
 # Note for Muse — Coatings & Finishes tab added (2026-11-20)
 
 Harsh asked Claude to add a fifth tab, **Coatings** (`data-view="coat"`,

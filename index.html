@@ -609,6 +609,14 @@ a{color:var(--teal)}
 #view-coat .coatlist li{margin:6px 0}
 #view-coat details.lt{scroll-margin-top:84px}
 @media (max-width:380px){#view-coat table{font-size:12px}#view-coat td,#view-coat th{padding-left:4px;padding-right:4px}#view-coat th{letter-spacing:0}}
+/* ===== 2026-11-20 Step 1b mechanicals ===== */
+.mechgrid{display:grid;gap:10px;grid-template-columns:1fr 1fr;margin:12px 0}
+@media(min-width:760px){.mechgrid{grid-template-columns:repeat(3,1fr)}}
+.mechgrid label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);display:block;margin-bottom:4px}
+.mechgrid input,.mechgrid select{width:100%;padding:10px;font-size:16px;background:var(--panel2);color:var(--ink);border:1px solid var(--field);border-radius:8px}
+.mechbtns{display:flex;flex-wrap:wrap;gap:8px}.mechbtns .copybtn{margin-top:0}
+td.mwarn{color:var(--amber);font-weight:600}
+#mechLimits .mechtbl td:nth-child(3){color:var(--ink2);font-size:13px}
 </style>
 </head>
 <body>
@@ -731,6 +739,35 @@ a{color:var(--teal)}
     <button class="copybtn" id="idRun">Identify material</button>
     <div id="idOut" aria-live="polite"></div>
     </div><!-- /identifyMode -->
+  </div>
+  <!-- ============ STEP 1b · MECHANICALS (added 2026-11-20) ============
+       Manual entry of the cert's tensile / elongation / RA / hardness, scored
+       against the grade-condition row selected in Step 1. Limits are parsed
+       from the row strictly (mechLimits); anything not parsed with certainty
+       is shown as CHECK BY HAND, never guessed. Only SPEC rows (and ASTM A536
+       grade-name minimums) are scored. -->
+  <div class="panel" id="mechPanel">
+    <h2>Step 1b · Mechanical properties — vs the same grade-condition</h2>
+    <p class="hint">Type the cert's tensile results and get a verdict <strong>per property</strong> against the grade-condition row chosen in Step 1. The checker also flags the traps that manufacture fake passes and fails: typical rows, 0.2 % offset vs 0.5 % EUL yield, 4D vs 5D gauge length, round vs flat specimens, and hardness on a different scale.</p>
+    <p id="mechRowLine" class="note"></p>
+    <div id="mechLimits"></div>
+    <div class="mechgrid">
+      <div><label for="mechUnit">Strength units on the cert</label><select id="mechUnit"><option value="MPa">MPa (N/mm²)</option><option value="ksi">ksi</option></select></div>
+      <div><label for="mechYs">Yield strength</label><input id="mechYs" type="number" inputmode="decimal" step="any" placeholder="e.g. 655"></div>
+      <div><label for="mechYm">Yield method on the cert</label><select id="mechYm"><option value="ns">Not stated</option><option value="off">0.2 % offset (Rp0.2)</option><option value="eul">0.5 % extension under load (EUL)</option><option value="reh">Yield point / upper yield ReH</option></select></div>
+      <div><label for="mechTs">Tensile strength</label><input id="mechTs" type="number" inputmode="decimal" step="any" placeholder="e.g. 862"></div>
+      <div><label for="mechEl">Elongation (%)</label><input id="mechEl" type="number" inputmode="decimal" step="any" placeholder="e.g. 18"></div>
+      <div><label for="mechSp">Specimen &amp; gauge length</label><select id="mechSp"><option value="ns">Not stated</option><option value="r4">Round, 4D (ASTM E8 / 2 in)</option><option value="r5">Round, 5D (E8M / ISO 6892-1)</option><option value="f2">Flat, 2 in (50 mm)</option><option value="f8">Flat, 8 in (200 mm)</option></select></div>
+      <div><label for="mechRa">Reduction of area (%)</label><input id="mechRa" type="number" inputmode="decimal" step="any" placeholder="e.g. 55"></div>
+      <div><label for="mechHv">Hardness</label><input id="mechHv" type="number" inputmode="decimal" step="any" placeholder="e.g. 285"></div>
+      <div><label for="mechHs">Hardness scale</label><select id="mechHs"><option value="">— select scale —</option><option value="HB">Brinell HBW / HB</option><option value="HRC">Rockwell C (HRC)</option><option value="HRB">Rockwell B (HRB)</option><option value="HV">Vickers HV</option></select></div>
+    </div>
+    <div class="mechbtns">
+      <button class="copybtn" id="mechRun" type="button">Check mechanicals</button>
+      <button class="copybtn" id="mechFill" type="button">Fill from pasted cert text</button>
+      <button class="copybtn" id="mechClear" type="button">Clear</button>
+    </div>
+    <div id="mechOut" aria-live="polite"></div>
   </div>
   <div class="panel" id="savedPanel">
     <h2>Saved checks — on this device</h2>
@@ -1174,6 +1211,7 @@ a{color:var(--teal)}
      mode toggle, idRun, "Verify →" ..... SECTION 7
      chkInputs / ceExtra input .......... SECTION 9
      qualify checklist .................. SECTION 10
+     Step 1b mechanicals (mechRun/Fill) . SECTION 11 (end of last script)
 
    INVARIANTS: user-visible strings, IDs and classes are load-bearing (tests,
    the footer audit, users' muscle memory) — do not rename. Behaviour of this
@@ -4106,6 +4144,228 @@ function printCheck(r){
   setTimeout(done,1500);
 }
 })();
+
+/* ###########################################################################
+   SECTION 11 — STEP 1b · MECHANICALS (added 2026-11-20)
+   Scores typed cert mechanicals against the grade-condition row chosen in
+   Step 1 (chkGrade). mechLimits(r) parses the row STRICTLY: a limit is only
+   scored when its text matches a known pattern; anything else is shown as
+   CHECK BY HAND. Only SPEC rows are scored (plus ASTM A536 grade-name
+   minimums, same rule as certMechHTML). No hardness-scale conversions.
+   ########################################################################### */
+const MECH_KSI=6.894757;
+function mechGaugeBasis(r){
+  /* elongation convention of the governing standard for a plain "N%" value */
+  const s=String(r.s||"");
+  if(/^(EN |ISO |GB\/T|JIS )/.test(s))return"5D";
+  return"ASTM";
+}
+function mechParseHard(r){
+  const hd=String(r.hd||"").trim();
+  if(r.st!=="SPEC")return{ok:false,why:r.st==="TYP"?"typical value":"manufacturer value",text:hd};
+  if(!hd||/^—|^none$|^not specified$/i.test(hd))return{ok:false,none:true,text:hd};
+  if(/^GB\/T 3077/.test(String(r.s)))return{ok:false,why:"delivery-condition hardness, not the Q&T test bar",text:hd};
+  if(/typical|≈|class|;|annealed|across|not a|withheld|none|spec-min/i.test(hd))return{ok:false,why:"stated with a qualifier",text:hd};
+  let t=hd.replace(/\[[^\]]*\]/g,"").replace(/\((H[RBVW]?[A-Z]*\s*[^)]*)\)/g," · $1");
+  if(/[()]/.test(t))return{ok:false,why:"stated with a qualifier",text:hd};
+  const segs=t.split(/\s*[·\/]\s*/).map(x=>x.trim()).filter(Boolean),lim={};
+  for(const sg of segs){
+    const m=sg.match(/^(HBW|HB|BHN|HRC|HRB|RB|HV)\s*(≤|≥)?\s*(\d+(?:\.\d+)?)(?:\s*[–-]\s*(\d+(?:\.\d+)?))?\s*(max|min)?$/i);
+    if(!m)return{ok:false,why:"format not recognised",text:hd};
+    let sc=m[1].toUpperCase();if(sc==="HBW"||sc==="BHN")sc="HB";if(sc==="RB")sc="HRB";
+    const a=+m[3],b=m[4]!=null?+m[4]:null;let min=null,max=null;
+    if(b!=null){min=a;max=b;}else if(m[2]==="≤"||/max/i.test(m[5]||""))max=a;else if(m[2]==="≥"||/min/i.test(m[5]||""))min=a;else return{ok:false,why:"no min or max stated",text:hd};
+    lim[sc]={min:min,max:max};
+  }
+  return{ok:true,lim:lim,text:hd};
+}
+function mechParseRA(r){
+  const n=String(r.n||"");
+  if(/NO reduction-of-area requirement/i.test(n))return null;
+  let m=n.match(/Reduction of area(?: Z)?\s*≥\s*(\d+(?:\.\d+)?)\s*%\s*\(flat specimen\)\s*\/\s*(\d+(?:\.\d+)?)\s*%\s*\(round\)/i);
+  if(m)return{flat:+m[1],round:+m[2]};
+  m=n.match(/Reduction of area(?: Z)?\s*≥\s*(\d+(?:\.\d+)?)\s*%\s*\(round specimen\)/i);if(m)return{round:+m[1],roundOnly:true};
+  m=n.match(/\bRA\s*≥\s*(\d+(?:\.\d+)?)\s*%\s*on round specimens/i);if(m)return{round:+m[1],roundOnly:true};
+  m=n.match(/\bRA\s*≥\s*(\d+(?:\.\d+)?)\s*%\s*\(longitudinal\)/i);if(m)return{any:+m[1],note:"longitudinal specimen"};
+  m=n.match(/Reduction of area(?: Z)?\s*≥\s*(\d+(?:\.\d+)?)\s*%/i);if(m)return{any:+m[1]};
+  m=n.match(/reduction of area\s+(\d+(?:\.\d+)?)\s*%\s*min/i);if(m)return{any:+m[1]};
+  return null;
+}
+function mechParseEl(r){
+  const e=String(r.el==null?"":r.el).trim();
+  if(!e||/^—|^none$|^not specified$/i.test(e))return null;
+  let m=e.match(/^(\d+(?:\.\d+)?)\s*%$/);
+  if(m){const b=mechGaugeBasis(r);return b==="5D"?{byG:{r5:+m[1]},basis:"5D (proportional, 5.65√S₀)"}:{byG:{r4:+m[1],f2:+m[1]},basis:"2 in / 4D (ASTM)"};}
+  m=e.match(/^(\d+(?:\.\d+)?)\s*%\s*\(2-in;\s*(\d+(?:\.\d+)?)\s*%\s*in 8-in\)$/);
+  if(m)return{byG:{r4:+m[1],f2:+m[1],f8:+m[2]},basis:"2 in: "+m[1]+" % · 8 in: "+m[2]+" %"};
+  m=e.match(/^(\d+(?:\.\d+)?)\s*%\s*\(8-in gauge\)$/);
+  if(m)return{byG:{f8:+m[1]},basis:"8 in gauge only"};
+  m=e.match(/^(\d+(?:\.\d+)?)\s*%\s*\(8-in gauge;\s*(\d+(?:\.\d+)?)\s*%\s*in 2-in\)$/);
+  if(m)return{byG:{f8:+m[1],r4:+m[2],f2:+m[2]},basis:"8 in: "+m[1]+" % · 2 in: "+m[2]+" %"};
+  m=e.match(/^(\d+(?:\.\d+)?)\s*%\s*\(2 in strip\)\s*\/\s*(\d+(?:\.\d+)?)\s*%\s*\(4D round\)$/);
+  if(m)return{byG:{f2:+m[1],r4:+m[2]},basis:"flat 2 in: "+m[1]+" % · round 4D: "+m[2]+" %"};
+  return{manual:true,text:e};
+}
+function mechLimits(r){
+  if(!r)return null;
+  const L={row:r,spec:r.st==="SPEC",basis:r.s,yb:String(r.yb||"")};
+  const num=x=>typeof x==="number"?x:null;
+  L.y=null;L.t=null;
+  /* yield */
+  if(/^n\/a|^no |^—|not loaded|proof|has no specified/i.test(L.yb)||r.ym==null)L.yNone=L.yb||"no yield minimum in the data";
+  else if(num(r.ym)!=null){L.y={min:r.ym,ksi:num(r.yk),method:/0\.5\s*%\s*extension/i.test(L.yb)?"eul":/0\.2\s*%\s*offset|Rp0\.2/i.test(L.yb)?"off":/ReH/.test(L.yb)?"reh":"ns"};}
+  /* tensile */
+  if(num(r.tm)!=null)L.t={min:r.tm,max:null,ksi:num(r.tk)};
+  else if(typeof r.tm==="string"){const m=r.tm.match(/^(\d+)\s*[–-]\s*(\d+)$/);if(m)L.t={min:+m[1],max:+m[2],ksi:null};}
+  /* A536: grade name = Table 1 minimums (tensile-yield-elongation, ksi-ksi-%) */
+  const di=/^ASTM A536/.test(String(r.s))&&String(r.g).match(/^(\d{2,3})-(\d{2})-(\d{2})$/);
+  if(di){L.spec=true;L.a536=true;L.t={min:Math.round(+di[1]*MECH_KSI),max:null,ksi:+di[1]};L.y={min:Math.round(+di[2]*MECH_KSI),ksi:+di[2],method:"ns"};L.yNone=null;
+    L.e={byG:{r4:+di[3],f2:+di[3]},basis:"2 in / 4D (ASTM)"};L.basis="ASTM A536 Table 1 (grade "+r.g+" = "+(+di[1])+" ksi tensile, "+(+di[2])+" ksi yield, "+(+di[3])+" % elongation)";}
+  else L.e=mechParseEl(r);
+  L.z=L.spec?mechParseRA(r):null;
+  L.h=di?{ok:false,why:"A536 sets no hardness in Table 1",text:String(r.hd||"")}:mechParseHard(r);
+  return L;
+}
+const MECH_YM={ns:"not stated",off:"0.2 % offset",eul:"0.5 % EUL",reh:"yield point / ReH"};
+const MECH_SP={ns:"not stated",r4:"round 4D",r5:"round 5D",f2:"flat 2 in",f8:"flat 8 in"};
+let mechLast=null;
+function mechRow(){return chkGrade.value?gradeByKey[chkGrade.value]||null:null;}
+function mechLimitsHTML(L){
+  const r=L.row,fmt=(a,b)=>b!=null?a+"–"+b:"≥ "+a;
+  const rows=[];
+  rows.push("<tr><td>Yield</td><td class='num'>"+(L.y?"≥ "+L.y.min+" MPa"+(L.y.ksi?" ("+L.y.ksi+" ksi)":""):"—")+"</td><td>"+esc(L.y?L.yb||"":L.yNone||"")+"</td></tr>");
+  rows.push("<tr><td>Tensile</td><td class='num'>"+(L.t?fmt(L.t.min,L.t.max)+" MPa"+(L.t.ksi?" ("+L.t.ksi+" ksi)":""):"—")+"</td><td>"+(L.t&&L.t.max!=null?"range":"")+"</td></tr>");
+  rows.push("<tr><td>Elongation</td><td class='num'>"+(!L.e?"—":L.e.manual?esc(L.e.text):"see basis")+"</td><td>"+(!L.e?"":L.e.manual?"check by hand":esc(L.e.basis))+"</td></tr>");
+  const z=L.z;rows.push("<tr><td>Reduction of area</td><td class='num'>"+(!z?"—":z.any!=null?"≥ "+z.any+" %":(z.flat!=null?"flat ≥ "+z.flat+" % · ":"")+(z.round!=null?"round ≥ "+z.round+" %":""))+"</td><td>"+(z&&z.note?esc(z.note):z&&z.roundOnly?"round specimen only":"")+"</td></tr>");
+  rows.push("<tr><td>Hardness</td><td class='num'>"+esc(L.h.text||"—")+"</td><td>"+(L.h.ok?"scored on the same scale only":L.h.none?"":"not scored — "+esc(L.h.why||""))+"</td></tr>");
+  const tag=L.spec?'<span class="badge b-spec">SPEC MIN</span>':'<span class="badge b-typ">'+(r.st==="TYP"?"TYPICAL":"MANUFACTURER")+' — NOT FOR ACCEPTANCE</span>';
+  return '<p class="note">'+tag+' Limits for <strong>'+esc(r.g)+'</strong> · '+esc(r.c)+' · '+esc(L.basis)+'</p><div class="tscroll"><table class="mechtbl"><thead><tr><th>Property</th><th>Requirement</th><th>Basis</th></tr></thead><tbody>'+rows.join("")+'</tbody></table></div>';
+}
+function mechSync(){
+  const r=mechRow();mechLast=null;$("mechOut").innerHTML="";
+  if(!r){$("mechRowLine").textContent="Select the grade-condition named on the cert in Step 1 — the mechanical limits load from the same row.";$("mechLimits").innerHTML="";return;}
+  $("mechRowLine").textContent="";
+  $("mechLimits").innerHTML=mechLimitsHTML(mechLimits(r));
+}
+function mechNum(id){const v=$(id).value.trim();if(v==="")return null;const x=parseFloat(v.replace(",","."));return isNaN(x)?null:x;}
+function mechRun(){
+  const r=mechRow();if(r)$("mechLimits").innerHTML=mechLimitsHTML(mechLimits(r));
+  if(!r){$("mechOut").innerHTML='<div class="verdict v-none">No grade selected — choose the grade-condition named on the cert in Step 1 first.</div>';return;}
+  const L=mechLimits(r),unit=$("mechUnit").value,ym=$("mechYm").value,sp=$("mechSp").value,hs=$("mechHs").value;
+  const ys=mechNum("mechYs"),ts=mechNum("mechTs"),el=mechNum("mechEl"),ra=mechNum("mechRa"),hv=mechNum("mechHv");
+  const lines=[],flags=[];let fails=0,passes=0,unscored=0,missing=0,entered=0;
+  const astmLike=/^(ASTM|SAE|AMS)/.test(String(r.s));
+  const res=(name,spec,cert,cls,txt)=>{lines.push({name,spec,cert,cls,txt});if(cls==="pass")passes++;else if(cls==="fail")fails++;else if(cls==="warn")unscored++;};
+  const cmp=(v,min,max,grace)=>{const okMin=min==null||v>=min-grace,okMax=max==null||v<=max+grace;return{ok:okMin&&okMax,okMin,okMax};};
+  const strength=(name,v,lim,methodNote)=>{
+    if(v==null){if(lim&&L.spec)missing++;return;}
+    entered++;
+    const certTxt=v+" "+unit;
+    if(!lim){res(name,"no requirement",certTxt,"","reported — the row sets no "+name.toLowerCase()+" requirement");return;}
+    const specTxt=(lim.max!=null?lim.min+"–"+lim.max:"≥ "+lim.min)+" MPa"+(lim.ksi&&lim.max==null?" ("+lim.ksi+" ksi)":"");
+    if(!L.spec){res(name,specTxt,certTxt,"","typical/manufacturer value — reference only, not scored");return;}
+    if(methodNote){res(name,specTxt,certTxt,"warn",methodNote);return;}
+    let c,shown;
+    if(unit==="ksi"&&lim.ksi!=null&&lim.max==null&&astmLike){c=cmp(v,lim.ksi,null,0);shown="vs "+lim.ksi+" ksi";}
+    else{const vm=unit==="ksi"?v*MECH_KSI:v;c=cmp(vm,lim.min,lim.max,0.5);shown=unit==="ksi"?"= "+vm.toFixed(0)+" MPa":"";}
+    res(name,specTxt,certTxt+(shown&&unit==="ksi"?" ("+shown+")":""),c.ok?"pass":"fail",c.ok?"PASS":(c.okMin?"FAIL — above maximum":"FAIL — below minimum"));
+  };
+  /* yield method trap */
+  let yNote=null;
+  if(L.y&&ys!=null){
+    if((L.y.method==="eul"&&ym==="off")||(L.y.method==="off"&&ym==="eul"))yNote="NOT SCORED — spec yield is "+MECH_YM[L.y.method]+", cert is "+MECH_YM[ym]+". The methods give different numbers; retest or get the "+MECH_YM[L.y.method]+" value.";
+    else if(ym==="ns"&&L.y.method!=="ns")flags.push("Yield method not stated on the cert; the spec basis is "+MECH_YM[L.y.method]+". Confirm the method (checklist item 6).");
+    else if(L.y.method==="eul"&&ym==="reh"||L.y.method==="off"&&ym==="reh")flags.push("Cert yield is a yield point / ReH; the spec basis is "+MECH_YM[L.y.method]+". Accept only if the spec permits it.");
+  }
+  strength("Yield",ys,L.y,yNote);
+  if(ys==null&&L.yNone&&L.spec)lines.push({name:"Yield",spec:"no minimum",cert:"—",cls:"",txt:esc(L.yNone)});
+  strength("Tensile",ts,L.t,null);
+  if(ys!=null&&ts!=null&&ys>ts)flags.push("Yield is higher than tensile — almost certainly a typing or reading error.");
+  /* elongation */
+  if(el!=null){entered++;
+    if(!L.e)res("Elongation","no requirement",el+" %","","reported — the row sets no elongation requirement");
+    else if(L.e.manual)res("Elongation",esc(L.e.text),el+" %","warn","CHECK BY HAND — the requirement depends on size or band; compare it yourself");
+    else if(!L.spec){const v=Object.values(L.e.byG)[0];res("Elongation",v+" %",el+" %","","typical/manufacturer value — reference only, not scored");}
+    else{
+      const g=L.e.byG,keys=Object.keys(g);
+      if(sp==="ns"){
+        const vals=[...new Set(keys.map(k=>g[k]))];
+        if(vals.length===1){const c=el>=vals[0];res("Elongation","≥ "+vals[0]+" % ("+esc(L.e.basis)+")",el+" %",c?"pass":"fail",c?"PASS":"FAIL — below minimum");flags.push("Gauge length not stated on the cert — elongation was scored on the spec's own basis ("+L.e.basis+"). Confirm it.");}
+        else res("Elongation",esc(L.e.basis),el+" %","warn","NOT SCORED — the minimum depends on gauge length; select the cert's specimen & gauge");
+      }else if(g[sp]==null){
+        res("Elongation",esc(L.e.basis),el+" % ("+MECH_SP[sp]+")","warn","NOT SCORED — the spec gives no minimum for a "+MECH_SP[sp]+" specimen. "+(sp==="r5"||sp==="r4"?"4D and 5D results are not directly comparable (5D reads lower).":sp==="f8"?"An 8 in gauge reads lower than 2 in.":"Different gauge basis."));
+      }else{const c=el>=g[sp];res("Elongation","≥ "+g[sp]+" % ("+MECH_SP[sp]+")",el+" %",c?"pass":"fail",c?"PASS":"FAIL — below minimum");}
+    }
+  }else if(L.e&&!L.e.manual&&L.spec)missing++;
+  /* reduction of area */
+  const z=L.z;
+  if(ra!=null){entered++;
+    if(!z)res("Reduction of area","no requirement",ra+" %","","reported — the row sets no RA requirement");
+    else{let min=null,why="";
+      if(z.any!=null)min=z.any;
+      else if(sp==="ns")why="NOT SCORED — the RA minimum depends on specimen shape; select the cert's specimen";
+      else if(sp[0]==="r")min=z.round;
+      else if(z.flat!=null)min=z.flat;
+      else why="NOT SCORED — the spec sets RA on round specimens only";
+      if(min==null)res("Reduction of area",(z.flat!=null?"flat ≥ "+z.flat+" % · ":"")+(z.round!=null?"round ≥ "+z.round+" %":""),ra+" %","warn",why);
+      else{const c=ra>=min;res("Reduction of area","≥ "+min+" %",ra+" %",c?"pass":"fail",c?"PASS":"FAIL — below minimum");}
+      if(z.note)flags.push("RA requirement is for a "+z.note+".");
+    }
+  }else if(z)missing++;
+  /* hardness */
+  if(hv!=null){entered++;
+    if(!hs)res("Hardness",esc(L.h.text||"—"),String(hv),"warn","NOT SCORED — select the hardness scale printed on the cert");
+    else if(!L.h.ok)res("Hardness",esc(L.h.text||"—"),hv+" "+hs,L.h.none?"":"warn",L.h.none?"reported — the row sets no hardness requirement":"NOT SCORED — "+esc(L.h.why));
+    else if(!L.h.lim[hs])res("Hardness",esc(L.h.text),hv+" "+hs,"warn","NOT SCORED — the spec states hardness on "+Object.keys(L.h.lim).join(" / ")+"; conversions (E140) are approximate. Test on the spec's scale.");
+    else{const h=L.h.lim[hs],c=cmp(hv,h.min,h.max,0);res("Hardness",(h.min!=null&&h.max!=null?h.min+"–"+h.max:h.min!=null?"≥ "+h.min:"≤ "+h.max)+" "+hs,hv+" "+hs,c.ok?"pass":"fail",c.ok?"PASS":(c.okMin?"FAIL — above maximum":"FAIL — below minimum"));}
+  }else if(L.h.ok)missing++;
+  /* disposition — same honesty rule as the chemistry check */
+  let disp,cls;
+  if(!entered){disp="NOT EVALUATED — no cert values entered";cls="v-none";}
+  else if(ys!=null&&ts!=null&&ys>ts){disp="CHECK THE VALUES — yield is above tensile, which a real test cannot give";cls="v-none";}
+  else if(!L.spec){disp="NOT EVALUATED — this row is "+(r.st==="TYP"?"typical":"manufacturer")+" data; compare against a SPEC MIN row";cls="v-none";}
+  else if(fails){disp="DOES NOT MEET — "+fails+" propert"+(fails>1?"ies":"y")+" out of limit";cls="v-fail";}
+  else if(unscored||missing){disp="NOT FULLY CHECKED — "+passes+" passed"+(unscored?", "+unscored+" not scored":"")+(missing?", "+missing+" required propert"+(missing>1?"ies":"y")+" not entered":"");cls="v-none";}
+  else if(passes){disp="MEETS THE SPEC LIMITS — every required property entered and passed";cls="v-pass";}
+  else{disp="NOT EVALUATED — no scorable requirement in this row";cls="v-none";}
+  const sym=cls==="v-pass"?vSym("pass"):cls==="v-fail"?vSym("fail"):"";
+  mechLast={r,L,lines,flags,disp,unit,ym,sp,hs};
+  $("mechOut").innerHTML='<div class="verdict '+cls+'">'+sym+esc(disp)+' — '+esc(r.g)+' ('+esc(r.c)+')</div>'+
+    '<div class="tscroll"><table class="mechtbl"><thead><tr><th>Property</th><th>Spec</th><th>Cert</th><th>Result</th></tr></thead><tbody>'+
+    lines.map(x=>"<tr><td><strong>"+x.name+"</strong></td><td class='num'>"+x.spec+"</td><td class='num'>"+esc(x.cert)+"</td><td class='"+(x.cls==="warn"?"mwarn":x.cls)+"'>"+(x.cls==="pass"?vSym("pass"):x.cls==="fail"?vSym("fail"):x.cls==="warn"?vSym("warn"):"")+x.txt+"</td></tr>").join("")+
+    '</tbody></table></div>'+
+    (flags.length?'<div class="verdict v-warn">'+flags.map(esc).join("<br>")+'</div>':'')+
+    '<p class="note">Strength grace: ±0.5 MPa for unit rounding (a cert printing 380 MPa meets a 55 ksi = 379 MPa minimum). Hardness is never converted between scales.</p>'+
+    '<button class="copybtn" id="mechCopy" type="button">Copy mechanicals report</button>';
+  $("mechCopy").addEventListener("click",e=>copyText(mechReport(),e.target));
+}
+function mechReport(){
+  const m=mechLast;if(!m)return"";
+  const strip=s=>String(s).replace(/<[^>]+>/g,"").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">");
+  const L=["MATERIALS ATLAS — MECHANICAL PROPERTIES CHECK","Grade: "+m.r.g,"Condition: "+m.r.c,"Standard: "+m.r.s,"Basis: "+m.L.basis,"Date: "+new Date().toISOString().slice(0,10),
+    "Cert units: "+m.unit+" · yield method: "+MECH_YM[m.ym]+" · specimen/gauge: "+MECH_SP[m.sp]+(m.hs?" · hardness scale: "+m.hs:""),"","Property — spec — cert — result"];
+  m.lines.forEach(x=>L.push(x.name+" — "+strip(x.spec)+" — "+x.cert+" — "+strip(x.txt)));
+  if(m.flags.length){L.push("","Flags:");m.flags.forEach(f=>L.push("- "+f));}
+  L.push("","Disposition: "+m.disp,"","Reference aid only. Accept or reject against the current licensed standard and the purchase order.");
+  return L.join("\n");
+}
+["mechYs","mechTs","mechEl","mechRa","mechHv","mechUnit","mechYm","mechSp","mechHs"].forEach(id=>$(id).addEventListener("input",()=>{if(mechLast){mechLast=null;$("mechOut").innerHTML='<div class="verdict v-none">Values changed — press “Check mechanicals” again.</div>';}}));
+$("mechRun").addEventListener("click",mechRun);
+$("mechClear").addEventListener("click",()=>{["mechYs","mechTs","mechEl","mechRa","mechHv"].forEach(id=>$(id).value="");$("mechUnit").value="MPa";$("mechYm").value="ns";$("mechSp").value="ns";$("mechHs").value="";mechLast=null;$("mechOut").innerHTML="";});
+$("mechFill").addEventListener("click",()=>{
+  const t=$("chkPaste").value;if(!t.trim()){$("mechOut").innerHTML='<div class="verdict v-none">The paste box in Step 1 is empty — paste or load the cert there first.</div>';return;}
+  const v=certMech(t),got=[];
+  if(v.ys!=null){$("mechYs").value=v.ys;got.push("yield");}
+  if(v.ts!=null){$("mechTs").value=v.ts;got.push("tensile");}
+  if(v.el!=null){$("mechEl").value=v.el;got.push("elongation");}
+  if(v.hb!=null){$("mechHv").value=v.hb;got.push("hardness (select its scale)");}
+  if(v.unit==="MPa"||v.unit==="ksi")$("mechUnit").value=v.unit;
+  mechLast=null;
+  $("mechOut").innerHTML='<div class="verdict v-none">'+(got.length?"Filled "+esc(got.join(", "))+" from the pasted text"+(v.unit?" (units: "+esc(v.unit)+")":" — no unit was printed, so set the units yourself")+". Check every value against the cert, set the yield method and specimen, then press “Check mechanicals”.":"No yield, tensile, elongation or hardness values were recognised in the pasted text — type them in.")+'</div>';
+});
+chkGrade.addEventListener("change",mechSync);
+mechSync();
+$("mechPanel").addEventListener("focusin",()=>{const r=mechRow(),k=r?chkGrade.value:"";if($("mechPanel").dataset.k!==k){$("mechPanel").dataset.k=k;if(!mechLast)mechSync();}});
 </script>
 </body>
 </html>

@@ -19,8 +19,12 @@ confirmed against the standard's own text and the badges were removed:
   weight 4320 mg/ft² per 0.001 in, Cu > 5.0 % / Si > 8.0 % alloy limit,
   Table III radii, MIL-STD-1916 sampling.
 - B633-23: added §6.4 stress relief (> 1000 MPa) and §6.5 bake (> 1200 MPa).
-Still open: Hydra-Dyne's "cobalt plating" may be pure cobalt rather than Zn-Co.
-Ask Harsh before adding a pure-cobalt card.
+Pass 3 (2026-11-20): added card 7 "Cobalt-phosphorus (chrome replacement)" —
+MIL-DTL-32502 / SAE AMS 2428A nCoP. Scope, spec status and inspection methods are
+source-checked. The property table is NAVAIR/DoD test data, badged TYPICAL — NOT FOR
+ACCEPTANCE. The spec's own numeric limits (P %, hardness, grain size) are NOT in the
+app: the MIL-DTL-32502 PDF couldn't be read. Add them only after reading the free
+ASSIST copy. Anodize and Measuring renumbered to 8 and 9.
 
 Please carry the new section into your research files before your next build.
 

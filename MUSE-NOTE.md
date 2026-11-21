@@ -1,3 +1,24 @@
+# Note for Muse — castings, forgings, ASTM A668 (2026-11-21, R13, cache v103)
+
+DATA CHANGE — re-pin golden.json. DATAREV → R13 · 389 rows · 1238 chemistry limits (footer + README synced).
+1. ASTM A668 classes A–N, 38 grade-condition rows (Forgings & flanges, SPEC MIN), by controlling
+   cross-section (TC) band. Source: A668/A668M-14 Table 2 (standard preview text) vs Portland Bolt,
+   diffed in code. Decisions:
+   - D over 12–20 in RA: std 32, Portland 19 (typo) → 32.
+   - E over 8–12 in: std 83/43 ksi, Portland 85/44 → 85/44 shown per Harsh's stricter rule; the
+     row note says so. PLEASE REVIEW: this is stricter than the standard text.
+   - Sulfur: A668-14 gives S ≤0.025 for all classes; Portland still shows the older 0.050/0.040 →
+     0.025. Checker datasets: A–F Mn ≤1.35, P ≤0.050, S ≤0.025; G–N P ≤0.040, S ≤0.025.
+   A668/A668M-23 is current — not yet checked against -14 (edition label says so).
+   Mechanicals step: all TC bands selectable via mechCond (verified Class F 4–7 in).
+2. Tolerances & acceptance tab (renamed heading): card 5 castings — E446 / E186 / E280 categories
+   and severity levels (ASTM scope texts across editions agree), how a severity callout reads,
+   digital refs (E2868 / E3030). ISO 8062-3 DCTG deliberately held: 2023 edition changed the grade
+   set (DCTG16 → 15wt) and its table is not in the free preview.
+   Card 6 forgings — A668 / A788-24 / A388-26 roles (A388 needs a quality level on the order).
+   EN 10243-1 held (no two clean sources yet).
+Smoke: 222 checker grades, 0 page errors at 1280/390.
+
 # Note for Muse — Tolerances tab: alloy + G&P bar, DOM wall, A519 HFS (2026-11-21, cache v102)
 
 Harsh's "full blazing" list, item 1 (tube & bar machining tolerances). Tolerances tab only:

@@ -60,7 +60,7 @@ Data lives in two verified research files (kept outside this repo, in the
 owner's Muse workspace: `research_notes/materials-app/`):
 
 - The original build started from 66 grade-condition rows and 193 element
-  ranges; the app now carries **351 grade-condition rows**, each with its
+  ranges; the app now carries **389 grade-condition rows**, each with its
   standard, condition, trust badge and named source. Single-source values are
   flagged in their source text; anything not verifiable is withheld.
 - Audit history (corrections, open items, test results) is logged round by

@@ -1,3 +1,32 @@
+# Note for Muse — full data verification pass (2026-11-20, pass 4)
+
+Every SPEC (scored) row was re-checked against at least two independent sources
+where two exist online. DATA CHANGES (re-pin golden.json; carry into research files):
+
+1. 303 and 416 moved from "ASTM A276 (bar)" to "ASTM A582 (free-machining bar)".
+   A276 Note 2 sends free-machining grades to A582; A276-02 full text has no 303/416
+   rows. A582 Condition A is hardness-only: 262 HBW max (A582-21 Table 3; AZoM).
+   Tensile/yield/elongation removed (they were not spec minimums).
+2. A276 304, 304L, 316, 316L, 410, 420, 440C: condition label now
+   "Annealed (Condition A) — hot-finished bar"; notes give the cold-finished
+   minimums (≤½ in 620/310 · 30 %; over ½ in same strength · 30 %; RA 50 hot / 40 cold;
+   420 cold-finished cap 255 HB; 440C 285 HB). Scored values unchanged.
+3. A311 1045 Class B over 3–4 in: RA kept at 20 (SA-311 + -04 text); note added that
+   MSCI's transcription prints 23.
+
+CONFIRMED WITH NO CHANGE (two sources each): all A311 rows (SA-311 copy); EN ISO 683-2
+41Cr4/25CrMo4/34CrMo4/51CrV4/42CrMo4/34CrNiMo6 all bands (Saarstahl/Swiss Steel/Lucefin/
+thyssenkrupp); all EN ISO 683-3 +A caps (Saarstahl, Lucefin, thyssenkrupp, Carbodur);
+A564 630/XM-12; A240 420/431 (A176/A240 table); A194 2H/8M; A574-17 (39–44/37–44 HRC);
+B505 all 26 rows (B505-96 text); B16 C36000; B221 6061/6063; B209 2024-T4, 5052-H32,
+7075-T6 (one transcription agrees; Alcoa range gives El 5–8 % — flagged); EN 755-2 6005A;
+SS400; Q235B.
+
+FLAGGED, NOT CHANGED: GB/T 3077 table not reachable online (rows already unscored);
+CSA G40.21 350W/350A 2-in elongation (sources give 20 vs 22 %); SAE J524 has no yield
+or hardness in the atlas although distributors list 170 MPa / 65 HRB max (single
+reliable source); A434 band label 7–9½ vs 7–10 in.
+
 # Note for Muse — accessibility, verification and two data fixes (2026-11-20, pass 3)
 
 DATA CHANGES (re-pin golden.json; carry into research files):

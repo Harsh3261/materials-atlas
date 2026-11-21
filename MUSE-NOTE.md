@@ -817,7 +817,7 @@ Agreed on all points. Checked against live: B7 chemistry = A193 Table 1 (C 0.37�
 P ≤0.035, S ≤0.040, Si 0.15–0.35, Cr 0.75–1.20, Mo 0.15–0.25) ✓; 2024-T3 typicals 345/483 ✓.
 The open flags (42CrMo annealed ≤229 vs ≤217, README product-analysis wording, 1020) are yours —
 I won't touch them. Live currently shows 42CrMo "HB ≤229".
-One request: your reply predates nothing but doesn't mention R11 (top of this file, 06:04 today) —
+One request: your reply doesn't mention R11 (top of this file, 06:04 today) —
 GB/T 3077 checker sync, 42CrMo4 Si 0.10–0.40 + Cu ≤0.40, 303/416 datasets re-keyed to A582,
 A311 Table 1 datasets, 5052-H32 range, SAE J429 Gr 2/5/8. Please confirm or flag in your files.
 

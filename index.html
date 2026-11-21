@@ -604,6 +604,13 @@ a{color:var(--teal)}
 /* ===== 2026-11-20 coatings & finishes tab ===== */
 #view-coat .tscroll,#view-tol .tscroll{overflow-x:auto;margin:10px 0}
 #view-tol .nw{white-space:nowrap}
+#view-tol .tubefind{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+#view-tol .tubefind h3{margin-top:0}
+#view-tol .tfrow{display:flex;flex-wrap:wrap;gap:10px}
+#view-tol .tfrow label{display:flex;flex-direction:column;gap:4px;font-size:13px;flex:1 1 180px}
+#view-tol .tfrow input,#view-tol .tfrow select{font:inherit;font-size:16px;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+#view-tol .tfplain{margin-top:10px;padding:10px 12px;border-left:3px solid var(--teal);background:var(--panel)}
+#view-tol .tfplain h4{margin:0 0 4px;font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--teal)}
 #view-coat .tscroll table,#view-tol .tscroll table{min-width:300px}
 #view-coat code,#view-tol code{font-family:var(--mono);font-size:13px;background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:4px;color:var(--ink)}
 #view-coat h3,#view-tol h3{font-family:var(--disp);font-weight:600;font-size:17px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin:18px 0 6px}
@@ -1159,6 +1166,15 @@ td.mwarn{color:var(--amber);font-weight:600}
 <p class="hint">How far bar and tube may be from the size you ordered, and how castings, forgings and heat-treated parts are judged — what to hold incoming stock and parts to.</p>
 <p class="note"><span class="badge b-spec">SOURCE CHECKED</span> every value matches the standard's own text (or two independent published reproductions) and a second source. Values verified 2026-11-21. All values are inches.</p>
 <p class="disclaim">Reference aid only. Accept or reject against the current licensed standard, the drawing and your purchase order — a PO tolerance overrides these.</p>
+<div class="tubefind" id="tubeFind">
+<h3>Find a tube size</h3>
+<div class="tfrow">
+<label>Tube<select id="tfType"><option value="dom">DOM — ASTM A513 Type 5</option><option value="hfs">Hot-finished seamless — ASTM A519</option></select></label>
+<label>OD (in)<input id="tfOD" type="number" step="any" inputmode="decimal" placeholder="e.g. 4.000"></label>
+<label><select id="tfBy" aria-label="Second dimension"><option value="wall">Wall (in)</option><option value="id">ID (in)</option></select><input id="tfDim" type="number" step="any" inputmode="decimal" placeholder="e.g. 0.250"></label>
+</div>
+<div id="tfOut" aria-live="polite"></div>
+</div>
 </div>
 <details class="card lt" id="tl-hr" open><summary><span class="lnum">1</span><span class="ltitle">Hot-rolled rounds</span><span class="lkey">ASTM A29/A29M Table A1.1 · carbon &amp; alloy, hot-wrought</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> Applies to hot-wrought carbon and alloy bars ordered to A29 product specs (e.g. A576, A322, A675). Rounds, squares and round-cornered squares share this table.</p>
@@ -3227,6 +3243,92 @@ function learnHint(q){
   el.innerHTML='Also explained in Learn: '+hits.slice(0,3).map(d=>esc(d.querySelector(".ltitle").textContent)).join(" · ")+(hits.length>3?" +"+(hits.length-3)+" more":"")+' <button type="button" class="lgo" id="learnHintGo">Open in Learn →</button>';
   $("learnHintGo").addEventListener("click",()=>{const t=document.querySelector('nav.tabs button[data-view="learn"]');if(t)t.click();const lq=$("learnQ");lq.value=q;lq.dispatchEvent(new Event("input"));setTimeout(()=>{const d=document.querySelector("#view-learn details.lt:not(.lhide)");if(d)d.scrollIntoView({behavior:"smooth",block:"start"});},60);});
 }
+/* ==== BEGIN DATA: TUBEFIND (generated from the Tolerances tab tables tl-dom / tl-smls — the
+   page self-test tubeFindCheck() re-reads those tables and must match; never edit by hand) ==== */
+const TUBE_DOM=[{"lo": 0, "hi": 0.499, "odP": 0.004, "odM": 0.0, "idP": null, "idM": null}, {"lo": 0.5, "hi": 1.699, "odP": 0.005, "odM": 0.0, "idP": 0.0, "idM": 0.005}, {"lo": 1.7, "hi": 2.099, "odP": 0.006, "odM": 0.0, "idP": 0.0, "idM": 0.006}, {"lo": 2.1, "hi": 2.499, "odP": 0.007, "odM": 0.0, "idP": 0.0, "idM": 0.007}, {"lo": 2.5, "hi": 2.899, "odP": 0.008, "odM": 0.0, "idP": 0.0, "idM": 0.008}, {"lo": 2.9, "hi": 3.299, "odP": 0.009, "odM": 0.0, "idP": 0.0, "idM": 0.009}, {"lo": 3.3, "hi": 3.699, "odP": 0.01, "odM": 0.0, "idP": 0.0, "idM": 0.01}, {"lo": 3.7, "hi": 4.099, "odP": 0.011, "odM": 0.0, "idP": 0.0, "idM": 0.011}, {"lo": 4.1, "hi": 4.499, "odP": 0.012, "odM": 0.0, "idP": 0.0, "idM": 0.012}, {"lo": 4.5, "hi": 4.899, "odP": 0.013, "odM": 0.0, "idP": 0.0, "idM": 0.013}, {"lo": 4.9, "hi": 5.299, "odP": 0.014, "odM": 0.0, "idP": 0.0, "idM": 0.014}, {"lo": 5.3, "hi": 5.549, "odP": 0.015, "odM": 0.0, "idP": 0.0, "idM": 0.015}, {"lo": 5.55, "hi": 5.999, "thin": 0.01, "thick": 0.009}, {"lo": 6.0, "hi": 6.499, "thin": 0.013, "thick": 0.01}, {"lo": 6.5, "hi": 6.999, "thin": 0.015, "thick": 0.012}, {"lo": 7.0, "hi": 7.499, "thin": 0.018, "thick": 0.013}, {"lo": 7.5, "hi": 7.999, "thin": 0.02, "thick": 0.015}, {"lo": 8.0, "hi": 8.499, "thin": 0.023, "thick": 0.016}, {"lo": 8.5, "hi": 8.999, "thin": 0.025, "thick": 0.017}, {"lo": 9.0, "hi": 9.499, "thin": 0.028, "thick": 0.019}, {"lo": 9.5, "hi": 9.999, "thin": 0.03, "thick": 0.02}, {"lo": 10.0, "hi": 10.999, "thin": 0.034, "thick": 0.034}, {"lo": 11.0, "hi": 11.999, "thin": 0.035, "thick": 0.035}, {"lo": 12.0, "hi": 12.999, "thin": 0.036, "thick": 0.036}, {"lo": 13.0, "hi": 13.999, "thin": 0.037, "thick": 0.037}, {"lo": 14.0, "hi": 14.999, "thin": 0.038, "thick": 0.038}];
+const TUBE_DOM_WALL=[{"w": 0.035, "c": [[0.002, 0.002], [0.002, 0.002], [0.002, 0.002], null]}, {"w": 0.049, "c": [[0.002, 0.002], [0.002, 0.003], [0.002, 0.003], null]}, {"w": 0.065, "c": [[0.002, 0.002], [0.002, 0.003], [0.002, 0.003], [0.004, 0.004]]}, {"w": 0.083, "c": [[0.002, 0.002], [0.002, 0.003], [0.003, 0.003], [0.004, 0.005]]}, {"w": 0.095, "c": [[0.002, 0.002], [0.002, 0.003], [0.003, 0.003], [0.004, 0.005]]}, {"w": 0.109, "c": [[0.002, 0.003], [0.002, 0.004], [0.003, 0.003], [0.005, 0.005]]}, {"w": 0.12, "c": [[0.003, 0.003], [0.002, 0.004], [0.003, 0.003], [0.005, 0.005]]}, {"w": 0.134, "c": [null, [0.002, 0.004], [0.003, 0.003], [0.005, 0.005]]}, {"w": 0.148, "c": [null, [0.002, 0.004], [0.003, 0.003], [0.005, 0.005]]}, {"w": 0.165, "c": [null, [0.003, 0.004], [0.003, 0.004], [0.005, 0.006]]}, {"w": 0.18, "c": [null, [0.004, 0.004], [0.003, 0.005], [0.006, 0.006]]}, {"w": 0.203, "c": [null, [0.004, 0.005], [0.004, 0.005], [0.006, 0.007]]}, {"w": 0.22, "c": [null, [0.004, 0.006], [0.004, 0.006], [0.007, 0.007]]}, {"w": 0.238, "c": [null, [0.005, 0.006], [0.005, 0.006], [0.007, 0.007]]}, {"w": 0.259, "c": [null, [0.005, 0.006], [0.005, 0.006], [0.007, 0.007]]}, {"w": 0.284, "c": [null, [0.005, 0.006], [0.005, 0.006], [0.007, 0.007]]}, {"w": 0.3, "c": [null, [0.006, 0.006], [0.006, 0.006], [0.008, 0.008]]}, {"w": 0.32, "c": [null, [0.007, 0.007], [0.007, 0.007], [0.008, 0.008]]}, {"w": 0.344, "c": [null, [0.008, 0.008], [0.008, 0.008], [0.009, 0.009]]}, {"w": 0.375, "c": [null, null, [0.009, 0.009], [0.009, 0.009]]}, {"w": 0.4, "c": [null, null, [0.01, 0.01], [0.01, 0.01]]}, {"w": 0.438, "c": [null, null, [0.011, 0.011], [0.011, 0.011]]}, {"w": 0.46, "c": [null, null, [0.012, 0.012], [0.012, 0.012]]}, {"w": 0.48, "c": [null, null, [0.012, 0.012], [0.012, 0.012]]}, {"w": 0.531, "c": [null, null, [0.013, 0.013], [0.013, 0.013]]}, {"w": 0.563, "c": [null, null, [0.013, 0.013], [0.013, 0.013]]}, {"w": 0.58, "c": [null, null, [0.014, 0.014], [0.014, 0.014]]}, {"w": 0.6, "c": [null, null, [0.015, 0.015], [0.015, 0.015]]}, {"w": 0.625, "c": [null, null, [0.016, 0.016], [0.016, 0.016]]}, {"w": 0.65, "c": [null, null, [0.017, 0.017], [0.017, 0.017]]}]; /* c[0..3] = OD 3/8–7/8, over 7/8–1-7/8, over 1-7/8–3-3/4, over 3-3/4–15: [plus, minus] */
+const TUBE_HFS=[{"lo": 0, "hi": 2.999, "od": 0.02}, {"lo": 3.0, "hi": 4.499, "od": 0.025}, {"lo": 4.5, "hi": 5.999, "od": 0.031}, {"lo": 6.0, "hi": 7.499, "od": 0.037}, {"lo": 7.5, "hi": 8.999, "od": 0.045}, {"lo": 9.0, "hi": 10.75, "od": 0.05}];
+const TUBE_HFS_WALL={"under15": [12.5, 10.0, 10.0], "over15": [10.0, 7.5, 10.0]}; /* % over & under; columns OD ≤2.999 / 3.000–5.999 / 6.000–10.750 */
+/* ==== END DATA: TUBEFIND ==== */
+function tubeLookup(type,od,wall){
+  const r={type,od,wall,notes:[]};
+  if(!(od>0))return r;
+  if(type==="dom"){
+    const row=TUBE_DOM.find(x=>od<=x.hi+1e-9)||null;
+    if(!row){r.out='OD outside the A513 DOM table (up to 14.999").';return r;}
+    if(row.thin!==undefined){
+      if(!(wall>0)){r.needWall=true;return r;}
+      const pct=wall/od*100,t=pct<6?row.thin:row.thick;
+      r.odTol=[t,t];r.idTol=[t,t];r.wallPct=pct;r.band=pct<6?"wall under 6 % of OD":"wall 6 % of OD and over";r.plusMinus=true;
+    } else {r.odTol=[row.odP,row.odM];r.idTol=row.idP===null?null:[row.idP,row.idM];}
+    if(wall>0){
+      const col=od<0.375?-1:od<=0.875?0:od<=1.875?1:od<=3.75?2:od<=15?3:-1;
+      const exact=TUBE_DOM_WALL.find(w=>Math.abs(w.w-wall)<0.0005);
+      if(col<0)r.notes.push("The A513 wall table does not cover this OD.");
+      else if(exact){const v=exact.c[col];if(v)r.wallTol=v;else r.notes.push("This wall and OD combination is not in the A513 wall table.");}
+      else{
+        const lo=[...TUBE_DOM_WALL].reverse().find(w=>w.w<wall),hi=TUBE_DOM_WALL.find(w=>w.w>wall);
+        if(!lo||!hi)r.notes.push('Wall outside the A513 table (0.035" to 0.650").');
+        else r.wallBetween=[lo.w,lo.c[col],hi.w,hi.c[col]];
+      }
+    }
+  } else {
+    const row=TUBE_HFS.find(x=>od<=x.hi+1e-9)||null;
+    if(!row){r.out='OD over 10.750" — A519 says to consult the mill for sizes and tolerances.';return r;}
+    r.odTol=[row.od,row.od];r.plusMinus=true;
+    if(wall>0){
+      const col=od<=2.999?0:od<=5.999?1:2,pct=wall/od*100;
+      const p=pct<15?TUBE_HFS_WALL.under15[col]:TUBE_HFS_WALL.over15[col];
+      r.wallPct=pct;r.wallPctTol=p;r.wallTol=[wall*p/100,wall*p/100];r.band=pct<15?"wall under 15 % of OD":"wall 15 % of OD and over";
+      if(wall<=0.199)r.notes.push('Walls 0.199" and less: A519 says the wall tolerance may not apply — consult the mill.');
+    }
+    r.notes.push("The OD tolerance does not apply to normalized & tempered or quenched & tempered tube.");
+  }
+  return r;
+}
+function tubeFindRender(){
+  const type=$("tfType").value,od=parseFloat($("tfOD").value),dim=parseFloat($("tfDim").value),by=$("tfBy").value;
+  const out=$("tfOut");
+  if(!(od>0)){out.innerHTML='<p class="note">Enter the OD — and the wall or ID — to see the limits and what they mean.</p>';return;}
+  let wall=null;
+  if(dim>0)wall=by==="wall"?dim:(od-dim)/2;
+  if(wall!==null&&!(wall>0)){out.innerHTML='<p class="note">The ID must be smaller than the OD.</p>';return;}
+  const r=tubeLookup(type,od,wall),f=v=>v.toFixed(3)+'"',tol=t=>t[0]===t[1]?"±"+t[0].toFixed(3)+'"':"+"+t[0].toFixed(3)+'" / −'+t[1].toFixed(3)+'"';
+  if(r.out){out.innerHTML='<p class="note">'+esc(r.out)+'</p>';return;}
+  if(r.needWall){out.innerHTML='<p class="note">Over 5.549" OD the DOM tolerance depends on how thick the wall is compared with the OD — enter the wall or ID too.</p>';return;}
+  const rows=[],plain=[];
+  const odLo=od-r.odTol[1],odHi=od+r.odTol[0];
+  rows.push(["OD",f(odLo)+" to "+f(odHi),tol(r.odTol)]);
+  plain.push("<strong>OD:</strong> must be between <strong>"+f(odLo)+"</strong> and <strong>"+f(odHi)+"</strong>."+(r.odTol[1]===0?" It may be bigger than ordered, never smaller.":"")+(type==="dom"?" Measure at least 2\" from the tube ends. A513 also allows some extra out-of-round on DOM as long as the <em>average</em> OD stays inside these limits — see the ovality note in the DOM card.":""));
+  if(type==="dom"&&r.idTol&&wall){const id=od-2*wall,a=id-r.idTol[1],b=id+r.idTol[0];rows.push(["ID",f(a)+" to "+f(b),tol(r.idTol)]);
+    plain.push("<strong>ID:</strong> the bore must be between <strong>"+f(a)+"</strong> and <strong>"+f(b)+"</strong>."+(r.idTol[0]===0?" It may be smaller than ordered, never bigger — so if you hone or bore it, your stock removal starts from "+f(a)+".":""));}
+  if(wall&&r.wallTol){const a=wall-r.wallTol[1],b=wall+r.wallTol[0];rows.push(["Wall",f(a)+" to "+f(b),type==="hfs"?"±"+r.wallPctTol+" % of nominal":tol(r.wallTol)]);
+    plain.push("<strong>Wall:</strong> check the thinnest point — it must be at least <strong>"+f(a)+"</strong> (and no more than "+f(b)+")."+(type==="hfs"?" Hot-finished tube varies a lot, so expect to machine it.":""));}
+  let h='<div class="tscroll" tabindex="0" role="region" aria-label="Tube limits"><table><tr><th>Dimension</th><th class="num">Accept between</th><th class="num">Tolerance</th></tr>'+rows.map(x=>'<tr><td>'+x[0]+'</td><td class="num">'+x[1]+'</td><td class="num">'+x[2]+'</td></tr>').join("")+'</table></div>';
+  if(r.band)plain.push("<strong>Why these numbers:</strong> your wall is "+r.wallPct.toFixed(1)+" % of the OD, so the “"+r.band+"” row applies.");
+  if(r.wallBetween){const [a,ta,b,tb]=r.wallBetween;const t=x=>x?tol(x):"not in table";
+    plain.push("<strong>Wall between table rows:</strong> the table lists "+f(a)+" ("+t(ta)+") and "+f(b)+" ("+t(tb)+"), not "+f(wall)+". The standard (or your supplier agreement) decides an in-between wall; until then, holding the tighter of the two is the conservative choice.");}
+  if(type==="dom"&&wall&&!r.idTol)plain.push('A513 gives no ID tolerance below 0.500" OD.');
+  if(type==="hfs")plain.push("Hot-finished seamless is bought to OD and wall — its ID is not toleranced.");
+  r.notes.forEach(x=>plain.push(esc(x)));
+  plain.push("<strong>Out of tolerance?</strong> Outside these limits the tube does not meet the standard's tolerance — treat it as nonconforming (reject, or raise a deviation). If your PO or drawing states its own tolerance, that tolerance governs instead.");
+  h+='<div class="tfplain"><h4>What this means</h4><ul class="coatlist">'+plain.map(x=>"<li>"+x+"</li>").join("")+"</ul></div>";
+  h+='<p class="src">From the '+(type==="dom"?"DOM (A513 Type 5)":"hot-finished seamless (A519)")+' tables below — the same verified values.</p>';
+  out.innerHTML=h;
+}
+/* self-test: the lookup data must still equal the tables shown on the page (0 = match) */
+function tubeFindCheck(){
+  const rd=id=>[...document.querySelectorAll("#"+id+" table")].map(t=>[...t.querySelectorAll("tr")].map(tr=>[...tr.querySelectorAll("td")].map(td=>td.textContent.trim())).filter(r=>r.length));
+  const num=x=>parseFloat(String(x).replace(/["±%]/g,""));
+  const d=rd("tl-dom"),h=rd("tl-smls");let bad=0;
+  d[0].forEach((r,i)=>{const t=TUBE_DOM[i];if(num(r[1])!==t.odP||num(r[2])!==t.odM)bad++;});
+  d[1].forEach((r,i)=>{const t=TUBE_DOM[d[0].length+i];if(num(r[1])!==t.thin||num(r[2])!==t.thick)bad++;});
+  d[2].forEach((r,i)=>{const t=TUBE_DOM_WALL[i];if(num(r[0])!==t.w)bad++;r.slice(2,6).forEach((c,k)=>{const v=t.c[k];if(c==="—"?v!==null:(!v||num(c.split("/")[0])!==v[0]||num(c.split("/")[1])!==v[1]))bad++;});});
+  h[0].forEach((r,i)=>{if(num(r[1])!==TUBE_HFS[i].od)bad++;});
+  return bad;
+}
+["tfType","tfOD","tfBy","tfDim"].forEach(id=>{$(id).addEventListener("input",tubeFindRender);$(id).addEventListener("change",tubeFindRender);});
+tubeFindRender();
 /* ---- RENDER › COMPARE ---- */
 /* ============ compare ============ */
 const cmpA=$("cmpA"),cmpB=$("cmpB");

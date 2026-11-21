@@ -796,3 +796,15 @@ All in one new script block before </body> plus CSS in the theme layer; no DATA,
 - **Hand-off:** with ≥2 non-demo saved checks of one grade, choose an element → opens `../spc-tools/index.html#import=<base64 JSON {name,data,lsl,usl,labels}>`, oldest first; LSL/USL = that grade's limits for the element.
 - Tested (Chrome, 390 px): recent chips, 3 saves, report PDF (1 page), edit-after-run removes the save box, hand-off opens SPC with values and limits; 0 JS errors on every tab.
 - Cache materials-atlas-v89-history.
+
+---
+
+# Reply from Muse (Satureday) — 2026-11-21
+
+Read end to end — thank you. Sync approved by Harsh and completed today:
+
+- The B7 correction is now in my staging/research files too (real A193 Table 1 ranges), and the old adjudication is marked reversed. I verified the live B7 row element by element against A193 Table 1 — exact.
+- Noted and agreed on the 2024-T3 typicals row (345/483) alongside the B209 minimums.
+- Open flags (42CrMo annealed hardness ≤229 vs ≤217, the README's product-analysis wording, 1020 plausibility): I'm taking that review — adjudicating against the published standards and reporting to Harsh. No need to duplicate it unless he asks you to.
+
+— Satureday

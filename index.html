@@ -386,6 +386,7 @@ td.pass{background:#4ADE80;color:#13151C;font-weight:700} td.fail{background:#FF
 /* v62.1 L1 bottom tab bar + page clearance */
 nav.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;margin:0;border-radius:0;border-left:none;border-right:none;border-top:3px solid var(--teal);border-bottom:none;background:var(--panel);min-height:56px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:60;flex-wrap:nowrap}
 nav.tabs button{flex:1 1 0;min-height:48px;padding:8px 4px}
+nav.tabs button{min-width:0;white-space:normal;line-height:1.15;padding:6px 2px;font-size:12px;letter-spacing:.02em} /* 2026-11-21: six tabs fit on a phone */
 .wrap{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 /* v62.1 L2 sticky primary actions */
 #chkRun,#idRun{width:100%;min-height:52px;margin-top:10px} /* 2026-11-15: no longer sticky; it floated over “Read pasted chemistry” */
@@ -601,14 +602,14 @@ a{color:var(--teal)}
 #view-browse > .controls,#view-compare .grid2{background:rgba(8,7,10,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 @media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(8,7,10,.0)}}
 /* ===== 2026-11-20 coatings & finishes tab ===== */
-#view-coat .tscroll{overflow-x:auto;margin:10px 0}
-#view-coat .tscroll table{min-width:300px}
-#view-coat code{font-family:var(--mono);font-size:13px;background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:4px;color:var(--ink)}
-#view-coat h3{font-family:var(--disp);font-weight:600;font-size:17px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin:18px 0 6px}
-#view-coat .coatlist{margin:8px 0;padding-left:20px;font-size:14px}
-#view-coat .coatlist li{margin:6px 0}
-#view-coat details.lt{scroll-margin-top:84px}
-@media (max-width:380px){#view-coat table{font-size:12px}#view-coat td,#view-coat th{padding-left:4px;padding-right:4px}#view-coat th{letter-spacing:0}}
+#view-coat .tscroll,#view-tol .tscroll{overflow-x:auto;margin:10px 0}
+#view-coat .tscroll table,#view-tol .tscroll table{min-width:300px}
+#view-coat code,#view-tol code{font-family:var(--mono);font-size:13px;background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:4px;color:var(--ink)}
+#view-coat h3,#view-tol h3{font-family:var(--disp);font-weight:600;font-size:17px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin:18px 0 6px}
+#view-coat .coatlist,#view-tol .coatlist{margin:8px 0;padding-left:20px;font-size:14px}
+#view-coat .coatlist li,#view-tol .coatlist li{margin:6px 0}
+#view-coat details.lt,#view-tol details.lt{scroll-margin-top:84px}
+@media (max-width:380px){#view-coat table,#view-tol table{font-size:12px}#view-coat td,#view-coat th,#view-tol th{padding-left:4px;padding-right:4px}#view-coat th,#view-tol th{letter-spacing:0}}
 /* ===== 2026-11-20 Step 1b mechanicals ===== */
 .mechgrid{display:grid;gap:10px;grid-template-columns:1fr 1fr;margin:12px 0}
 @media(min-width:760px){.mechgrid{grid-template-columns:repeat(3,1fr)}}
@@ -644,6 +645,7 @@ td.mwarn{color:var(--amber);font-weight:600}
   <button role="tab" id="tab-check" aria-controls="view-check" tabindex="-1" aria-selected="false" data-view="check">Check a Cert</button>
   <button role="tab" id="tab-learn" aria-controls="view-learn" tabindex="-1" aria-selected="false" data-view="learn">Learn</button>
   <button role="tab" id="tab-coat" aria-controls="view-coat" tabindex="-1" aria-selected="false" data-view="coat">Coatings</button>
+  <button role="tab" id="tab-tol" aria-controls="view-tol" tabindex="-1" aria-selected="false" data-view="tol">Toler&shy;ances</button>
 </nav>
 
 <!-- ============ BROWSE ============ -->
@@ -1148,6 +1150,93 @@ td.mwarn{color:var(--amber);font-weight:600}
 </div></details>
 </section>
 
+<!-- ============ TOLERANCES ============ -->
+<section class="view" id="view-tol" role="tabpanel" aria-labelledby="tab-tol">
+<div class="panel">
+<h2>Bar &amp; tube size tolerances</h2>
+<p class="hint">How far a bar or tube may be from the size you ordered before it is nonconforming — what to hold incoming stock to before it reaches the machine.</p>
+<p class="note"><span class="badge b-spec">SOURCE CHECKED</span> every value matches the standard's own text (or two independent published reproductions) and a second source. Values verified 2026-11-21. All values are inches.</p>
+<p class="disclaim">Reference aid only. Accept or reject against the current licensed standard, the drawing and your purchase order — a PO tolerance overrides these.</p>
+</div>
+<details class="card lt" id="tl-hr" open><summary><span class="lnum">1</span><span class="ltitle">Hot-rolled rounds</span><span class="lkey">ASTM A29/A29M Table A1.1 · carbon &amp; alloy, hot-wrought</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Applies to hot-wrought carbon and alloy bars ordered to A29 product specs (e.g. A576, A322, A675). Rounds, squares and round-cornered squares share this table.</p>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Specified size</th><th class="num">Over</th><th class="num">Under</th><th class="num">Out-of-round</th></tr>
+<tr><td>To 5/16</td><td class="num">0.005</td><td class="num">0.005</td><td class="num">0.008</td></tr>
+<tr><td>Over 5/16 to 7/16</td><td class="num">0.006</td><td class="num">0.006</td><td class="num">0.009</td></tr>
+<tr><td>Over 7/16 to 5/8</td><td class="num">0.007</td><td class="num">0.007</td><td class="num">0.010</td></tr>
+<tr><td>Over 5/8 to 7/8</td><td class="num">0.008</td><td class="num">0.008</td><td class="num">0.012</td></tr>
+<tr><td>Over 7/8 to 1</td><td class="num">0.009</td><td class="num">0.009</td><td class="num">0.013</td></tr>
+<tr><td>Over 1 to 1-1/8</td><td class="num">0.010</td><td class="num">0.010</td><td class="num">0.015</td></tr>
+<tr><td>Over 1-1/8 to 1-1/4</td><td class="num">0.011</td><td class="num">0.011</td><td class="num">0.016</td></tr>
+<tr><td>Over 1-1/4 to 1-3/8</td><td class="num">0.012</td><td class="num">0.012</td><td class="num">0.018</td></tr>
+<tr><td>Over 1-3/8 to 1-1/2</td><td class="num">0.014</td><td class="num">0.014</td><td class="num">0.021</td></tr>
+<tr><td>Over 1-1/2 to 2</td><td class="num">1/64 <span class="small">(0.0156)</span></td><td class="num">1/64 <span class="small">(0.0156)</span></td><td class="num">0.023</td></tr>
+<tr><td>Over 2 to 2-1/2</td><td class="num">1/32 <span class="small">(0.0313)</span></td><td class="num">0</td><td class="num">0.023</td></tr>
+<tr><td>Over 2-1/2 to 3-1/2</td><td class="num">3/64 <span class="small">(0.0469)</span></td><td class="num">0</td><td class="num">0.035</td></tr>
+<tr><td>Over 3-1/2 to 4-1/2</td><td class="num">1/16 <span class="small">(0.0625)</span></td><td class="num">0</td><td class="num">0.046</td></tr>
+<tr><td>Over 4-1/2 to 5-1/2</td><td class="num">5/64 <span class="small">(0.0781)</span></td><td class="num">0</td><td class="num">0.058</td></tr>
+<tr><td>Over 5-1/2 to 6-1/2</td><td class="num">1/8 <span class="small">(0.125)</span></td><td class="num">0</td><td class="num">0.070</td></tr>
+<tr><td>Over 6-1/2 to 8-1/4</td><td class="num">5/32 <span class="small">(0.1563)</span></td><td class="num">0</td><td class="num">0.085</td></tr>
+<tr><td>Over 8-1/4 to 9-1/2</td><td class="num">3/16 <span class="small">(0.1875)</span></td><td class="num">0</td><td class="num">0.100</td></tr>
+<tr><td>Over 9-1/2 to 10</td><td class="num">1/4 <span class="small">(0.250)</span></td><td class="num">0</td><td class="num">0.120</td></tr>
+</table></div>
+<ul class="coatlist">
+<li><strong>Over 2 in the tolerance is plus only</strong> — a 3 in hot-rolled bar may be 3.000 to 3.047 in, never under 3.000.</li>
+<li><strong>Out-of-round</strong> is max minus min diameter at the same cross-section. A bar can be inside the size band and still fail out-of-round.</li>
+<li><strong>Straightness</strong> (standard): 1/4 in in any 5 ft, and (1/4 in × length in ft) ÷ 5 overall. Special straightness is half that. It does not apply after any later heating or controlled cooling.</li>
+<li><strong>Ends:</strong> sheared or hot-sawn ends can be distorted out of tolerance. If that matters, order machine-cut ends.</li>
+<li><strong>A36 bar</strong> is governed by ASTM A6, not A29 — check A6.</li>
+</ul>
+<p class="src">Basis: ASTM A29/A29M-05 text, Table A1.1 and Table A1.10 (straightness). Cross-checked: Portland Bolt's round-bar tolerance table (all 18 rows agree; straightness agrees). A third reproduction (MSCI) agrees except three cells that are visibly mistyped on its page.</p>
+</div></details>
+<details class="card lt" id="tl-cf"><summary><span class="lnum">2</span><span class="ltitle">Cold-finished carbon rounds</span><span class="lkey">ASTM A108 Table A1.1 · Level One · cold drawn or turned &amp; polished</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Cold-finished bar tolerances used to sit in A29; they are now in <strong>A108</strong>. The column depends on the grade's <em>maximum</em> carbon (the top of its range, not the cert value) and its heat treatment.</p>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Size</th><th class="num">C max ≤0.28 %</th><th class="num">C max over 0.28 to 0.55 %</th><th class="num">C max ≤0.55 %, stress relieved or annealed after cold finishing</th><th class="num">C max over 0.55 %, or Q&amp;T / N&amp;T before or after cold finishing</th></tr>
+<tr><td>To 1-1/2 (coils or cut lengths)</td><td class="num">0.002</td><td class="num">0.003</td><td class="num">0.004</td><td class="num">0.005</td></tr>
+<tr><td>Over 1-1/2 to 2-1/2</td><td class="num">0.003</td><td class="num">0.004</td><td class="num">0.005</td><td class="num">0.006</td></tr>
+<tr><td>Over 2-1/2 to 4</td><td class="num">0.004</td><td class="num">0.005</td><td class="num">0.006</td><td class="num">0.007</td></tr>
+<tr><td>Over 4 to 6</td><td class="num">0.005</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td></tr>
+<tr><td>Over 6 to 8</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.009</td></tr>
+<tr><td>Over 8 to 9</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.009</td><td class="num">0.010</td></tr>
+</table></div>
+<ul class="coatlist">
+<li><strong>Minus only by default:</strong> a 1.000 in cold-drawn 1045 round (C max 0.50) may be 0.997 to 1.000 in. The order can ask for all-plus or split plus/minus, as long as the total band stays the same.</li>
+<li><strong>Roundness</strong> of a cold-drawn round: no more than half the size tolerance at any cross-section.</li>
+<li><strong>Tighter than this</strong> means ground &amp; polished bar (A108 Table A1.3) — not included here. Alloy-steel bars have their own A108 table, also not included yet.</li>
+<li>Shear-cut ends can be distorted out of tolerance; a saw cut removes it.</li>
+</ul>
+<p class="src">Basis: ASTM A108-18 text, Table A1.1 (rounds) with footnotes. Cross-checked: CSW "Product Guide – Carbon &amp; Alloy Steel Bars" (all 24 cells agree).</p>
+</div></details>
+<details class="card lt" id="tl-dom"><summary><span class="lnum">3</span><span class="ltitle">DOM tube (cylinder tube stock)</span><span class="lkey">ASTM A513 Type 5 · drawn over mandrel · OD 0.500–5.549 in</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Type 5 is ERW tube drawn over a mandrel. Its OD tolerance is <strong>plus only</strong> and its ID tolerance <strong>minus only</strong> — the tube is never smaller outside or bigger inside than ordered. Measure at least 2 in from the ends.</p>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Outside diameter</th><th class="num">OD over</th><th class="num">OD under</th><th class="num">ID over</th><th class="num">ID under</th></tr>
+<tr><td>Up to 0.499</td><td class="num">0.004</td><td class="num">0</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>0.500–1.699</td><td class="num">0.005</td><td class="num">0</td><td class="num">0</td><td class="num">0.005</td></tr>
+<tr><td>1.700–2.099</td><td class="num">0.006</td><td class="num">0</td><td class="num">0</td><td class="num">0.006</td></tr>
+<tr><td>2.100–2.499</td><td class="num">0.007</td><td class="num">0</td><td class="num">0</td><td class="num">0.007</td></tr>
+<tr><td>2.500–2.899</td><td class="num">0.008</td><td class="num">0</td><td class="num">0</td><td class="num">0.008</td></tr>
+<tr><td>2.900–3.299</td><td class="num">0.009</td><td class="num">0</td><td class="num">0</td><td class="num">0.009</td></tr>
+<tr><td>3.300–3.699</td><td class="num">0.010</td><td class="num">0</td><td class="num">0</td><td class="num">0.010</td></tr>
+<tr><td>3.700–4.099</td><td class="num">0.011</td><td class="num">0</td><td class="num">0</td><td class="num">0.011</td></tr>
+<tr><td>4.100–4.499</td><td class="num">0.012</td><td class="num">0</td><td class="num">0</td><td class="num">0.012</td></tr>
+<tr><td>4.500–4.899</td><td class="num">0.013</td><td class="num">0</td><td class="num">0</td><td class="num">0.013</td></tr>
+<tr><td>4.900–5.299</td><td class="num">0.014</td><td class="num">0</td><td class="num">0</td><td class="num">0.014</td></tr>
+<tr><td>5.300–5.549</td><td class="num">0.015</td><td class="num">0</td><td class="num">0</td><td class="num">0.015</td></tr>
+</table></div>
+<ul class="coatlist">
+<li><strong>Example:</strong> 3.000 OD × 2.500 ID DOM — OD 3.000 to 3.009, ID 2.491 to 2.500. If you hone the bore, plan stock removal from 2.491.</li>
+<li><strong>Ovality:</strong> A513 allows extra ovality on Types 3–6 (0.010 in up to 2 in OD, 0.015 over 2 to 3, 0.020 over 3 to 4, and more above), as long as the <em>mean</em> OD stays in the table above. Check the standard for when it applies.</li>
+<li><strong>Not included yet:</strong> OD 5.550 in and over. That part of the table splits by wall-to-OD ratio, and the two sources could not be read consistently, so it is left out rather than guessed. Use the standard.</li>
+<li>Wall-thickness tolerance is a separate A513 table — not included here.</li>
+</ul>
+<p class="src">Basis: Chicago Tube &amp; Iron A513 Type 5 product data and CSW "Product Guide – Steel Tubing &amp; Pipe" (DOM table) — all 12 rows agree. Ovality rows: Chicago Tube and the A513/A513M-20 text agree. Current edition A513/A513M-25.</p>
+</div></details>
+</section>
+
+
 </main>
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
      constant in the script; the © line and maker's mark stay verbatim. -->
@@ -1536,6 +1625,9 @@ const DATA=[
 {f:"Fasteners & bolting",g:"Grade 5",s:"SAE J429",eq:"3 radial lines · ≈ ASTM A449 for larger sizes",form:"Bolt / screw / stud (inch)",c:"Medium carbon steel, quenched & tempered (min temper 800 °F), 1/4 thru 1 in",chem:"C 0.28–0.55; P ≤0.030; S ≤0.050",ym:634,yk:92,yb:"min (0.2% offset)",tm:827,tk:120,el:"14%",hd:"HRC 25–34",n:"Proof load stress 85 ksi (586 MPa). Reduction of area ≥35%. Over 1½ in, J429 does not apply — order ASTM A449 instead.",src:"SAE J429 (MAY2014) Tables 1–2 as reproduced by Portland Bolt and Baco Enterprises — two agreeing; Grade 2 also matches Shigley (Missouri S&T reference)",st:"SPEC"},
 {f:"Fasteners & bolting",g:"Grade 5",s:"SAE J429",eq:"3 radial lines · ≈ ASTM A449 for larger sizes",form:"Bolt / screw / stud (inch)",c:"Medium carbon steel, quenched & tempered (min temper 800 °F), over 1 thru 1-1/2 in",chem:"C 0.28–0.55; P ≤0.030; S ≤0.050",ym:558,yk:81,yb:"min (0.2% offset)",tm:724,tk:105,el:"14%",hd:"HRC 19–30",n:"Proof load stress 74 ksi (510 MPa). Reduction of area ≥35%. Strength steps down above 1 in. Over 1½ in, order ASTM A449.",src:"SAE J429 (MAY2014) Tables 1–2 as reproduced by Portland Bolt and Baco Enterprises — two agreeing; Grade 2 also matches Shigley (Missouri S&T reference)",st:"SPEC"},
 {f:"Fasteners & bolting",g:"Grade 8",s:"SAE J429",eq:"6 radial lines · ≈ ASTM A354 BD for larger sizes",form:"Bolt / screw / stud (inch)",c:"Medium carbon alloy steel, quenched & tempered (min temper 800 °F), 1/4 thru 1-1/2 in",chem:"C 0.28–0.55; P ≤0.030; S ≤0.050",ym:896,yk:130,yb:"min (0.2% offset)",tm:1034,tk:150,el:"12%",hd:"HRC 33–39",n:"Proof load stress 120 ksi (827 MPa). Reduction of area ≥35%. Alloy steel is required (J429 allows e.g. 4140 for hot-forged/machined bolts); the alloy content is not checker-scored. Over 1½ in, order ASTM A354 Grade BD. Hardness above HRC 39 is a hydrogen-embrittlement risk, especially if plated.",src:"SAE J429 (MAY2014) Tables 1–2 as reproduced by Portland Bolt and Baco Enterprises — two agreeing; Grade 2 also matches Shigley (Missouri S&T reference)",st:"SPEC"},
+{f:"Fasteners & bolting",g:"Type 1",s:"ASTM A449",eq:"3 radial lines · ≈ SAE J429 Grade 5 for larger sizes",form:"Hex cap screw / bolt / stud (inch)",c:"Medium carbon (or boron / alloy) steel, quenched & tempered (min temper 800 °F), over 1-1/2 thru 3 in",chem:"C 0.30–0.52; Mn ≥0.60; P ≤0.040; S ≤0.050; Si 0.15–0.30 (carbon steel — boron steel Si 0.10–0.30 + B 0.0005–0.003; alloy / alloy-boron steel P ≤0.035, S ≤0.040, Si 0.15–0.35)",ym:400,yk:58,yb:"min (0.2% offset)",tm:621,tk:90,el:"14%",hd:"HB 183–235 (length under 3D); HB ≤235 (3D and over)",n:"Reduction of area ≥35%. This is the band J429 Grade 5 sends you to above 1½ in — note the strength steps down to 90 ksi tensile / 58 ksi yield, well below Grade 5's 105–120 ksi. A449 covers 1/4 thru 3 in; below 1½ in it matches Grade 5 (120 / 105 ksi). Checker scores C, Mn, P, S at the carbon-steel limits — if the cert says alloy or alloy-boron steel, hold P to 0.035 and S to 0.040 by hand.",src:"ASTM A449 mechanicals as reproduced by Portland Bolt and Baco Enterprises — two agreeing; chemistry (Type 1 Table 1) and hardness (Table 3) from the ASTM A449-14 (2020) standard preview, chemistry also matching both reproductions",st:"SPEC"},
+{f:"Fasteners & bolting",g:"Grade BD",s:"ASTM A354",eq:"6 radial lines ≈ BD marking · ≈ SAE J429 Grade 8 / F3125 A490 strength",form:"Bolt / stud / threaded fastener (inch)",c:"Alloy steel, quenched & tempered, 1/4 thru 2-1/4 in (chemistry band); mechanicals apply 1/4 thru 4 in",chem:"C 0.30–0.53; Mn ≥0.60; P ≤0.035; S ≤0.040; B ≤0.003 (must qualify as alloy steel)",ym:896,yk:130,yb:"min (0.2% offset)",tm:"1034–1193",tk:"150–173",el:"14%",hd:"HRC 33–38",n:"Reduction of area ≥40%. The grade J429 Grade 8 sends you to above 1½ in — same 150 ksi class, but A354 BD also caps tensile at 173 ksi and hardness at HRC 38 (Grade 8 allows 39). The alloy content itself is not checker-scored. Hot-dip galvanized BD is a known hydrogen / stress-corrosion cracking risk.",src:"ASTM A354 Tables 1–2 as reproduced by Portland Bolt and Baco Enterprises — two agreeing (A354-17 era; A354-26, issued Apr 2026, not yet checked)",st:"SPEC"},
+{f:"Fasteners & bolting",g:"Grade BD (over 2¼ in)",s:"ASTM A354",eq:"BD marking · ≈ F3125 A490 strength",form:"Bolt / stud / threaded fastener (inch)",c:"Alloy steel, quenched & tempered, over 2-1/4 thru 4 in",chem:"C 0.35–0.53; Mn ≥0.60; P ≤0.035; S ≤0.040; B ≤0.003; Ni ≥0.40; Cr ≥0.40; Mo ≥0.15",ym:896,yk:130,yb:"min (0.2% offset)",tm:"1034–1193",tk:"150–173",el:"14%",hd:"HRC 33–38",n:"Reduction of area ≥40%. Same mechanicals as smaller BD, but the large sizes need a higher carbon floor and minimum Ni, Cr and Mo for through-hardening. Older A354 editions had a weaker band over 2½ in (140 ksi) — current editions use one 150–173 ksi band for all BD sizes.",src:"ASTM A354 Tables 1–2 as reproduced by Portland Bolt and Baco Enterprises — two agreeing (A354-17 era; A354-26, issued Apr 2026, not yet checked)",st:"SPEC"},
 {f:"Fasteners & bolting",g:"A574",s:"ASTM A574-21",eq:"Alloy steel SHCS",form:"Socket head cap screw",c:"Oil quenched & tempered (min temper 700 °F), over 0.500 in dia",chem:"C ≥0.33; P ≤0.035; S ≤0.040 (heat analysis)",ym:null,yk:null,yb:"no full-size yield spec — proof basis",tm:1172,tk:170,el:null,hd:"HRC 37–44",n:"Tensile basis 170 ksi; proof load stress 135 ksi (931 MPa). Screws ≥1 in may be verified on machined specimens (Table 1): tensile 170 ksi min, yield 153 ksi min (0.2% offset), elongation 10% min, reduction of area 35% min. Hardness band covers both >0.500–<1.0 in and ≥1.0 in columns of Table 1 (37–44 in both).",src:"ASTM A574-21 Tables 1–2 (standard text) + Artizono / vendor reproductions",st:"SPEC"},
 {f:"Tool steel",g:"O1",s:"ASTM A681 chemistry (alloy tool steel)",eq:"UNS T31501 · EN 1.2510 (100MnCrW4) near — EN ranges narrower; not identical",form:"Bar / plate / ground flat stock",c:"Annealed",chem:"C 0.85–1.00; Mn 1.00–1.40; Si 0.10–0.50; P ≤0.030; S ≤0.030; Cr 0.40–0.70; W 0.40–0.60; V ≤0.30",ym:null,yk:null,yb:"n/a — hardness-rated grade",tm:null,tk:null,el:"—",hd:"HB 183–212",n:"Annealed delivery condition for machining. A681 tool steels are specified by chemistry + hardness response, not tensile minimums — do not quote a tensile spec for this grade.",src:"TheWorldMaterial O1 (ASTM A681 tables, round 3) + Noramark O1 (A681-based) — annealed HB range agrees; AZOM O1 typical 190 HB falls inside",st:"TYP"},
 {f:"Tool steel",g:"O1",s:"ASTM A681 chemistry (alloy tool steel)",eq:"UNS T31501 · EN 1.2510 (100MnCrW4) near — EN ranges narrower; not identical",form:"Bar / plate / ground flat stock",c:"Hardened & tempered (oil quench 790–815 °C, temper 175–260 °C)",chem:"C 0.85–1.00; Mn 1.00–1.40; Si 0.10–0.50; P ≤0.030; S ≤0.030; Cr 0.40–0.70; W 0.40–0.60; V ≤0.30",ym:null,yk:null,yb:"n/a — hardness-rated grade",tm:null,tk:null,el:"—",hd:"HRC 57–62",n:"Working hardness band after oil quench and low temper (63–65 HRC as-quenched). A681 heat-treat guidance gives min 59 HRC at the stipulated cycle — cycle-specific, not a delivery spec.",src:"Noramark O1 + Xometry O1 guide + TheWorldMaterial O1 heat-treat table (round 3) — working band agrees",st:"TYP"},
@@ -1824,7 +1916,10 @@ const EDITIONS={
 "A356.0|ASTM B26 (sand castings)":"AA registered limits (ANSI H35.1) as carried in ASTM B26/B108 — B26 edition year unconfirmed openly",
 "Grade 2|SAE J429":"SAE J429 MAY2014 (current revision per SAE)",
 "Grade 5|SAE J429":"SAE J429 MAY2014 (current revision per SAE)",
-"Grade 8|SAE J429":"SAE J429 MAY2014 (current revision per SAE)"};
+"Grade 8|SAE J429":"SAE J429 MAY2014 (current revision per SAE)",
+"Type 1|ASTM A449":"ASTM A449-14 (2020)",
+"Grade BD|ASTM A354":"ASTM A354 (values as reproduced for -17; -26 issued Apr 2026, not yet checked)",
+"Grade BD (over 2¼ in)|ASTM A354":"ASTM A354 (values as reproduced for -17; -26 issued Apr 2026, not yet checked)"};
 /* ==== END DATA: J404ED + EDITIONS =========================================== */
 function editionOf(r){return EDITIONS[r.g+"|"+r.s]||"";}
 /* ==== BEGIN DATA: DATAREV ===================================================
@@ -1832,7 +1927,7 @@ function editionOf(r){return EDITIONS[r.g+"|"+r.s]||"";}
    Provenance: verified against published standards (two-source verified or flagged; decision log D1–D63) — DATA REV 2026-11-14 R6.
    Edit data only via a verified data change — never by hand-tuning numbers.
    Integrity: the sha256 of this literal is pinned in selftest/golden.json (run selftest/run.js). */
-const DATAREV="DATA REV 2026-11-21 R11 · 348 GRADE-CONDITION ROWS · 1189 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5";
+const DATAREV="DATA REV 2026-11-21 R12 · 351 GRADE-CONDITION ROWS · 1206 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5";
 /* ==== END DATA: DATAREV ===================================================== */
 /* Intent: parseChem turns DATA's DISPLAY chemistry string into r.chemMap, which
    feeds the Browse chemistry table, the element filter and Compare only. The
@@ -2233,7 +2328,10 @@ const CHEMROWS={
 "1541 — Class A|ASTM A311/A311M-04 (2020)":[["C",0.36,0.44],["Mn",1.35,1.65],["P",null,0.04],["S",null,0.05]],
 "Grade 2|SAE J429":[["C",0.15,0.55],["P",null,0.03],["S",null,0.05]],
 "Grade 5|SAE J429":[["C",0.28,0.55],["P",null,0.03],["S",null,0.05]],
-"Grade 8|SAE J429":[["C",0.28,0.55],["P",null,0.03],["S",null,0.05]]
+"Grade 8|SAE J429":[["C",0.28,0.55],["P",null,0.03],["S",null,0.05]],
+"Type 1|ASTM A449":[["C",0.3,0.52],["Mn",0.6,null],["P",null,0.04],["S",null,0.05]],
+"Grade BD|ASTM A354":[["C",0.3,0.53],["Mn",0.6,null],["P",null,0.035],["S",null,0.04],["B",null,0.003]],
+"Grade BD (over 2¼ in)|ASTM A354":[["C",0.35,0.53],["Mn",0.6,null],["P",null,0.035],["S",null,0.04],["B",null,0.003],["Ni",0.4,null],["Cr",0.4,null],["Mo",0.15,null]]
 };
 /* ==== END DATA: CHEMROWS ==================================================== */
 /* ==== BEGIN DATA: CHEMSTD ===================================================
@@ -2438,7 +2536,10 @@ const CHEMSTD={
 "1541 — Class A|ASTM A311/A311M-04 (2020)":"ASTM A311 Table 1",
 "Grade 2|SAE J429":"SAE J429",
 "Grade 5|SAE J429":"SAE J429",
-"Grade 8|SAE J429":"SAE J429"
+"Grade 8|SAE J429":"SAE J429",
+"Type 1|ASTM A449":"ASTM A449",
+"Grade BD|ASTM A354":"ASTM A354",
+"Grade BD (over 2¼ in)|ASTM A354":"ASTM A354"
 };
 /* ==== END DATA: CHEMSTD ===================================================== */
 /* ==== BEGIN DATA: CHEMALIAS =================================================

@@ -1,3 +1,33 @@
+# Note for Muse — A449 / A354 BD over 1½ in + Tolerances tab (2026-11-21, R12, cache v100)
+
+Harsh's go-ahead (relayed by Satureday) on audit items (a) and (b). DATA CHANGES — re-pin golden.json.
+1. ASTM A449 Type 1, over 1-1/2 thru 3 in (SPEC MIN): 90 ksi / 621 MPa tensile, 58 ksi / 400 MPa
+   yield, El 14 %, RA 35 %, HB 183–235 (<3D) / ≤235 (≥3D). Mechanicals: Portland Bolt + Baco agree;
+   chemistry + hardness: A449-14(2020) standard preview, chemistry also = both reproductions.
+   Checker "Type 1|ASTM A449": C 0.30–0.52, Mn ≥0.60, P ≤0.040, S ≤0.050 (carbon-steel column;
+   the row note tells the user alloy / alloy-boron variants need P ≤0.035, S ≤0.040 — not scored).
+2. ASTM A354 Grade BD (SPEC MIN), two rows by the chemistry break at 2-1/4 in:
+   mechanicals for all sizes 1/4–4 in: 150–173 ksi (1034–1193 MPa), yield 130 ksi (896), El 14 %,
+   RA 40 %, HRC 33–38. Current A354 has one BD band — the old "over 2½ in = 140/115 ksi" band is
+   gone (Portland Bolt + Baco agree). Chemistry ≤2-1/4: C 0.30–0.53, Mn ≥0.60, P ≤0.035,
+   S ≤0.040, B ≤0.003; over 2-1/4 adds C ≥0.35 and Ni ≥0.40, Cr ≥0.40, Mo ≥0.15 (both sources).
+   FLAG: A354-26 was issued Apr 2026; these values are the -17 era as reproduced. The edition
+   label says so. Please check -26 for changes if you can reach it.
+   EDITIONS / CHEMROWS / CHEMSTD entries added. DATAREV → R12 · 351 rows · 1206 chemistry limits.
+   Checker smoke: BD over 2¼ in passes a compliant cert and fails Ni 0.10; A449 passes.
+3. New tab "Tolerances" (view-tol, static HTML, reuses the #view-coat styles):
+   - A29 Table A1.1 hot-wrought rounds, 18 rows + straightness: A29-05 text = Portland Bolt on
+     every cell (MSCI's copy has three mistyped cells — not used).
+   - A108-18 Table A1.1 Level One cold-finished carbon rounds, 6 rows × 4 carbon/condition
+     columns: standard text = CSW product guide on all 24 cells.
+   - A513 Type 5 DOM OD/ID, OD up to 5.549 in (12 rows): Chicago Tube = CSW guide. OD ≥5.550 is
+     deliberately NOT included — that part splits by wall/OD ratio and the two sources could not
+     be read consistently. Ovality summarised for the rows A513-20 text + Chicago Tube agree on.
+   Not included (said so on the page): A108 alloy and ground & polished tables, A513 wall
+   tolerances, A519.
+4. Phone bottom bar: six tabs now fit at 320 px (buttons min-width 0, 12 px, "Toler-ances" soft
+   hyphen). Checked at 320/360/390 and 1280: no overflow, no page errors.
+
 # Note for Muse — checker/display sync audit + SAE J429 (2026-11-21, R11, cache v99)
 
 An automated audit compared every Browse row's chemistry line with the checker's own

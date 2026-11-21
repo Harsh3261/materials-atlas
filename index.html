@@ -1209,8 +1209,8 @@ td.mwarn{color:var(--amber);font-weight:600}
 </ul>
 <p class="src">Basis: ASTM A108-18 text, Table A1.1 (rounds) with footnotes. Cross-checked: CSW "Product Guide – Carbon &amp; Alloy Steel Bars" (all 24 cells agree).</p>
 </div></details>
-<details class="card lt" id="tl-dom"><summary><span class="lnum">3</span><span class="ltitle">DOM tube (cylinder tube stock)</span><span class="lkey">ASTM A513 Type 5 · drawn over mandrel · OD 0.500–5.549 in</span></summary><div class="ldetail">
-<p><span class="badge b-spec">SOURCE CHECKED</span> Type 5 is ERW tube drawn over a mandrel. Its OD tolerance is <strong>plus only</strong> and its ID tolerance <strong>minus only</strong> — the tube is never smaller outside or bigger inside than ordered. Measure at least 2 in from the ends.</p>
+<details class="card lt" id="tl-dom"><summary><span class="lnum">3</span><span class="ltitle">DOM tube (cylinder tube stock)</span><span class="lkey">ASTM A513 Type 5 · drawn over mandrel · OD up to 14.999 in</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Type 5 is ERW tube drawn over a mandrel. Up to 5.549 in OD its OD tolerance is <strong>plus only</strong> and its ID tolerance <strong>minus only</strong> — the tube is never smaller outside or bigger inside than ordered. Measure at least 2 in from the ends.</p>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Outside diameter</th><th class="num">OD over</th><th class="num">OD under</th><th class="num">ID over</th><th class="num">ID under</th></tr>
 <tr><td>Up to 0.499</td><td class="num">0.004</td><td class="num">0</td><td class="num">—</td><td class="num">—</td></tr>
@@ -1226,13 +1226,31 @@ td.mwarn{color:var(--amber);font-weight:600}
 <tr><td>4.900–5.299</td><td class="num">0.014</td><td class="num">0</td><td class="num">0</td><td class="num">0.014</td></tr>
 <tr><td>5.300–5.549</td><td class="num">0.015</td><td class="num">0</td><td class="num">0</td><td class="num">0.015</td></tr>
 </table></div>
+<p class="note"><strong>OD 5.550 in and over:</strong> the tolerance becomes plus <em>and</em> minus, on both OD and ID, and depends on the wall: <strong>wall under 6 % of OD</strong> or <strong>6 % and over</strong> (wall ÷ OD × 100). From 10 in up, one value for all walls. The same ± applies to OD and ID.</p>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Outside diameter</th><th class="num">Wall under 6 % of OD — OD &amp; ID</th><th class="num">Wall 6 % of OD and over — OD &amp; ID</th></tr>
+<tr><td>5.550–5.999</td><td class="num">±0.010</td><td class="num">±0.009</td></tr>
+<tr><td>6.000–6.499</td><td class="num">±0.013</td><td class="num">±0.010</td></tr>
+<tr><td>6.500–6.999</td><td class="num">±0.015</td><td class="num">±0.012</td></tr>
+<tr><td>7.000–7.499</td><td class="num">±0.018</td><td class="num">±0.013</td></tr>
+<tr><td>7.500–7.999</td><td class="num">±0.020</td><td class="num">±0.015</td></tr>
+<tr><td>8.000–8.499</td><td class="num">±0.023</td><td class="num">±0.016</td></tr>
+<tr><td>8.500–8.999</td><td class="num">±0.025</td><td class="num">±0.017</td></tr>
+<tr><td>9.000–9.499</td><td class="num">±0.028</td><td class="num">±0.019</td></tr>
+<tr><td>9.500–9.999</td><td class="num">±0.030</td><td class="num">±0.020</td></tr>
+<tr><td>10.000–10.999</td><td class="num">±0.034</td><td class="num">±0.034</td></tr>
+<tr><td>11.000–11.999</td><td class="num">±0.035</td><td class="num">±0.035</td></tr>
+<tr><td>12.000–12.999</td><td class="num">±0.036</td><td class="num">±0.036</td></tr>
+<tr><td>13.000–13.999</td><td class="num">±0.037</td><td class="num">±0.037</td></tr>
+<tr><td>14.000–14.999</td><td class="num">±0.038</td><td class="num">±0.038</td></tr>
+</table></div>
 <ul class="coatlist">
 <li><strong>Example:</strong> 3.000 OD × 2.500 ID DOM — OD 3.000 to 3.009, ID 2.491 to 2.500. If you hone the bore, plan stock removal from 2.491.</li>
 <li><strong>Ovality:</strong> A513 allows extra ovality on Types 3–6 (0.010 in up to 2 in OD, 0.015 over 2 to 3, 0.020 over 3 to 4, and more above), as long as the <em>mean</em> OD stays in the table above. Check the standard for when it applies.</li>
-<li><strong>Not included yet:</strong> OD 5.550 in and over. That part of the table splits by wall-to-OD ratio, and the two sources could not be read consistently, so it is left out rather than guessed. Use the standard.</li>
+<li><strong>Large-tube example:</strong> 7.000 OD × 0.500 wall (7.1 % of OD, so the "6 % and over" column) — OD and ID each ±0.013.</li>
 <li>Wall-thickness tolerance is a separate A513 table — not included here.</li>
 </ul>
-<p class="src">Basis: Chicago Tube &amp; Iron A513 Type 5 product data and CSW "Product Guide – Steel Tubing &amp; Pipe" (DOM table) — all 12 rows agree. Ovality rows: Chicago Tube and the A513/A513M-20 text agree. Current edition A513/A513M-25.</p>
+<p class="src">Basis: Chicago Tube &amp; Iron A513 Type 5 product data and CSW "Product Guide – Steel Tubing &amp; Pipe" (DOM table) — all 26 rows agree (one source prints the first large band as 5.500–5.999, overlapping its own 5.300–5.549 row; 5.550 is used here). Ovality rows: Chicago Tube and the A513/A513M-20 text agree. Current edition A513/A513M-25.</p>
 </div></details>
 </section>
 
@@ -1241,9 +1259,9 @@ td.mwarn{color:var(--amber);font-weight:600}
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
      constant in the script; the © line and maker's mark stay verbatim. -->
 <footer>
-  <p>Materials Atlas — 343 grade-condition rows, two-source verified or flagged. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
+  <p>Materials Atlas — 351 grade-condition rows, two-source verified or flagged. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
   <p class="tuesday">Below a spec minimum is a rejection. Below a typical is just a Tuesday.</p>
-  <p class="datarev">DATA REV 2026-11-21 R11 · 348 GRADE-CONDITION ROWS · 1189 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5</p>
+  <p class="datarev">DATA REV 2026-11-21 R12 · 351 GRADE-CONDITION ROWS · 1206 CHEMISTRY LIMITS · TWO-SOURCE VERIFIED OR FLAGGED · LOG D1–D63 + WAVES 3–5</p>
   <p class="sister">Need SPC, Gage R&amp;R, AQL, thread limits or unit and hardness converters? <a href="https://harsh3261.github.io/spc-tools/">Open SPC Tools →</a></p>
   <p class="stamp">BUILT BY HARSH PATEL</p>
   <p class="stamp">© 2026 Harsh Patel · All rights reserved</p>

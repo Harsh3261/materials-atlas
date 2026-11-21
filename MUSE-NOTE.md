@@ -1,3 +1,14 @@
+# Note for Muse — DOM tube over 5.5 in OD + footer counts (2026-11-21, cache v101)
+
+Harsh asked for the large DOM sizes once verified. DATA CHANGE (Tolerances tab only):
+1. A513 Type 5 DOM, OD 5.550–14.999 in added: ± on both OD and ID, split by wall under 6 % of OD /
+   6 % and over to 9.999 in, one value for all walls from 10 in. Chicago Tube (raw table re-read)
+   = CSW guide on every cell. Chicago prints the first band as 5.500–5.999 (overlaps its own
+   5.300–5.549 row); CSW's 5.550 is used. Example on page: 7.000 OD × 0.500 wall → ±0.013.
+2. Footer was stale: "343 grade-condition rows" (already wrong at 348) and the DATA REV line still
+   said R11 · 348 · 1189. Both now match DATAREV (R12 · 351 · 1206); README count updated too.
+Smoke: 6 tabs, all 209 checker grades run, 0 page errors at 1280 and 390 px.
+
 # Note for Muse — A449 / A354 BD over 1½ in + Tolerances tab (2026-11-21, R12, cache v100)
 
 Harsh's go-ahead (relayed by Satureday) on audit items (a) and (b). DATA CHANGES — re-pin golden.json.

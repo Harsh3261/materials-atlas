@@ -1,3 +1,16 @@
+# Note for Muse — decisions on disputed values + GB/T 3077 (2026-11-20, pass 5)
+
+Harsh's rule: where sources disagree or a limit is industry-driven, score the stricter
+(higher safety-margin) value. DATA CHANGES (re-pin golden.json):
+1. A311 1045 Class B over 3–4 in: RA 20 → 23 % (stricter; SA-311 says 20, MSCI 23).
+2. SAE J524: added yield 170 MPa min and HRB ≤65 (Alro, TW Metals; same as J525).
+3. GB/T 3077 (40Cr, 42CrMo, 20CrMo, 35CrMo, 20Mn2, 40Mn2): Tables 1–3 checked against
+   the full English translation Harsh supplied — all strength/Z/KU2/HBW values match.
+   Chemistry now carries Si (where missing) and Table 2 quality-steel P/S ≤0.030,
+   Cu ≤0.30, residual Cr/Ni ≤0.30, Mo ≤0.10.
+Kept (already the stricter value): 7075-T6 El 9 %, CSA 350W 22 % / 350A 21 % in 2 in,
+A276 hot-finished minimums, A434 values (band label difference only).
+
 # Note for Muse — full data verification pass (2026-11-20, pass 4)
 
 Every SPEC (scored) row was re-checked against at least two independent sources

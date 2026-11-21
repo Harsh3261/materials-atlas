@@ -1,3 +1,27 @@
+# Note for Muse — checker/display sync audit + SAE J429 (2026-11-21, R11, cache v99)
+
+An automated audit compared every Browse row's chemistry line with the checker's own
+dataset (CHEMROWS + STDCAPS). Fixes:
+1. GB/T 3077 (all six grades): checker now scores the limits the display already carried
+   after the 2026-11-20 full-text verification — Si 0.17–0.37 for 20CrMo/35CrMo/20Mn2/40Mn2,
+   and STDCAPS P ≤0.030, S ≤0.030, Cu ≤0.30, Ni ≤0.30 (+ residual Cr ≤0.30 / Mo ≤0.10 where
+   the grade doesn't specify them). Label notes the A/E suffix tightens P/S.
+2. 42CrMo4 (EN ISO 683-2:2018): checker Si was ≤0.40 (withdrawn EN 10083-3 form); now the
+   current 0.10–0.40 per the stricter-limit rule (three sources: Metinvest, Swiss Steel,
+   Heyco TL 106179). Cu ≤0.40 added as a scored cap (Metinvest + Heyco) and to the display.
+3. 303/416: datasets were still keyed "ASTM A276 (bar)" after the rows were corrected to
+   A582 — the checker could not reach them and Identify reported the wrong standard.
+   Re-keyed to ASTM A582 (values unchanged; they equal the verified A582 rows).
+4. ASTM A311 rows (14) had no checker dataset. Added "ASTM A311 Table 1" datasets from the
+   rows' two-host-verified chemistry; Class B aliases Class A. Kept separate from SAE J403
+   because A311 allows P ≤0.040 on 1117/1144 where J403 has 0.030.
+5. 5052-H32 tensile showed "214 MPa" next to "31 (range 31–38)" ksi → now 214–262 / 31–38.
+Added: SAE J429 Grades 2, 5, 8 (5 size-band rows, SPEC MIN) with C/P/S checker datasets —
+Portland Bolt + Baco reproductions agree cell for cell; Grade 2 also matches Shigley.
+Intentional remaining differences: 321/347 formula minimums and the A572 Gr 65 C/Mn bands
+are scored by CHKRULES; A434 has no chemistry of its own (NOT EVALUATED).
+Smoke: all 206 checker grades set up and run with no page errors.
+
 # Note for Muse — decisions on disputed values + GB/T 3077 (2026-11-20, pass 5)
 
 Harsh's rule: where sources disagree or a limit is industry-driven, score the stricter

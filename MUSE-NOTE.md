@@ -1,3 +1,11 @@
+# Note for Muse — inch marks in Tolerances tables (2026-11-21, cache v105)
+
+Harsh asked for the " symbol on inch values so the tables read easily. Display only — no values
+changed. Cards tl-hr, tl-cf, tl-dom, tl-smls (OD table): every inch size, range and tolerance now
+carries " (e.g. Over 5/16" to 7/16" · 0.006"; DOM wall pairs 0.003"/0.004"). Not marked: BWG gauge
+numbers, A519 wall % table, carbon %, HRC. Mixed fractions (1-1/8") wrapped in .nw (no line break
+at the hyphen on phones). Checked 1280/390 px, no overflow, no page errors.
+
 # Note for Muse — heat treat & hardness card + cross-tab search (2026-11-21, cache v104)
 
 1. Tolerances & acceptance card 7 (no data rows changed):

@@ -603,6 +603,7 @@ a{color:var(--teal)}
 @media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(8,7,10,.0)}}
 /* ===== 2026-11-20 coatings & finishes tab ===== */
 #view-coat .tscroll,#view-tol .tscroll{overflow-x:auto;margin:10px 0}
+#view-tol .nw{white-space:nowrap}
 #view-coat .tscroll table,#view-tol .tscroll table{min-width:300px}
 #view-coat code,#view-tol code{font-family:var(--mono);font-size:13px;background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:4px;color:var(--ink)}
 #view-coat h3,#view-tol h3{font-family:var(--disp);font-weight:600;font-size:17px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin:18px 0 6px}
@@ -1163,24 +1164,24 @@ td.mwarn{color:var(--amber);font-weight:600}
 <p><span class="badge b-spec">SOURCE CHECKED</span> Applies to hot-wrought carbon and alloy bars ordered to A29 product specs (e.g. A576, A322, A675). Rounds, squares and round-cornered squares share this table.</p>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Specified size</th><th class="num">Over</th><th class="num">Under</th><th class="num">Out-of-round</th></tr>
-<tr><td>To 5/16</td><td class="num">0.005</td><td class="num">0.005</td><td class="num">0.008</td></tr>
-<tr><td>Over 5/16 to 7/16</td><td class="num">0.006</td><td class="num">0.006</td><td class="num">0.009</td></tr>
-<tr><td>Over 7/16 to 5/8</td><td class="num">0.007</td><td class="num">0.007</td><td class="num">0.010</td></tr>
-<tr><td>Over 5/8 to 7/8</td><td class="num">0.008</td><td class="num">0.008</td><td class="num">0.012</td></tr>
-<tr><td>Over 7/8 to 1</td><td class="num">0.009</td><td class="num">0.009</td><td class="num">0.013</td></tr>
-<tr><td>Over 1 to 1-1/8</td><td class="num">0.010</td><td class="num">0.010</td><td class="num">0.015</td></tr>
-<tr><td>Over 1-1/8 to 1-1/4</td><td class="num">0.011</td><td class="num">0.011</td><td class="num">0.016</td></tr>
-<tr><td>Over 1-1/4 to 1-3/8</td><td class="num">0.012</td><td class="num">0.012</td><td class="num">0.018</td></tr>
-<tr><td>Over 1-3/8 to 1-1/2</td><td class="num">0.014</td><td class="num">0.014</td><td class="num">0.021</td></tr>
-<tr><td>Over 1-1/2 to 2</td><td class="num">1/64 <span class="small">(0.0156)</span></td><td class="num">1/64 <span class="small">(0.0156)</span></td><td class="num">0.023</td></tr>
-<tr><td>Over 2 to 2-1/2</td><td class="num">1/32 <span class="small">(0.0313)</span></td><td class="num">0</td><td class="num">0.023</td></tr>
-<tr><td>Over 2-1/2 to 3-1/2</td><td class="num">3/64 <span class="small">(0.0469)</span></td><td class="num">0</td><td class="num">0.035</td></tr>
-<tr><td>Over 3-1/2 to 4-1/2</td><td class="num">1/16 <span class="small">(0.0625)</span></td><td class="num">0</td><td class="num">0.046</td></tr>
-<tr><td>Over 4-1/2 to 5-1/2</td><td class="num">5/64 <span class="small">(0.0781)</span></td><td class="num">0</td><td class="num">0.058</td></tr>
-<tr><td>Over 5-1/2 to 6-1/2</td><td class="num">1/8 <span class="small">(0.125)</span></td><td class="num">0</td><td class="num">0.070</td></tr>
-<tr><td>Over 6-1/2 to 8-1/4</td><td class="num">5/32 <span class="small">(0.1563)</span></td><td class="num">0</td><td class="num">0.085</td></tr>
-<tr><td>Over 8-1/4 to 9-1/2</td><td class="num">3/16 <span class="small">(0.1875)</span></td><td class="num">0</td><td class="num">0.100</td></tr>
-<tr><td>Over 9-1/2 to 10</td><td class="num">1/4 <span class="small">(0.250)</span></td><td class="num">0</td><td class="num">0.120</td></tr>
+<tr><td>To 5/16"</td><td class="num">0.005"</td><td class="num">0.005"</td><td class="num">0.008"</td></tr>
+<tr><td>Over 5/16" to 7/16"</td><td class="num">0.006"</td><td class="num">0.006"</td><td class="num">0.009"</td></tr>
+<tr><td>Over 7/16" to 5/8"</td><td class="num">0.007"</td><td class="num">0.007"</td><td class="num">0.010"</td></tr>
+<tr><td>Over 5/8" to 7/8"</td><td class="num">0.008"</td><td class="num">0.008"</td><td class="num">0.012"</td></tr>
+<tr><td>Over 7/8" to 1"</td><td class="num">0.009"</td><td class="num">0.009"</td><td class="num">0.013"</td></tr>
+<tr><td>Over 1" to <span class="nw">1-1/8"</span></td><td class="num">0.010"</td><td class="num">0.010"</td><td class="num">0.015"</td></tr>
+<tr><td>Over <span class="nw">1-1/8"</span> to <span class="nw">1-1/4"</span></td><td class="num">0.011"</td><td class="num">0.011"</td><td class="num">0.016"</td></tr>
+<tr><td>Over <span class="nw">1-1/4"</span> to <span class="nw">1-3/8"</span></td><td class="num">0.012"</td><td class="num">0.012"</td><td class="num">0.018"</td></tr>
+<tr><td>Over <span class="nw">1-3/8"</span> to <span class="nw">1-1/2"</span></td><td class="num">0.014"</td><td class="num">0.014"</td><td class="num">0.021"</td></tr>
+<tr><td>Over <span class="nw">1-1/2"</span> to 2"</td><td class="num">1/64" <span class="small">(0.0156")</span></td><td class="num">1/64" <span class="small">(0.0156")</span></td><td class="num">0.023"</td></tr>
+<tr><td>Over 2" to <span class="nw">2-1/2"</span></td><td class="num">1/32" <span class="small">(0.0313")</span></td><td class="num">0"</td><td class="num">0.023"</td></tr>
+<tr><td>Over <span class="nw">2-1/2"</span> to <span class="nw">3-1/2"</span></td><td class="num">3/64" <span class="small">(0.0469")</span></td><td class="num">0"</td><td class="num">0.035"</td></tr>
+<tr><td>Over <span class="nw">3-1/2"</span> to <span class="nw">4-1/2"</span></td><td class="num">1/16" <span class="small">(0.0625")</span></td><td class="num">0"</td><td class="num">0.046"</td></tr>
+<tr><td>Over <span class="nw">4-1/2"</span> to <span class="nw">5-1/2"</span></td><td class="num">5/64" <span class="small">(0.0781")</span></td><td class="num">0"</td><td class="num">0.058"</td></tr>
+<tr><td>Over <span class="nw">5-1/2"</span> to <span class="nw">6-1/2"</span></td><td class="num">1/8" <span class="small">(0.125")</span></td><td class="num">0"</td><td class="num">0.070"</td></tr>
+<tr><td>Over <span class="nw">6-1/2"</span> to <span class="nw">8-1/4"</span></td><td class="num">5/32" <span class="small">(0.1563")</span></td><td class="num">0"</td><td class="num">0.085"</td></tr>
+<tr><td>Over <span class="nw">8-1/4"</span> to <span class="nw">9-1/2"</span></td><td class="num">3/16" <span class="small">(0.1875")</span></td><td class="num">0"</td><td class="num">0.100"</td></tr>
+<tr><td>Over <span class="nw">9-1/2"</span> to 10"</td><td class="num">1/4" <span class="small">(0.250")</span></td><td class="num">0"</td><td class="num">0.120"</td></tr>
 </table></div>
 <ul class="coatlist">
 <li><strong>Over 2 in the tolerance is plus only</strong> — a 3 in hot-rolled bar may be 3.000 to 3.047 in, never under 3.000.</li>
@@ -1195,31 +1196,31 @@ td.mwarn{color:var(--amber);font-weight:600}
 <p><span class="badge b-spec">SOURCE CHECKED</span> Cold-finished bar tolerances used to sit in A29; they are now in <strong>A108</strong>. The column depends on the grade's <em>maximum</em> carbon (the top of its range, not the cert value) and its heat treatment.</p>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Size</th><th class="num">C max ≤0.28 %</th><th class="num">C max over 0.28 to 0.55 %</th><th class="num">C max ≤0.55 %, stress relieved or annealed after cold finishing</th><th class="num">C max over 0.55 %, or Q&amp;T / N&amp;T before or after cold finishing</th></tr>
-<tr><td>To 1-1/2 (coils or cut lengths)</td><td class="num">0.002</td><td class="num">0.003</td><td class="num">0.004</td><td class="num">0.005</td></tr>
-<tr><td>Over 1-1/2 to 2-1/2</td><td class="num">0.003</td><td class="num">0.004</td><td class="num">0.005</td><td class="num">0.006</td></tr>
-<tr><td>Over 2-1/2 to 4</td><td class="num">0.004</td><td class="num">0.005</td><td class="num">0.006</td><td class="num">0.007</td></tr>
-<tr><td>Over 4 to 6</td><td class="num">0.005</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td></tr>
-<tr><td>Over 6 to 8</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.009</td></tr>
-<tr><td>Over 8 to 9</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.009</td><td class="num">0.010</td></tr>
+<tr><td>To <span class="nw">1-1/2"</span> (coils or cut lengths)</td><td class="num">0.002"</td><td class="num">0.003"</td><td class="num">0.004"</td><td class="num">0.005"</td></tr>
+<tr><td>Over <span class="nw">1-1/2"</span> to <span class="nw">2-1/2"</span></td><td class="num">0.003"</td><td class="num">0.004"</td><td class="num">0.005"</td><td class="num">0.006"</td></tr>
+<tr><td>Over <span class="nw">2-1/2"</span> to 4"</td><td class="num">0.004"</td><td class="num">0.005"</td><td class="num">0.006"</td><td class="num">0.007"</td></tr>
+<tr><td>Over 4" to 6"</td><td class="num">0.005"</td><td class="num">0.006"</td><td class="num">0.007"</td><td class="num">0.008"</td></tr>
+<tr><td>Over 6" to 8"</td><td class="num">0.006"</td><td class="num">0.007"</td><td class="num">0.008"</td><td class="num">0.009"</td></tr>
+<tr><td>Over 8" to 9"</td><td class="num">0.007"</td><td class="num">0.008"</td><td class="num">0.009"</td><td class="num">0.010"</td></tr>
 </table></div>
 <h3>Alloy steel (e.g. 4140, 4340) — cold drawn or turned &amp; polished, minus</h3>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Size</th><th class="num">C max ≤0.28 %</th><th class="num">C max over 0.28 to 0.55 %</th><th class="num">C max ≤0.55 %, annealed or stress relieved after cold finishing</th><th class="num">C max over 0.55 %, or Q&amp;T / N&amp;T before cold finishing</th></tr>
-<tr><td>Up to 1-1/2</td><td class="num">0.003</td><td class="num">0.004</td><td class="num">0.005</td><td class="num">0.006</td></tr>
-<tr><td>Over 1-1/2 to 2-1/2</td><td class="num">0.004</td><td class="num">0.005</td><td class="num">0.006</td><td class="num">0.007</td></tr>
-<tr><td>Over 2-1/2 to 4</td><td class="num">0.005</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td></tr>
-<tr><td>Over 4 to 6</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.008<span class="small">*</span></td></tr>
-<tr><td>Over 6 to 8</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.009</td><td class="num">0.010</td></tr>
-<tr><td>Over 8 to 9</td><td class="num">0.008</td><td class="num">0.009</td><td class="num">0.010</td><td class="num">0.011</td></tr>
+<tr><td>Up to <span class="nw">1-1/2"</span></td><td class="num">0.003"</td><td class="num">0.004"</td><td class="num">0.005"</td><td class="num">0.006"</td></tr>
+<tr><td>Over <span class="nw">1-1/2"</span> to <span class="nw">2-1/2"</span></td><td class="num">0.004"</td><td class="num">0.005"</td><td class="num">0.006"</td><td class="num">0.007"</td></tr>
+<tr><td>Over <span class="nw">2-1/2"</span> to 4"</td><td class="num">0.005"</td><td class="num">0.006"</td><td class="num">0.007"</td><td class="num">0.008"</td></tr>
+<tr><td>Over 4" to 6"</td><td class="num">0.006"</td><td class="num">0.007"</td><td class="num">0.008"</td><td class="num">0.008"<span class="small">*</span></td></tr>
+<tr><td>Over 6" to 8"</td><td class="num">0.007"</td><td class="num">0.008"</td><td class="num">0.009"</td><td class="num">0.010"</td></tr>
+<tr><td>Over 8" to 9"</td><td class="num">0.008"</td><td class="num">0.009"</td><td class="num">0.010"</td><td class="num">0.011"</td></tr>
 </table></div>
 <p class="note">* Sources disagree on this one cell (0.008 vs 0.009). The stricter 0.008 is shown, per the Atlas rule. Alloy tolerances run 0.001 looser than carbon at the same size — a 1.000 in cold-drawn 4140 (C max 0.43) is 0.996 to 1.000 in.</p>
 <h3>Ground &amp; polished (or turned, ground &amp; polished) — carbon or alloy, minus</h3>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Size</th><th class="num">Minus tolerance (all grades)</th></tr>
-<tr><td>Up to 1-1/2</td><td class="num">0.0010</td></tr>
-<tr><td>Over 1-1/2 to 2-1/2</td><td class="num">0.0015</td></tr>
-<tr><td>Over 2-1/2 to 3</td><td class="num">0.0020</td></tr>
-<tr><td>Over 3 to 4</td><td class="num">0.0030</td></tr>
+<tr><td>Up to <span class="nw">1-1/2"</span></td><td class="num">0.0010"</td></tr>
+<tr><td>Over <span class="nw">1-1/2"</span> to <span class="nw">2-1/2"</span></td><td class="num">0.0015"</td></tr>
+<tr><td>Over <span class="nw">2-1/2"</span> to 3"</td><td class="num">0.0020"</td></tr>
+<tr><td>Over 3" to 4"</td><td class="num">0.0030"</td></tr>
 </table></div>
 <p class="note">This is the tight-tolerance option for shafting and pins — the size is the same for every carbon / heat-treat column. Over 4 in: only one source found, not included.</p>
 <ul class="coatlist">
@@ -1234,72 +1235,72 @@ td.mwarn{color:var(--amber);font-weight:600}
 <p><span class="badge b-spec">SOURCE CHECKED</span> Type 5 is ERW tube drawn over a mandrel. Up to 5.549 in OD its OD tolerance is <strong>plus only</strong> and its ID tolerance <strong>minus only</strong> — the tube is never smaller outside or bigger inside than ordered. Measure at least 2 in from the ends.</p>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Outside diameter</th><th class="num">OD over</th><th class="num">OD under</th><th class="num">ID over</th><th class="num">ID under</th></tr>
-<tr><td>Up to 0.499</td><td class="num">0.004</td><td class="num">0</td><td class="num">—</td><td class="num">—</td></tr>
-<tr><td>0.500–1.699</td><td class="num">0.005</td><td class="num">0</td><td class="num">0</td><td class="num">0.005</td></tr>
-<tr><td>1.700–2.099</td><td class="num">0.006</td><td class="num">0</td><td class="num">0</td><td class="num">0.006</td></tr>
-<tr><td>2.100–2.499</td><td class="num">0.007</td><td class="num">0</td><td class="num">0</td><td class="num">0.007</td></tr>
-<tr><td>2.500–2.899</td><td class="num">0.008</td><td class="num">0</td><td class="num">0</td><td class="num">0.008</td></tr>
-<tr><td>2.900–3.299</td><td class="num">0.009</td><td class="num">0</td><td class="num">0</td><td class="num">0.009</td></tr>
-<tr><td>3.300–3.699</td><td class="num">0.010</td><td class="num">0</td><td class="num">0</td><td class="num">0.010</td></tr>
-<tr><td>3.700–4.099</td><td class="num">0.011</td><td class="num">0</td><td class="num">0</td><td class="num">0.011</td></tr>
-<tr><td>4.100–4.499</td><td class="num">0.012</td><td class="num">0</td><td class="num">0</td><td class="num">0.012</td></tr>
-<tr><td>4.500–4.899</td><td class="num">0.013</td><td class="num">0</td><td class="num">0</td><td class="num">0.013</td></tr>
-<tr><td>4.900–5.299</td><td class="num">0.014</td><td class="num">0</td><td class="num">0</td><td class="num">0.014</td></tr>
-<tr><td>5.300–5.549</td><td class="num">0.015</td><td class="num">0</td><td class="num">0</td><td class="num">0.015</td></tr>
+<tr><td>Up to 0.499"</td><td class="num">0.004"</td><td class="num">0"</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>0.500"–1.699"</td><td class="num">0.005"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.005"</td></tr>
+<tr><td>1.700"–2.099"</td><td class="num">0.006"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.006"</td></tr>
+<tr><td>2.100"–2.499"</td><td class="num">0.007"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.007"</td></tr>
+<tr><td>2.500"–2.899"</td><td class="num">0.008"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.008"</td></tr>
+<tr><td>2.900"–3.299"</td><td class="num">0.009"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.009"</td></tr>
+<tr><td>3.300"–3.699"</td><td class="num">0.010"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.010"</td></tr>
+<tr><td>3.700"–4.099"</td><td class="num">0.011"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.011"</td></tr>
+<tr><td>4.100"–4.499"</td><td class="num">0.012"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.012"</td></tr>
+<tr><td>4.500"–4.899"</td><td class="num">0.013"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.013"</td></tr>
+<tr><td>4.900"–5.299"</td><td class="num">0.014"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.014"</td></tr>
+<tr><td>5.300"–5.549"</td><td class="num">0.015"</td><td class="num">0"</td><td class="num">0"</td><td class="num">0.015"</td></tr>
 </table></div>
 <p class="note"><strong>OD 5.550 in and over:</strong> the tolerance becomes plus <em>and</em> minus, on both OD and ID, and depends on the wall: <strong>wall under 6 % of OD</strong> or <strong>6 % and over</strong> (wall ÷ OD × 100). From 10 in up, one value for all walls. The same ± applies to OD and ID.</p>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Outside diameter</th><th class="num">Wall under 6 % of OD — OD &amp; ID</th><th class="num">Wall 6 % of OD and over — OD &amp; ID</th></tr>
-<tr><td>5.550–5.999</td><td class="num">±0.010</td><td class="num">±0.009</td></tr>
-<tr><td>6.000–6.499</td><td class="num">±0.013</td><td class="num">±0.010</td></tr>
-<tr><td>6.500–6.999</td><td class="num">±0.015</td><td class="num">±0.012</td></tr>
-<tr><td>7.000–7.499</td><td class="num">±0.018</td><td class="num">±0.013</td></tr>
-<tr><td>7.500–7.999</td><td class="num">±0.020</td><td class="num">±0.015</td></tr>
-<tr><td>8.000–8.499</td><td class="num">±0.023</td><td class="num">±0.016</td></tr>
-<tr><td>8.500–8.999</td><td class="num">±0.025</td><td class="num">±0.017</td></tr>
-<tr><td>9.000–9.499</td><td class="num">±0.028</td><td class="num">±0.019</td></tr>
-<tr><td>9.500–9.999</td><td class="num">±0.030</td><td class="num">±0.020</td></tr>
-<tr><td>10.000–10.999</td><td class="num">±0.034</td><td class="num">±0.034</td></tr>
-<tr><td>11.000–11.999</td><td class="num">±0.035</td><td class="num">±0.035</td></tr>
-<tr><td>12.000–12.999</td><td class="num">±0.036</td><td class="num">±0.036</td></tr>
-<tr><td>13.000–13.999</td><td class="num">±0.037</td><td class="num">±0.037</td></tr>
-<tr><td>14.000–14.999</td><td class="num">±0.038</td><td class="num">±0.038</td></tr>
+<tr><td>5.550"–5.999"</td><td class="num">±0.010"</td><td class="num">±0.009"</td></tr>
+<tr><td>6.000"–6.499"</td><td class="num">±0.013"</td><td class="num">±0.010"</td></tr>
+<tr><td>6.500"–6.999"</td><td class="num">±0.015"</td><td class="num">±0.012"</td></tr>
+<tr><td>7.000"–7.499"</td><td class="num">±0.018"</td><td class="num">±0.013"</td></tr>
+<tr><td>7.500"–7.999"</td><td class="num">±0.020"</td><td class="num">±0.015"</td></tr>
+<tr><td>8.000"–8.499"</td><td class="num">±0.023"</td><td class="num">±0.016"</td></tr>
+<tr><td>8.500"–8.999"</td><td class="num">±0.025"</td><td class="num">±0.017"</td></tr>
+<tr><td>9.000"–9.499"</td><td class="num">±0.028"</td><td class="num">±0.019"</td></tr>
+<tr><td>9.500"–9.999"</td><td class="num">±0.030"</td><td class="num">±0.020"</td></tr>
+<tr><td>10.000"–10.999"</td><td class="num">±0.034"</td><td class="num">±0.034"</td></tr>
+<tr><td>11.000"–11.999"</td><td class="num">±0.035"</td><td class="num">±0.035"</td></tr>
+<tr><td>12.000"–12.999"</td><td class="num">±0.036"</td><td class="num">±0.036"</td></tr>
+<tr><td>13.000"–13.999"</td><td class="num">±0.037"</td><td class="num">±0.037"</td></tr>
+<tr><td>14.000"–14.999"</td><td class="num">±0.038"</td><td class="num">±0.038"</td></tr>
 </table></div>
 <h3>Wall thickness — plus / minus, in</h3>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Wall</th><th>BWG</th><th class="num">OD 3/8 to 7/8</th><th class="num">OD over 7/8 to 1-7/8</th><th class="num">OD over 1-7/8 to 3-3/4</th><th class="num">OD over 3-3/4 to 15</th></tr>
-<tr><td>0.035</td><td>20</td><td class="num">0.002/0.002</td><td class="num">0.002/0.002</td><td class="num">0.002/0.002</td><td class="num">—</td></tr>
-<tr><td>0.049</td><td>18</td><td class="num">0.002/0.002</td><td class="num">0.002/0.003</td><td class="num">0.002/0.003</td><td class="num">—</td></tr>
-<tr><td>0.065</td><td>16</td><td class="num">0.002/0.002</td><td class="num">0.002/0.003</td><td class="num">0.002/0.003</td><td class="num">0.004/0.004</td></tr>
-<tr><td>0.083</td><td>14</td><td class="num">0.002/0.002</td><td class="num">0.002/0.003</td><td class="num">0.003/0.003</td><td class="num">0.004/0.005</td></tr>
-<tr><td>0.095</td><td>13</td><td class="num">0.002/0.002</td><td class="num">0.002/0.003</td><td class="num">0.003/0.003</td><td class="num">0.004/0.005</td></tr>
-<tr><td>0.109</td><td>12</td><td class="num">0.002/0.003</td><td class="num">0.002/0.004</td><td class="num">0.003/0.003</td><td class="num">0.005/0.005</td></tr>
-<tr><td>0.120</td><td>11</td><td class="num">0.003/0.003</td><td class="num">0.002/0.004</td><td class="num">0.003/0.003</td><td class="num">0.005/0.005</td></tr>
-<tr><td>0.134</td><td>10</td><td class="num">—</td><td class="num">0.002/0.004</td><td class="num">0.003/0.003</td><td class="num">0.005/0.005</td></tr>
-<tr><td>0.148</td><td>9</td><td class="num">—</td><td class="num">0.002/0.004</td><td class="num">0.003/0.003</td><td class="num">0.005/0.005</td></tr>
-<tr><td>0.165</td><td>8</td><td class="num">—</td><td class="num">0.003/0.004</td><td class="num">0.003/0.004</td><td class="num">0.005/0.006</td></tr>
-<tr><td>0.180</td><td>7</td><td class="num">—</td><td class="num">0.004/0.004</td><td class="num">0.003/0.005</td><td class="num">0.006/0.006</td></tr>
-<tr><td>0.203</td><td>6</td><td class="num">—</td><td class="num">0.004/0.005</td><td class="num">0.004/0.005</td><td class="num">0.006/0.007</td></tr>
-<tr><td>0.220</td><td>5</td><td class="num">—</td><td class="num">0.004/0.006</td><td class="num">0.004/0.006</td><td class="num">0.007/0.007</td></tr>
-<tr><td>0.238</td><td>4</td><td class="num">—</td><td class="num">0.005/0.006</td><td class="num">0.005/0.006</td><td class="num">0.007/0.007</td></tr>
-<tr><td>0.259</td><td>3</td><td class="num">—</td><td class="num">0.005/0.006</td><td class="num">0.005/0.006</td><td class="num">0.007/0.007</td></tr>
-<tr><td>0.284</td><td>2</td><td class="num">—</td><td class="num">0.005/0.006</td><td class="num">0.005/0.006</td><td class="num">0.007/0.007</td></tr>
-<tr><td>0.300</td><td>1</td><td class="num">—</td><td class="num">0.006/0.006</td><td class="num">0.006/0.006</td><td class="num">0.008/0.008</td></tr>
-<tr><td>0.320</td><td>—</td><td class="num">—</td><td class="num">0.007/0.007</td><td class="num">0.007/0.007</td><td class="num">0.008/0.008</td></tr>
-<tr><td>0.344</td><td>—</td><td class="num">—</td><td class="num">0.008/0.008</td><td class="num">0.008/0.008</td><td class="num">0.009/0.009</td></tr>
-<tr><td>0.375</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.009/0.009</td><td class="num">0.009/0.009</td></tr>
-<tr><td>0.400</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.010/0.010</td><td class="num">0.010/0.010</td></tr>
-<tr><td>0.438</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.011/0.011</td><td class="num">0.011/0.011</td></tr>
-<tr><td>0.460</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.012/0.012</td><td class="num">0.012/0.012</td></tr>
-<tr><td>0.480</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.012/0.012</td><td class="num">0.012/0.012</td></tr>
-<tr><td>0.531</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.013/0.013</td><td class="num">0.013/0.013</td></tr>
-<tr><td>0.563</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.013/0.013</td><td class="num">0.013/0.013</td></tr>
-<tr><td>0.580</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.014/0.014</td><td class="num">0.014/0.014</td></tr>
-<tr><td>0.600</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.015/0.015</td><td class="num">0.015/0.015</td></tr>
-<tr><td>0.625</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.016/0.016</td><td class="num">0.016/0.016</td></tr>
-<tr><td>0.650</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.017/0.017</td><td class="num">0.017/0.017</td></tr>
+<tr><td>0.035"</td><td>20</td><td class="num">0.002"/0.002"</td><td class="num">0.002"/0.002"</td><td class="num">0.002"/0.002"</td><td class="num">—</td></tr>
+<tr><td>0.049"</td><td>18</td><td class="num">0.002"/0.002"</td><td class="num">0.002"/0.003"</td><td class="num">0.002"/0.003"</td><td class="num">—</td></tr>
+<tr><td>0.065"</td><td>16</td><td class="num">0.002"/0.002"</td><td class="num">0.002"/0.003"</td><td class="num">0.002"/0.003"</td><td class="num">0.004"/0.004"</td></tr>
+<tr><td>0.083"</td><td>14</td><td class="num">0.002"/0.002"</td><td class="num">0.002"/0.003"</td><td class="num">0.003"/0.003"</td><td class="num">0.004"/0.005"</td></tr>
+<tr><td>0.095"</td><td>13</td><td class="num">0.002"/0.002"</td><td class="num">0.002"/0.003"</td><td class="num">0.003"/0.003"</td><td class="num">0.004"/0.005"</td></tr>
+<tr><td>0.109"</td><td>12</td><td class="num">0.002"/0.003"</td><td class="num">0.002"/0.004"</td><td class="num">0.003"/0.003"</td><td class="num">0.005"/0.005"</td></tr>
+<tr><td>0.120"</td><td>11</td><td class="num">0.003"/0.003"</td><td class="num">0.002"/0.004"</td><td class="num">0.003"/0.003"</td><td class="num">0.005"/0.005"</td></tr>
+<tr><td>0.134"</td><td>10</td><td class="num">—</td><td class="num">0.002"/0.004"</td><td class="num">0.003"/0.003"</td><td class="num">0.005"/0.005"</td></tr>
+<tr><td>0.148"</td><td>9</td><td class="num">—</td><td class="num">0.002"/0.004"</td><td class="num">0.003"/0.003"</td><td class="num">0.005"/0.005"</td></tr>
+<tr><td>0.165"</td><td>8</td><td class="num">—</td><td class="num">0.003"/0.004"</td><td class="num">0.003"/0.004"</td><td class="num">0.005"/0.006"</td></tr>
+<tr><td>0.180"</td><td>7</td><td class="num">—</td><td class="num">0.004"/0.004"</td><td class="num">0.003"/0.005"</td><td class="num">0.006"/0.006"</td></tr>
+<tr><td>0.203"</td><td>6</td><td class="num">—</td><td class="num">0.004"/0.005"</td><td class="num">0.004"/0.005"</td><td class="num">0.006"/0.007"</td></tr>
+<tr><td>0.220"</td><td>5</td><td class="num">—</td><td class="num">0.004"/0.006"</td><td class="num">0.004"/0.006"</td><td class="num">0.007"/0.007"</td></tr>
+<tr><td>0.238"</td><td>4</td><td class="num">—</td><td class="num">0.005"/0.006"</td><td class="num">0.005"/0.006"</td><td class="num">0.007"/0.007"</td></tr>
+<tr><td>0.259"</td><td>3</td><td class="num">—</td><td class="num">0.005"/0.006"</td><td class="num">0.005"/0.006"</td><td class="num">0.007"/0.007"</td></tr>
+<tr><td>0.284"</td><td>2</td><td class="num">—</td><td class="num">0.005"/0.006"</td><td class="num">0.005"/0.006"</td><td class="num">0.007"/0.007"</td></tr>
+<tr><td>0.300"</td><td>1</td><td class="num">—</td><td class="num">0.006"/0.006"</td><td class="num">0.006"/0.006"</td><td class="num">0.008"/0.008"</td></tr>
+<tr><td>0.320"</td><td>—</td><td class="num">—</td><td class="num">0.007"/0.007"</td><td class="num">0.007"/0.007"</td><td class="num">0.008"/0.008"</td></tr>
+<tr><td>0.344"</td><td>—</td><td class="num">—</td><td class="num">0.008"/0.008"</td><td class="num">0.008"/0.008"</td><td class="num">0.009"/0.009"</td></tr>
+<tr><td>0.375"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.009"/0.009"</td><td class="num">0.009"/0.009"</td></tr>
+<tr><td>0.400"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.010"/0.010"</td><td class="num">0.010"/0.010"</td></tr>
+<tr><td>0.438"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.011"/0.011"</td><td class="num">0.011"/0.011"</td></tr>
+<tr><td>0.460"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.012"/0.012"</td><td class="num">0.012"/0.012"</td></tr>
+<tr><td>0.480"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.012"/0.012"</td><td class="num">0.012"/0.012"</td></tr>
+<tr><td>0.531"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.013"/0.013"</td><td class="num">0.013"/0.013"</td></tr>
+<tr><td>0.563"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.013"/0.013"</td><td class="num">0.013"/0.013"</td></tr>
+<tr><td>0.580"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.014"/0.014"</td><td class="num">0.014"/0.014"</td></tr>
+<tr><td>0.600"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.015"/0.015"</td><td class="num">0.015"/0.015"</td></tr>
+<tr><td>0.625"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.016"/0.016"</td><td class="num">0.016"/0.016"</td></tr>
+<tr><td>0.650"</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.017"/0.017"</td><td class="num">0.017"/0.017"</td></tr>
 </table></div>
-<p class="note">Read "0.002/0.003" as +0.002 / −0.003. A dash means the size is not in the table. Example: 4.000 OD × 0.250 wall (nearest listed wall 0.259) — wall 0.243 to 0.257. Your wall is what is left after honing, so check it at the thinnest point.</p>
+<p class="note">Read 0.002"/0.003" as +0.002" / −0.003". A dash means the size is not in the table. Example: 4.000 OD × 0.250 wall (nearest listed wall 0.259) — wall 0.243 to 0.257. Your wall is what is left after honing, so check it at the thinnest point.</p>
 <ul class="coatlist">
 <li><strong>Example:</strong> 3.000 OD × 2.500 ID DOM — OD 3.000 to 3.009, ID 2.491 to 2.500. If you hone the bore, plan stock removal from 2.491.</li>
 <li><strong>Ovality:</strong> A513 allows extra ovality on Types 3–6 (0.010 in up to 2 in OD, 0.015 over 2 to 3, 0.020 over 3 to 4, and more above), as long as the <em>mean</em> OD stays in the table above. Check the standard for when it applies.</li>
@@ -1311,12 +1312,12 @@ td.mwarn{color:var(--amber);font-weight:600}
 <p><span class="badge b-spec">SOURCE CHECKED</span> Hot-finished seamless (HFS) is pierced and rolled, not drawn — far looser than DOM. It is bought to OD and wall; anything that matters gets machined.</p>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Outside diameter</th><th class="num">OD over</th><th class="num">OD under</th></tr>
-<tr><td>Up to 2.999</td><td class="num">0.020</td><td class="num">0.020</td></tr>
-<tr><td>3.000–4.499</td><td class="num">0.025</td><td class="num">0.025</td></tr>
-<tr><td>4.500–5.999</td><td class="num">0.031</td><td class="num">0.031</td></tr>
-<tr><td>6.000–7.499</td><td class="num">0.037</td><td class="num">0.037</td></tr>
-<tr><td>7.500–8.999</td><td class="num">0.045</td><td class="num">0.045</td></tr>
-<tr><td>9.000–10.750</td><td class="num">0.050</td><td class="num">0.050</td></tr>
+<tr><td>Up to 2.999"</td><td class="num">0.020"</td><td class="num">0.020"</td></tr>
+<tr><td>3.000"–4.499"</td><td class="num">0.025"</td><td class="num">0.025"</td></tr>
+<tr><td>4.500"–5.999"</td><td class="num">0.031"</td><td class="num">0.031"</td></tr>
+<tr><td>6.000"–7.499"</td><td class="num">0.037"</td><td class="num">0.037"</td></tr>
+<tr><td>7.500"–8.999"</td><td class="num">0.045"</td><td class="num">0.045"</td></tr>
+<tr><td>9.000"–10.750"</td><td class="num">0.050"</td><td class="num">0.050"</td></tr>
 </table></div>
 <h3>Wall thickness — percent over and under nominal</h3>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>

@@ -1,3 +1,37 @@
+# Note for Muse — accessibility, verification and two data fixes (2026-11-20, pass 3)
+
+DATA CHANGES (re-pin golden.json; carry into research files):
+1. A105 hardness: "HBW ≤187" → "HBW 137–197". A105/A105M-18, -21 and -23 texts
+   all give Table 2 max 197 HBW and §8.4 "137 to 197 HBW inclusive" (-05/-14 said
+   187). Note and EDITIONS string updated.
+2. 42CrMo4 EN ISO 683-2 +QT 160 < d ≤ 250 mm: note said "NO reduction-of-area
+   requirement" — wrong. Z ≥ 55 % per Rodacciai, Lucefin (ISO 683-2:2018),
+   Stahlwerk Augustfehn (DIN EN ISO 683-2 09/2018), IMS France, steelforgepieces.
+OPEN (not changed): A311 1045 Class B over 3 in — RA may be 23 % (atlas 20 %);
+   the only source found has a garbled layout. Confirm before editing.
+Verified unchanged: A193 B7 (3 bands), A572 Gr 42–65, A36, A513 DOM 1020/1026,
+   SAE J525, A311 1045 Class B strengths, 42CrMo4 other bands, A434 BD heavy band,
+   ISO 898-1 hardness (2013 values).
+
+CODE:
+- Step 1b: new "Condition / size band" select (#mechCond). The Step 1 grade
+  selector lists one row per grade+standard, so mechanical checks were locked to
+  the first condition/size band. Now any DATA row of that grade can be scored.
+- Yield basis "0.2% offset or 0.5% EUL" (A105) → method "any" (no false mismatch).
+- Dual-unit borderline: for standards named "/A###M" or "/B###M", a value within
+  1 % below the ksi-converted minimum is BORDERLINE (A193M prints 860/720 MPa vs
+  125/105 ksi = 862/724). Found by running two real B7 3.1 certs.
+- Accessibility: <main> landmark (wraps nav + views), skip link, ARIA tabs
+  (ids, aria-controls, tabpanel, roving tabindex, arrow/Home/End keys),
+  sr-only headings (Browse results; Learn phases), keyboard-focusable named
+  scroll regions on all .tscroll tables, focus outlines, prefers-reduced-motion.
+  axe-core (WCAG 2.2 AA + best practice): 0 violations on all 5 tabs, desktop
+  and 390 px.
+Tests: 113-case synthetic suite vs an independent Python oracle (113/113);
+6 real/edge certs; 343-row parse sweep; regression. Cache v96.
+
+---
+
 # Note for Muse — cert units fix (2026-11-20, pass 2)
 
 Bug: certMech() read "80,500 psi" as 80.5 psi (comma taken as a decimal), so a

@@ -617,9 +617,18 @@ a{color:var(--teal)}
 .mechbtns{display:flex;flex-wrap:wrap;gap:8px}.mechbtns .copybtn{margin-top:0}
 td.mwarn{color:var(--amber);font-weight:600}
 #mechLimits .mechtbl td:nth-child(3){color:var(--ink2);font-size:13px}
+.mechcond{margin:10px 0}.mechcond label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);display:block;margin-bottom:4px}
+.mechcond select{width:100%;padding:10px;font-size:16px;background:var(--panel2);color:var(--ink);border:2px solid var(--teal);border-radius:8px}
+/* ===== 2026-11-20 accessibility ===== */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mechgrid input:focus,.mechgrid select:focus,.tscroll:focus-visible,#learnQ:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+.skiplink{position:absolute;left:-9999px;top:0;z-index:100;background:var(--teal);color:#191007;padding:10px 14px;font-weight:700;border-radius:0 0 6px 0}
+.skiplink:focus{left:0}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
+<a class="skiplink" href="#main">Skip to content</a>
 <div class="wrap">
 <header class="top">
   <h1>Materials <span class="atlas">Atlas</span></h1>
@@ -628,16 +637,17 @@ td.mwarn{color:var(--amber);font-weight:600}
   <p class="disclaim">Reference aid only. Accept or reject against the current licensed standard and your purchase order.</p>
 </header>
 
+<main id="main">
 <nav class="tabs" role="tablist" aria-label="Atlas sections">
-  <button role="tab" aria-selected="true" data-view="browse">Browse &amp; Search</button>
-  <button role="tab" aria-selected="false" data-view="compare">Compare</button>
-  <button role="tab" aria-selected="false" data-view="check">Check a Cert</button>
-  <button role="tab" aria-selected="false" data-view="learn">Learn</button>
-  <button role="tab" aria-selected="false" data-view="coat">Coatings</button>
+  <button role="tab" id="tab-browse" aria-controls="view-browse" tabindex="0" aria-selected="true" data-view="browse">Browse &amp; Search</button>
+  <button role="tab" id="tab-compare" aria-controls="view-compare" tabindex="-1" aria-selected="false" data-view="compare">Compare</button>
+  <button role="tab" id="tab-check" aria-controls="view-check" tabindex="-1" aria-selected="false" data-view="check">Check a Cert</button>
+  <button role="tab" id="tab-learn" aria-controls="view-learn" tabindex="-1" aria-selected="false" data-view="learn">Learn</button>
+  <button role="tab" id="tab-coat" aria-controls="view-coat" tabindex="-1" aria-selected="false" data-view="coat">Coatings</button>
 </nav>
 
 <!-- ============ BROWSE ============ -->
-<section class="view on" id="view-browse">
+<section class="view on" id="view-browse" role="tabpanel" aria-labelledby="tab-browse">
   <div class="starthere">
     <p class="sh-title" id="shTitle" role="button" tabindex="0" aria-expanded="true">Start here</p>
     <div class="sh-routes">
@@ -668,13 +678,14 @@ td.mwarn{color:var(--amber);font-weight:600}
   </div>
   <div class="chips" id="famChips" aria-label="Filter by material family"></div>
   <div class="recent" id="recentBox" hidden><span class="recent-lbl">Recently viewed</span><div class="recent-chips" id="recentChips"></div></div>
+  <h2 class="sr-only">Results</h2>
   <p class="count" id="count"></p>
   <p class="learnhint" id="learnHint" hidden></p>
   <div id="results"></div>
 </section>
 
 <!-- ============ COMPARE ============ -->
-<section class="view" id="view-compare">
+<section class="view" id="view-compare" role="tabpanel" aria-labelledby="tab-compare">
   <div class="panel">
     <h2>Side-by-side compare</h2>
     <p class="hint">Put any two grade-condition rows side by side — differing values highlight, and cross-reference pairs carry their confidence label.</p>
@@ -703,7 +714,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 </section>
 
 <!-- ============ CHECK A CERT ============ -->
-<section class="view" id="view-check">
+<section class="view" id="view-check" role="tabpanel" aria-labelledby="tab-check">
   <div class="panel">
     <h2>Check a cert — Step 1 · Chemistry</h2>
     <p class="hint">One flow, three steps: <strong>Step 1</strong> — enter the chemistry here and get a verdict per element (never one verdict for the whole cert). <strong>Step 2</strong> — the carbon equivalent below is computed from these same values. <strong>Step 3</strong> — the qualify checklist finishes the cert. Two entry modes: verify against one grade, or identify from chemistry.</p>
@@ -750,6 +761,7 @@ td.mwarn{color:var(--amber);font-weight:600}
     <h2>Step 1b · Mechanical properties — vs the same grade-condition</h2>
     <p class="hint">Type the cert's tensile results and get a verdict <strong>per property</strong> against the grade-condition row chosen in Step 1. The checker also flags the traps that manufacture fake passes and fails: typical rows, 0.2 % offset vs 0.5 % EUL yield, 4D vs 5D gauge length, round vs flat specimens, and hardness on a different scale.</p>
     <p id="mechRowLine" class="note"></p>
+    <div class="mechcond" id="mechCondBox" hidden><label for="mechCond">Condition / size band — mechanical limits depend on it</label><select id="mechCond"></select><p class="note" id="mechCondNote"></p></div>
     <div id="mechLimits"></div>
     <div class="mechgrid">
       <div><label for="mechUnit">Strength units on the cert</label><select id="mechUnit"><option value="MPa">MPa (= N/mm²)</option><option value="ksi">ksi</option><option value="psi">psi</option><option value="kgf/mm²">kgf/mm²</option></select></div>
@@ -812,7 +824,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 </section>
 
 <!-- ============ LEARN ============ -->
-<section class="view" id="view-learn">
+<section class="view" id="view-learn" role="tabpanel" aria-labelledby="tab-learn">
 <div class="panel learn-top">
 <h2>Learn</h2>
 <p>Short, practical lessons behind every check in this app. Start with the quick rules, tap a topic to open it, or search.</p>
@@ -873,7 +885,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 <details class="card lt" id="lt-cert"><summary><span class="lnum">6</span><span class="ltitle">Reading a cert</span><span class="lkey">The seven checks, in order — the full checklist lives in Check a Cert.</span></summary><div class="ldetail"><ol class="lchecks"><li>Identity &amp; traceability — heat, PO, standard + edition + grade + condition</li><li>Cert type — EN 10204 3.1 / MTR with actual results, not a 2.2 or a bare C of C</li><li>Chemistry vs the grade's window — every restricted element</li><li>Mechanicals vs the condition ordered</li><li>Product form &amp; thickness band</li><li>Test methods named — and the yield basis</li><li>Spec-minimum vs typical discipline</li></ol><p>Each check has its red flags in the full checklist. <button type="button" class="copybtn" id="learnToChecklist">Open the full checklist →</button></p></div></details>
 <!-- 2026-11-15 · Material science for QA (lessons 7–13) -->
 <div class="lgroup" id="msGroup"><h2>Material science for QA</h2><p>The background behind the numbers: what's inside steel, how it's tested, why it hardens, welds, corrodes and fails, and how it's inspected. Heat treatment is lesson 3 above.</p></div>
-<details class="card lt" id="lt-micro"><summary><span class="lnum">7</span><span class="ltitle">Inside steel</span><span class="lkey">Phases, the iron–carbon diagram, and why carbon sets hardness.</span></summary><div class="ldetail"><p class="htlead">Steel is iron with up to about 2 % carbon. What the carbon does depends on which phase it is sitting in, and the phase depends on temperature and cooling rate.</p><figure class="htfig msfig"><svg viewBox="0 0 410 262" role="img" aria-label="Schematic steel corner of the iron–carbon diagram"><rect x="40" y="20" width="360" height="210" class="fbg"/><line x1="86.3" y1="230.0" x2="86.3" y2="20.0" class="fgr"/><text x="89.3" y="27.9" class="fgt">1018</text><line x1="142.9" y1="230.0" x2="142.9" y2="20.0" class="fgr"/><text x="145.9" y="39.9" class="fgt">4140</text><line x1="155.7" y1="230.0" x2="155.7" y2="20.0" class="fgr"/><text x="158.7" y="27.9" class="fgt">1045</text><path d="M40.0 66.2 L235.4 163.3" class="fln"/><path d="M235.4 163.3 L400.0 61.1" class="fln"/><path d="M45.7 163.3 L400.0 163.3" class="fln fa1"/><text x="258.6" y="56.8" class="flb">Austenite (γ)</text><text x="52.9" y="140.8" class="flb fsm">α + γ</text><text x="297.1" y="140.8" class="flb fsm">γ + Fe₃C</text><text x="60.6" y="198.5" class="flb fsm">Ferrite + pearlite</text><text x="261.1" y="198.5" class="flb fsm">Pearlite + Fe₃C</text><circle cx="235.4" cy="163.3" r="4" class="fdot"/><text x="241.4" y="178.3" class="fax">eutectoid 0.76 %C</text><text x="398.0" y="158.3" class="fax" text-anchor="end">A1 727 °C</text><text x="70.9" y="77.8" class="fax">A3</text><text x="343.4" y="109.3" class="fax">Acm</text><text x="40.0" y="246" class="fax" text-anchor="middle">0</text><text x="142.9" y="246" class="fax" text-anchor="middle">0.4</text><text x="245.7" y="246" class="fax" text-anchor="middle">0.8</text><text x="348.6" y="246" class="fax" text-anchor="middle">1.2</text><text x="34" y="234.0" class="fax" text-anchor="end">600</text><text x="34" y="167.3" class="fax" text-anchor="end">727</text><text x="34" y="129.0" class="fax" text-anchor="end">800</text><text x="34" y="76.5" class="fax" text-anchor="end">900</text><text x="34" y="24.0" class="fax" text-anchor="end">1000</text><text x="220" y="259" class="fax" text-anchor="middle">carbon, wt %</text></svg><figcaption>Schematic steel corner of the iron–carbon (Fe–Fe₃C) diagram, slow cooling only. Straight lines approximate the real curves. Quenching does not follow this diagram: it skips to martensite.</figcaption></figure><div class="lgloss"><div class="lgi htc"><h4><strong>Ferrite (α)</strong> <span class="htcode">BCC</span></h4><p>Body-centred cubic iron. Soft, ductile and magnetic. Dissolves almost no carbon (max 0.022 % at 727 °C).</p><p class="lwhy"><strong>Why it matters:</strong> Low-carbon grades such as 1018 are mostly ferrite, which is why they weld and form easily.</p></div><div class="lgi htc"><h4><strong>Austenite (γ)</strong> <span class="htcode">FCC</span></h4><p>Face-centred cubic iron, stable above the A1/A3 lines in carbon steel. Dissolves up to 2.14 % carbon and is non-magnetic.</p><p class="lwhy"><strong>Why it matters:</strong> Every hardening treatment starts by turning the steel into austenite. 304/316 stainless keep austenite at room temperature because of their nickel.</p></div><div class="lgi htc"><h4><strong>Cementite</strong> <span class="htcode">Fe₃C</span></h4><p>Iron carbide, 6.67 % carbon. Very hard and brittle.</p><p class="lwhy"><strong>Why it matters:</strong> 2.14 % carbon is the textbook boundary between steel and cast iron.</p></div><div class="lgi htc"><h4><strong>Pearlite</strong> <span class="htcode">α + Fe₃C</span></h4><p>Fine alternating plates of ferrite and cementite that form when austenite cools slowly through A1 (727 °C). A 0.76 % C steel is all pearlite.</p><p class="lwhy"><strong>Why it matters:</strong> Annealed and normalized medium-carbon bar (1045, 4140 +A/+N) is ferrite plus pearlite. That is the soft, machinable state.</p></div><div class="lgi htc"><h4><strong>Martensite</strong> <span class="htcode">BCT</span></h4><p>Forms when austenite is cooled too fast for carbon to escape. The trapped carbon distorts the lattice, so it is very hard and brittle until tempered.</p><p class="lwhy"><strong>Why it matters:</strong> Its hardness is set mainly by carbon content, not by the alloying. Alloying sets how deep it forms (see Hardenability).</p></div><div class="lgi htc"><h4><strong>Bainite</strong></h4><p>Forms at cooling rates between those that make pearlite and martensite. Strong and tough.</p><p class="lwhy"><strong>Why it matters:</strong> Thick Q&amp;T sections often have a bainite core instead of full martensite, which is one reason big bars test softer.</p></div></div><h3>Floor checks that come from this</h3><div class="lgloss"><div class="lgi htc"><h4><strong>The magnet test</strong></h4><p>Ferritic, martensitic and duplex steels are magnetic; annealed 304/316 is essentially not.</p><p class="lwhy"><strong>On the floor:</strong> Cold-worked 304 can turn partly magnetic (strain-induced martensite), so a slightly magnetic 304 bushing is not proof of a mix-up. Use chemistry (PMI) to settle it.</p></div><div class="lgi htc"><h4><strong>Grain size</strong> <span class="htcode">ASTM E112</span></h4><p>Reported as an ASTM grain size number; a higher number means finer grains.</p><p class="lwhy"><strong>On a cert:</strong> Fine grain (often ASTM 5 or finer) improves toughness. Some specs and POs require it to be reported on the cert.</p></div></div><p class="src">Basis: Fe–Fe₃C diagram values per Callister, <em>Materials Science and Engineering</em> (eutectoid 727 °C / 0.76 % C; max C 0.022 % in ferrite, 2.14 % in austenite; Fe₃C 6.67 % C). Older texts give 723 °C / 0.8 %. ASTM E112 grain size.</p></div></details>
+<details class="card lt" id="lt-micro"><summary><span class="lnum">7</span><span class="ltitle">Inside steel</span><span class="lkey">Phases, the iron–carbon diagram, and why carbon sets hardness.</span></summary><div class="ldetail"><p class="htlead">Steel is iron with up to about 2 % carbon. What the carbon does depends on which phase it is sitting in, and the phase depends on temperature and cooling rate.</p><figure class="htfig msfig"><svg viewBox="0 0 410 262" role="img" aria-label="Schematic steel corner of the iron–carbon diagram"><rect x="40" y="20" width="360" height="210" class="fbg"/><line x1="86.3" y1="230.0" x2="86.3" y2="20.0" class="fgr"/><text x="89.3" y="27.9" class="fgt">1018</text><line x1="142.9" y1="230.0" x2="142.9" y2="20.0" class="fgr"/><text x="145.9" y="39.9" class="fgt">4140</text><line x1="155.7" y1="230.0" x2="155.7" y2="20.0" class="fgr"/><text x="158.7" y="27.9" class="fgt">1045</text><path d="M40.0 66.2 L235.4 163.3" class="fln"/><path d="M235.4 163.3 L400.0 61.1" class="fln"/><path d="M45.7 163.3 L400.0 163.3" class="fln fa1"/><text x="258.6" y="56.8" class="flb">Austenite (γ)</text><text x="52.9" y="140.8" class="flb fsm">α + γ</text><text x="297.1" y="140.8" class="flb fsm">γ + Fe₃C</text><text x="60.6" y="198.5" class="flb fsm">Ferrite + pearlite</text><text x="261.1" y="198.5" class="flb fsm">Pearlite + Fe₃C</text><circle cx="235.4" cy="163.3" r="4" class="fdot"/><text x="241.4" y="178.3" class="fax">eutectoid 0.76 %C</text><text x="398.0" y="158.3" class="fax" text-anchor="end">A1 727 °C</text><text x="70.9" y="77.8" class="fax">A3</text><text x="343.4" y="109.3" class="fax">Acm</text><text x="40.0" y="246" class="fax" text-anchor="middle">0</text><text x="142.9" y="246" class="fax" text-anchor="middle">0.4</text><text x="245.7" y="246" class="fax" text-anchor="middle">0.8</text><text x="348.6" y="246" class="fax" text-anchor="middle">1.2</text><text x="34" y="234.0" class="fax" text-anchor="end">600</text><text x="34" y="167.3" class="fax" text-anchor="end">727</text><text x="34" y="129.0" class="fax" text-anchor="end">800</text><text x="34" y="76.5" class="fax" text-anchor="end">900</text><text x="34" y="24.0" class="fax" text-anchor="end">1000</text><text x="220" y="259" class="fax" text-anchor="middle">carbon, wt %</text></svg><figcaption>Schematic steel corner of the iron–carbon (Fe–Fe₃C) diagram, slow cooling only. Straight lines approximate the real curves. Quenching does not follow this diagram: it skips to martensite.</figcaption></figure><h3 class="sr-only">Phases and structures</h3><div class="lgloss"><div class="lgi htc"><h4><strong>Ferrite (α)</strong> <span class="htcode">BCC</span></h4><p>Body-centred cubic iron. Soft, ductile and magnetic. Dissolves almost no carbon (max 0.022 % at 727 °C).</p><p class="lwhy"><strong>Why it matters:</strong> Low-carbon grades such as 1018 are mostly ferrite, which is why they weld and form easily.</p></div><div class="lgi htc"><h4><strong>Austenite (γ)</strong> <span class="htcode">FCC</span></h4><p>Face-centred cubic iron, stable above the A1/A3 lines in carbon steel. Dissolves up to 2.14 % carbon and is non-magnetic.</p><p class="lwhy"><strong>Why it matters:</strong> Every hardening treatment starts by turning the steel into austenite. 304/316 stainless keep austenite at room temperature because of their nickel.</p></div><div class="lgi htc"><h4><strong>Cementite</strong> <span class="htcode">Fe₃C</span></h4><p>Iron carbide, 6.67 % carbon. Very hard and brittle.</p><p class="lwhy"><strong>Why it matters:</strong> 2.14 % carbon is the textbook boundary between steel and cast iron.</p></div><div class="lgi htc"><h4><strong>Pearlite</strong> <span class="htcode">α + Fe₃C</span></h4><p>Fine alternating plates of ferrite and cementite that form when austenite cools slowly through A1 (727 °C). A 0.76 % C steel is all pearlite.</p><p class="lwhy"><strong>Why it matters:</strong> Annealed and normalized medium-carbon bar (1045, 4140 +A/+N) is ferrite plus pearlite. That is the soft, machinable state.</p></div><div class="lgi htc"><h4><strong>Martensite</strong> <span class="htcode">BCT</span></h4><p>Forms when austenite is cooled too fast for carbon to escape. The trapped carbon distorts the lattice, so it is very hard and brittle until tempered.</p><p class="lwhy"><strong>Why it matters:</strong> Its hardness is set mainly by carbon content, not by the alloying. Alloying sets how deep it forms (see Hardenability).</p></div><div class="lgi htc"><h4><strong>Bainite</strong></h4><p>Forms at cooling rates between those that make pearlite and martensite. Strong and tough.</p><p class="lwhy"><strong>Why it matters:</strong> Thick Q&amp;T sections often have a bainite core instead of full martensite, which is one reason big bars test softer.</p></div></div><h3>Floor checks that come from this</h3><div class="lgloss"><div class="lgi htc"><h4><strong>The magnet test</strong></h4><p>Ferritic, martensitic and duplex steels are magnetic; annealed 304/316 is essentially not.</p><p class="lwhy"><strong>On the floor:</strong> Cold-worked 304 can turn partly magnetic (strain-induced martensite), so a slightly magnetic 304 bushing is not proof of a mix-up. Use chemistry (PMI) to settle it.</p></div><div class="lgi htc"><h4><strong>Grain size</strong> <span class="htcode">ASTM E112</span></h4><p>Reported as an ASTM grain size number; a higher number means finer grains.</p><p class="lwhy"><strong>On a cert:</strong> Fine grain (often ASTM 5 or finer) improves toughness. Some specs and POs require it to be reported on the cert.</p></div></div><p class="src">Basis: Fe–Fe₃C diagram values per Callister, <em>Materials Science and Engineering</em> (eutectoid 727 °C / 0.76 % C; max C 0.022 % in ferrite, 2.14 % in austenite; Fe₃C 6.67 % C). Older texts give 723 °C / 0.8 %. ASTM E112 grain size.</p></div></details>
 <details class="card lt" id="lt-testing"><summary><span class="lnum">8</span><span class="ltitle">Mechanical testing</span><span class="lkey">What each number on a cert actually measured.</span></summary><div class="ldetail"><figure class="htfig msfig"><svg viewBox="0 0 410 230" role="img" aria-label="Schematic engineering stress–strain curve"><line x1="40" y1="200" x2="400" y2="200" class="hax"/><line x1="40" y1="200" x2="40" y2="14" class="hax"/><path d="M40 200 L78 70 C88 58 100 52 130 46 C200 30 250 26 290 30 C320 34 345 52 360 80" class="hcv"/><line x1="47" y1="200" x2="86" y2="66" class="hof"/><circle cx="84" cy="64" r="4" class="fdot"/><text x="92" y="62" class="fax">yield (0.2 % offset)</text><circle cx="262" cy="26" r="4" class="fdot"/><text x="262" y="16" class="fax" text-anchor="middle">tensile strength (UTS)</text><text x="318" y="122" class="fax" text-anchor="middle">necking</text><circle cx="360" cy="80" r="3.5" class="fdot"/><text x="352" y="96" class="fax" text-anchor="end">fracture</text><text x="68" y="160" class="fax">elastic</text><text x="47" y="214" class="fax">0.2 %</text><line x1="40" y1="190" x2="360" y2="190" class="hof2"/><text x="200" y="186" class="fax" text-anchor="middle">elongation after fracture (plastic part)</text><text x="220" y="226" class="fax" text-anchor="middle">strain</text><text x="12" y="110" class="fax" transform="rotate(-90 12 110)" text-anchor="middle">stress</text></svg><figcaption>Schematic engineering stress–strain curve for a steel without a sharp yield point.</figcaption></figure><h3>Tensile test</h3><div class="lgloss"><div class="lgi htc"><h4><strong>Yield strength</strong> <span class="htcode">Rp0.2 · ReH</span></h4><p>The stress where permanent deformation starts. Most steels use the 0.2 % offset method; steels with a sharp yield point report the upper yield (ReH).</p><p class="lwhy"><strong>On a cert:</strong> Copper alloys (B505/B16) use 0.5 % extension under load, so their yield is not comparable to a steel's 0.2 % offset value.</p></div><div class="lgi htc"><h4><strong>Tensile strength</strong> <span class="htcode">Rm · UTS</span></h4><p>The highest stress reached, divided by the original area.</p><p class="lwhy"><strong>On a cert:</strong> Hardness correlates with tensile strength in steel (E140 / ISO 18265), but it is an estimate, never a replacement for a required tensile test.</p></div><div class="lgi htc"><h4><strong>Elongation</strong> <span class="htcode">A · %El</span></h4><p>Plastic stretch at fracture, measured over a marked gauge length.</p><p class="lwhy"><strong>On a cert:</strong> Gauge length changes the number: ASTM E8 round specimens use 4×D; E8M and ISO 6892-1 use 5×D (5.65√S₀). The longer gauge reads a lower %, so a 4D value and a 5D value aren't directly comparable.</p></div><div class="lgi htc"><h4><strong>Reduction of area</strong> <span class="htcode">Z · RA</span></h4><p>How much the cross-section shrank at the break.</p><p class="lwhy"><strong>On a cert:</strong> A low RA on a ductile grade points to inclusions or hydrogen. Some Q&amp;T and bolting specs set a minimum.</p></div><div class="lgi htc"><h4><strong>Where the specimen came from</strong> <span class="htcode">ASTM A370</span></h4><p>Steel products are tested per ASTM A370. For bar, the specimen location (e.g. mid-radius) and direction (longitudinal vs transverse) are defined.</p><p class="lwhy"><strong>On a cert:</strong> Transverse values are lower than longitudinal ones. Check that the cert's specimen matches what the spec calls for.</p></div></div><h3>Hardness</h3><div class="lgloss"><div class="lgi htc"><h4><strong>Brinell</strong> <span class="htcode">HBW · ASTM E10</span></h4><p>A 10 mm tungsten-carbide ball at 3000 kgf for steel, held 10–15 s; the impression diameter is measured. Valid up to 650 HBW.</p><p class="lwhy"><strong>On a cert:</strong> A big impression averages the structure, so it suits bar and castings. Current E10 allows only the carbide ball (HBW); older HBS steel-ball values read differently.</p></div><div class="lgi htc"><h4><strong>Rockwell C / B</strong> <span class="htcode">HRC · HRB · ASTM E18</span></h4><p>10 kgf preload, then HRC: 120° diamond cone at 150 kgf total; HRB: 1/16 in ball at 100 kgf total. Depth of penetration is measured.</p><p class="lwhy"><strong>On a cert:</strong> Use each scale in its range (HRC 20–70, HRB up to 100). A reading of HRC below 20 or HRB above 100 belongs on the other scale. Rockwell C is not suitable on chrome plating.</p></div><div class="lgi htc"><h4><strong>Vickers / micro</strong> <span class="htcode">HV · ASTM E92 / E384</span></h4><p>A diamond pyramid at a chosen load; micro-loads read thin layers.</p><p class="lwhy"><strong>On a cert:</strong> The method for case depth on carburized, nitrided or induction-hardened parts, and for thin plating.</p></div><div class="lgi htc"><h4><strong>Conversions</strong> <span class="htcode">ASTM E140 · ISO 18265</span></h4><p>Tables converting between scales and to approximate tensile strength.</p><p class="lwhy"><strong>On a cert:</strong> Conversions are approximate and material-specific. Report the scale you actually tested, and mark any conversion as converted.</p></div></div><h3>Impact</h3><div class="lgloss"><div class="lgi htc"><h4><strong>Charpy V-notch</strong> <span class="htcode">CVN · ASTM E23</span></h4><p>A 10 × 10 × 55 mm bar with a 2 mm, 45° V-notch, broken by a pendulum. Reports absorbed energy (J, or ft·lbf on many US certs) at a stated temperature.</p><p class="lwhy"><strong>On a cert:</strong> A CVN value without its test temperature means nothing. BCC steels (carbon, low-alloy, ferritic) have a ductile-to-brittle transition as temperature drops; FCC austenitic stainless does not.</p></div></div><p class="src">Basis: ASTM A370, E8/E8M, ISO 6892-1, E10, E18 (via NIST SP 960-5), E92, E384, E140, ISO 18265, E23.</p></div></details>
 <details class="card lt" id="lt-harden"><summary><span class="lnum">9</span><span class="ltitle">Hardenability</span><span class="lkey">How deep a steel hardens, which is not the same as how hard.</span></summary><div class="ldetail"><p class="htlead"><strong>Hardness</strong> is how hard the steel gets, and that mainly depends on carbon. <strong>Hardenability</strong> is how deep it hardens in a real section, and that mainly depends on alloying (Cr, Mo, Ni, Mn, B).</p><figure class="htfig msfig"><svg viewBox="0 0 410 232" role="img" aria-label="Schematic Jominy end-quench curves"><line x1="44" y1="200" x2="400" y2="200" class="hax"/><line x1="44" y1="200" x2="44" y2="16" class="hax"/><path d="M44.0 48.8 L87.8 52.4 L131.5 59.6 L175.2 70.4 L219.0 84.8 L262.8 99.2 L306.5 110.0 L350.2 117.2 L394.0 120.8" class="hcv"/><path d="M44.0 45.2 L65.9 52.4 L87.8 74.0 L109.6 102.8 L131.5 128.0 L153.4 142.4 L197.1 153.2 L262.8 164.0 L350.2 174.8 L394.0 178.4" class="hcv2"/><text x="262.8" y="88.4" class="fax">Cr-Mo alloy steel (4140 type)</text><text x="175.2" y="131.6" class="fax">plain carbon (1045 type)</text><text x="48" y="214" class="fax">quenched end</text><text x="398" y="214" class="fax" text-anchor="end">→ distance from quenched end</text><text x="14" y="110" class="fax" transform="rotate(-90 14 110)" text-anchor="middle">hardness (HRC)</text></svg><figcaption>Schematic Jominy curves: similar carbon, so a similar peak, but the alloy steel holds its hardness much further from the quenched end.</figcaption></figure><h3>Real data: same heat treatment, bigger bar, softer inside</h3><!-- ==== BEGIN DATA (markup): mass-effect table (added 2026-11-15) ==== Source: EMJ "Mechanical Properties and Hardenability", mass-effect tables (1/2 and 1 in tested at centre, 2 and 4 in at half-radius). Edit data only via a verified data change. --><table class="mass"><tr><th>Brinell HB · grade, treatment</th><th class="num">½ in</th><th class="num">1 in</th><th class="num">2 in</th><th class="num">4 in</th></tr><tr><td>4130 · WQ, temper 900 °F</td><td class="num">331</td><td class="num">321</td><td class="num">269</td><td class="num">241</td></tr><tr><td>4142 · OQ, temper 1000 °F</td><td class="num">341</td><td class="num">311</td><td class="num">285</td><td class="num">277</td></tr><tr><td>4340 · OQ, temper 1000 °F</td><td class="num">363</td><td class="num">352</td><td class="num">341</td><td class="num">331</td></tr></table><!-- ==== END DATA (markup): mass-effect table ==== --><p class="note">Same quench and temper, ½ in to 4 in: 4142 drops 64 HB, nickel-bearing 4340 only 32. That difference is hardenability. ½ and 1 in were tested at the centre, 2 and 4 in at half-radius, so the true core of the big bars is softer still. Typical single-heat data, not minimums.</p><div class="lgloss"><div class="lgi htc"><h4><strong>Jominy end-quench test</strong> <span class="htcode">ASTM A255</span></h4><p>A 1 in × 4 in bar is austenitized, then water-sprayed on one end only. Hardness is read along the bar at 1/16 in steps.</p><p class="lwhy"><strong>On a cert:</strong> Close to the quenched end = what a thin section reaches. Further along = what the middle of a thick section reaches.</p></div><div class="lgi htc"><h4><strong>H-steels</strong> <span class="htcode">4140H · SAE J1268</span></h4><p>Grades with an "H" suffix are bought to a guaranteed Jominy band instead of tight chemistry alone.</p><p class="lwhy"><strong>On a cert:</strong> Bars bought to end-quench limits (ASTM A304). When through-hardening a heavy section matters, the H-grade buys a predictable result.</p></div><div class="lgi htc"><h4><strong>Ruling section (mass effect)</strong></h4><p>Bigger sections cool slower in the quench, so their core hardens less.</p><p class="lwhy"><strong>On a cert:</strong> Q&amp;T minimums step down as section size grows (EN ISO 683-2, GB/T 3077's 25 mm test bar). A cert tested on a small coupon doesn't prove a large bar's core.</p></div><div class="lgi htc"><h4><strong>Why 4140 over 1045</strong></h4><p>Similar carbon, so a similar maximum hardness, but 4140's Cr-Mo lets it harden through much larger sections in oil.</p><p class="lwhy"><strong>Why it matters:</strong> Plain-carbon 1045 needs a water quench for depth, which raises distortion and quench-crack risk.</p></div></div><p class="src">Basis: ASTM A255 (Jominy end-quench, DI calculation), ASTM A304 and SAE J1268 (H-steels), EMJ <em>Mechanical Properties and Hardenability</em> (mass-effect data). The Jominy curves are schematic; the size table is data.</p></div></details>
 <details class="card lt" id="lt-weld"><summary><span class="lnum">10</span><span class="ltitle">Welding and carbon equivalent</span><span class="lkey">Why some steels crack after welding, and what prevents it.</span></summary><div class="ldetail"><div class="lgloss"><div class="lgi htc"><h4><strong>Carbon equivalent</strong> <span class="htcode">IIW CE</span></h4><p>CE = C + Mn/6 + (Cr + Mo + V)/5 + (Ni + Cu)/15, in wt %.</p><p class="lwhy"><strong>On a cert:</strong> TWI guidance: below 0.40 readily weldable · 0.40–0.50 preheat on thicker sections · above 0.50 preheat, low-hydrogen process and controlled cooling. Check a Cert › Step 2 calculates CE from the cert chemistry (its bands are a coarser screen).</p></div><div class="lgi htc"><h4><strong>Hydrogen (cold) cracking</strong></h4><p>Needs all three together: hydrogen in the weld, a hard (martensitic) HAZ, and tensile stress. It can appear hours after welding.</p><p class="lwhy"><strong>On a cert:</strong> That's why critical welds are inspected after a delay, not straight away.</p></div><div class="lgi htc"><h4><strong>Preheat and interpass</strong></h4><p>Slows cooling so the HAZ is softer, and lets hydrogen escape.</p><p class="lwhy"><strong>On a cert:</strong> Higher CE, thicker sections and more restraint all need more preheat; keep interpass near preheat. The WPS or code sets the number (e.g. AWS D1.1, EN 1011-2).</p></div><div class="lgi htc"><h4><strong>Low-hydrogen consumables</strong> <span class="htcode">E7018 · H4 / H8</span></h4><p>Low-hydrogen electrodes, kept dry, with a diffusible-hydrogen designator (e.g. H4 = ≤ 4 mL/100 g).</p><p class="lwhy"><strong>On a cert:</strong> On 4140 and other high-CE steels, low-hydrogen practice is assumed, not optional.</p></div><div class="lgi htc"><h4><strong>4140 and other hardenable steels</strong></h4><p>Typical 41xx preheat rises with thickness: about 300–400 °F at 3/16–1/2 in, 400–500 °F at 1/2–1 in, 600–800 °F above 1 in (Hobart guidance), often with a post-weld bake or temper.</p><p class="lwhy"><strong>On a cert:</strong> Welding Q&amp;T or HTSR bar softens the HAZ next to the weld and hardens the weld line itself. Check the drawing before anyone welds it.</p></div><div class="lgi htc"><h4><strong>Don't-weld grades</strong> <span class="htcode">12L14 · 1144 · 303</span></h4><p>Lead and high sulphur cause hot cracking and porosity.</p><p class="lwhy"><strong>On a cert:</strong> Free-machining grades are not for welded joints.</p></div><div class="lgi htc"><h4><strong>Heat-affected zone</strong> <span class="htcode">HAZ</span></h4><p>Base metal next to the weld that was heated but not melted. Its hardness and toughness change.</p><p class="lwhy"><strong>On a cert:</strong> Weld procedure qualification (e.g. ASME IX, AWS D1.1) is what proves the HAZ is acceptable.</p></div></div><p class="src">Basis: IIW carbon equivalent; TWI Job Knowledge 45/46 (hydrogen cracking, CE guidance); AWS D1.1 Annex B; AWS A5.1 (E7018 H4); Hobart Brothers 41xx preheat guidance; ASME Section IX.</p></div></details>
@@ -891,7 +903,7 @@ td.mwarn{color:var(--amber);font-weight:600}
      pass 2 on 2026-11-20 closed all CHECK YOUR COPY items. Any value added later
      that can't be confirmed must carry that badge. Edit data only via a
      verified data change. -->
-<section class="view" id="view-coat">
+<section class="view" id="view-coat" role="tabpanel" aria-labelledby="tab-coat">
 <div class="panel">
 <h2>Coatings &amp; finishes</h2>
 <p class="hint">Plating and anodizing callouts as a quality person reads them: the standard, its classes and types, the thickness it requires, and how to measure it.</p>
@@ -904,14 +916,14 @@ td.mwarn{color:var(--amber);font-weight:600}
 <details class="card lt" id="ct-zn" open><summary><span class="lnum">1</span><span class="ltitle">Zinc on iron &amp; steel</span><span class="lkey">ASTM B633-23 · incl. non-hex Types V &amp; VI</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> Current edition ASTM B633-23 (Jan 2023). The order must state B633, the issue date, the service condition and the Type.</p>
 <p class="note"><strong>Example callout:</strong> <code>ASTM B633-23, Fe/Zn 12, SC 3, Type V</code></p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Classification</th><th>Service condition</th><th class="num">Min thickness</th></tr>
 <tr><td>Fe/Zn 5</td><td>SC 1 — mild</td><td class="num">5 µm (≈0.0002 in)</td></tr>
 <tr><td>Fe/Zn 8</td><td>SC 2 — moderate</td><td class="num">8 µm (≈0.0003 in)</td></tr>
 <tr><td>Fe/Zn 12</td><td>SC 3 — severe</td><td class="num">12 µm (≈0.0005 in)</td></tr>
 <tr><td>Fe/Zn 25</td><td>SC 4 — very severe</td><td class="num">25 µm (≈0.0010 in)</td></tr>
 </table></div>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Type</th><th>Supplementary finish</th><th class="num">Min salt spray</th></tr>
 <tr><td>I</td><td>As plated, no supplementary treatment</td><td class="num">—</td></tr>
 <tr><td>II</td><td>Colored chromate (hexavalent)</td><td class="num">96 h</td></tr>
@@ -934,12 +946,12 @@ td.mwarn{color:var(--amber);font-weight:600}
 
 <details class="card lt" id="ct-znni"><summary><span class="lnum">2</span><span class="ltitle">Zinc-nickel</span><span class="lkey">ASTM B841-18 (reapproved 2024)</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> Order by Class, Type and Grade.</p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Class</th><th>Nickel content</th></tr>
 <tr><td>Class 1</td><td>5–12 % Ni, balance zinc</td></tr>
 <tr><td>Class 2</td><td>12–16 % Ni, balance zinc</td></tr>
 </table></div>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Grade</th><th class="num">Min thickness</th><th>Old grade</th></tr>
 <tr><td>5</td><td class="num">5 µm</td><td>1</td></tr>
 <tr><td>8</td><td class="num">8 µm</td><td>2</td></tr>
@@ -952,7 +964,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 
 <details class="card lt" id="ct-znco"><summary><span class="lnum">3</span><span class="ltitle">Zinc-cobalt</span><span class="lkey">ASTM B840-22</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> Class 1 is about 99 % zinc with at least 0.5 % cobalt. Order by Class, Type and Grade.</p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Grade</th><th class="num">Min thickness</th><th>Old grade</th></tr>
 <tr><td>6</td><td class="num">6 µm</td><td>1</td></tr>
 <tr><td>12</td><td class="num">12 µm</td><td>2</td></tr>
@@ -967,7 +979,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 
 <details class="card lt" id="ct-en"><summary><span class="lnum">4</span><span class="ltitle">Electroless nickel</span><span class="lkey">ASTM B733-22 (reapproved 2026)</span></summary><div class="ldetail">
 <p>Ordered by Type (phosphorus content), service condition (thickness) and Class (post-plate heat treatment).</p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Service condition</th><th class="num">Min thickness</th><th>Status</th></tr>
 <tr><td>SC0 — minimum service</td><td class="num">0.1 µm</td><td><span class="badge b-spec">CHECKED</span></td></tr>
 <tr><td>SC1 — light service</td><td class="num">5 µm (0.0002 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
@@ -975,7 +987,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 <tr><td>SC3 — moderate service</td><td class="num">25 µm (0.001 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
 <tr><td>SC4 — severe service</td><td class="num">75 µm (0.003 in)</td><td><span class="badge b-spec">CHECKED</span></td></tr>
 </table></div>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Type</th><th>Phosphorus, wt %</th></tr>
 <tr><td>I</td><td>No requirement</td></tr>
 <tr><td>II</td><td>1–3</td></tr>
@@ -983,7 +995,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 <tr><td>IV</td><td>5–9</td></tr>
 <tr><td>V</td><td>10 and above</td></tr>
 </table></div>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Class</th><th>Post-plate heat treatment</th></tr>
 <tr><td>1</td><td>As deposited, no heat treatment</td></tr>
 <tr><td>2</td><td>260–400 °C to reach at least 850 HK100 (hardened)</td></tr>
@@ -1000,7 +1012,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 
 <details class="card lt" id="ct-ni"><summary><span class="lnum">5</span><span class="ltitle">Electroplated nickel</span><span class="lkey">ASTM B689-97 (reapproved 2023) · engineering nickel</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> For engineering use (wear, buildup of worn or mis-machined parts, electronics), not decorative.</p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Type</th><th>What it is</th></tr>
 <tr><td>1</td><td>Plated from a bath with no hardeners, brighteners or stress-control additives</td></tr>
 <tr><td>2</td><td>Contains sulfur or other co-deposited elements to raise hardness, refine grain or control stress</td></tr>
@@ -1013,7 +1025,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 
 <details class="card lt" id="ct-cr"><summary><span class="lnum">6</span><span class="ltitle">Hard chrome (cylinder rods)</span><span class="lkey">SAE AMS 2460 · replaces QQ-C-320</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> AMS 2460 superseded AMS-QQ-C-320 in 2007, which itself replaced federal QQ-C-320. Old drawings calling QQ-C-320 should be read as AMS 2460.</p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Class</th><th>Use</th></tr>
 <tr><td>Class 1</td><td>Corrosion-protective (thin chrome, usually over nickel and/or copper)</td></tr>
 <tr><td><strong>Class 2</strong></td><td><strong>Engineering / hard chrome — wear, abrasion, friction. This is the rod callout.</strong></td></tr>
@@ -1026,14 +1038,14 @@ td.mwarn{color:var(--amber);font-weight:600}
 
 <details class="card lt" id="ct-cop"><summary><span class="lnum">7</span><span class="ltitle">Cobalt-phosphorus (chrome replacement)</span><span class="lkey">MIL-DTL-32502 · SAE AMS 2428A · nanocrystalline CoP</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> Electroplated nanocrystalline cobalt-phosphorus (nCoP) is a hexavalent-chromium-free coating for <strong>wear resistance, corrosion resistance and dimensional restoration</strong>. It's mainly applied to steel but can also go on aluminium, copper, stainless, nickel and cobalt alloys. The spec itself notes its wear resistance may differ from hard chrome.</p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Spec</th><th>Status</th></tr>
 <tr><td>MIL-DTL-32502</td><td>Active · 14 Jul 2014 · free on ASSIST</td></tr>
 <tr><td>SAE AMS 2428A</td><td>Current · Dec 2021 (AMS 2428 first issued Jul 2017)</td></tr>
 <tr><td>MIL-DTL-5002F (2022)</td><td>Allows nCoP to AMS 2428 or MIL-DTL-32502 when the engineering authority approves it</td></tr>
 </table></div>
 <p class="note"><strong>Why it matters for cylinders:</strong> a US Navy evaluation of hard-chrome replacements on hydraulic cylinders found nCoP lasted over three times longer than any other candidate in hydraulic cycling. Taber abrasion wear was worse than hard chrome; gravelometer results were equivalent.</p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Property (DoD test data)</th><th class="num">nCoP</th><th class="num">Hard chrome</th></tr>
 <tr><td>Hardness, as deposited</td><td class="num">530–600 HV</td><td class="num">600 HV min</td></tr>
 <tr><td>Hardness, after precipitation heat treatment</td><td class="num">up to ≈750 HV</td><td class="num">—</td></tr>
@@ -1052,7 +1064,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 <details class="card lt" id="ct-anod"><summary><span class="lnum">8</span><span class="ltitle">Anodize (aluminium)</span><span class="lkey">MIL-PRF-8625F Amd 2 · free on DLA ASSIST</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> MIL-PRF-8625F (Amendment 2, 23 Nov 2020) superseded MIL-A-8625F (Amendment 1, 2003). It's a free government document, so the full spec is available from assist.dla.mil. Amendment 2 renamed the spec and changed test methods and sampling, but kept the requirement values below.</p>
 <p class="note"><strong>Example callout:</strong> <code>MIL-PRF-8625, Type III, Class 2 black, 0.002 in</code></p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Type</th><th>Process</th><th>Requirement (unsealed)</th></tr>
 <tr><td>I</td><td>Chromic acid</td><td class="num">≥ 200 mg/ft²</td></tr>
 <tr><td>IB</td><td>Chromic acid, low voltage (22 ± 2 V)</td><td class="num">≥ 200 mg/ft²</td></tr>
@@ -1062,7 +1074,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 <tr><td><strong>III</strong></td><td><strong>Hard anodic coating</strong></td><td class="num"><strong>Thickness — see below</strong></td></tr>
 </table></div>
 <p class="note"><strong>Class 1</strong> = non-dyed · <strong>Class 2</strong> = dyed.</p>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Type III thickness</th><th class="num">Requirement</th></tr>
 <tr><td>Not specified on drawing / PO</td><td class="num">0.002 in (2 mil) nominal</td></tr>
 <tr><td>Tolerance, coatings up to 0.002 in</td><td class="num">± 20 %</td></tr>
@@ -1076,7 +1088,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 <li><strong>Sealing:</strong> Types I–IIB are fully sealed unless the drawing says otherwise. Type III is not sealed when wear resistance is the purpose.</li>
 <li><strong>Salt spray:</strong> 336 h per ASTM B117 (surface 6° from vertical) for Types I, IB, IC, II and IIB, judged by an isolated-pit count. Type III is tested only when the coating is specified as sealed.</li>
 </ul>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Type III nominal thickness</th><th>Recommended edge &amp; inside-corner radius</th></tr>
 <tr><td class="num">0.001 in</td><td>≈ 1/32 in</td></tr>
 <tr><td class="num">0.002 in</td><td>≈ 1/16 in</td></tr>
@@ -1091,7 +1103,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 <p><span class="badge b-spec">SOURCE CHECKED</span> Everything in this card comes from the scope and significance sections of each ASTM method.</p>
 
 <h3>1 · Which thickness method for which coating?</h3>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Coating on base metal</th><th>Use</th><th>Don't use</th></tr>
 <tr><td>Zinc, zinc-cobalt, hard chrome on steel</td><td>B499 magnetic</td><td>—</td></tr>
 <tr><td>Electroplated nickel on steel <em>or</em> on non-magnetic metal</td><td>B530 magnetic (nickel version)</td><td>B499</td></tr>
@@ -1103,7 +1115,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 </table></div>
 
 <h3>2 · The methods</h3>
-<div class="tscroll"><table>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Method</th><th>Destroys part?</th><th>What to know</th></tr>
 <tr><td>B499 magnetic</td><td>No</td><td>Non-magnetic coatings on a magnetic base. Reliable for most non-ferrous coatings on steel and suitable for acceptance and SPC. Complies with ISO 2178.</td></tr>
 <tr><td>B530 magnetic, nickel</td><td>No</td><td>Electroplated nickel on magnetic (Type A) or non-magnetic (Type B) bases. Pull-off gauges reach about 50 µm on A and 25 µm on B; electronic gauges reach 1 mm or more.</td></tr>
@@ -1136,6 +1148,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 </div></details>
 </section>
 
+</main>
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
      constant in the script; the © line and maker's mark stay verbatim. -->
 <footer>
@@ -1424,7 +1437,7 @@ const DATA=[
 {f:"Plate",g:"S355J2",s:"EN 10025-2 (hot-rolled structural steel)",eq:"EN 1.0577 · replaces St52-3 · ≈ ASTM A572 Gr 50 (not identical)",form:"Plate / bar / sections",c:"As rolled (+AR) or +N, t ≤16 mm",chem:"C ≤0.20; Si ≤0.55; Mn ≤1.60; Cu ≤0.55",ym:355,yk:51.5,yb:"min-spec ReH (t ≤16 mm)",tm:470,tk:68.2,el:"22%",hd:"—",n:"Rm 470–630 MPa (3–100 mm). 16–40 mm: ReH ≥345 MPa. J2 = Charpy-V 27 J min at −20 °C — check the impact line and the +AR/+N condition on the 3.1 cert. CEV ≤0.45 for thin sections. P and S maximums are NOT loaded: mills quote 0.025 or 0.030 for the 2019 edition (flat vs long products), so judge P/S against the PO and the cert's stated edition.",src:"EN 10025-2:2019 via Ovako, Stahlwerk Thüringen, Salzgitter, Arvedi and ArcelorMittal datasheets (agreeing except P/S)",st:"SPEC"},
 {f:"Stainless steel",g:"2205",s:"ASTM A479 (bar/shapes)",eq:"UNS S32205 · duplex 2205",form:"Bar / shapes",c:"Solution annealed",chem:"C ≤0.03; Mn ≤2.00; P ≤0.03; S ≤0.02; Si ≤1.00; Cr 22.00–23.00; Ni 4.50–6.50; Mo 3.00–3.50; N 0.14–0.20",ym:450,yk:65,yb:"min-spec (0.2% offset)",tm:655,tk:95,el:"25%",hd:"HBW ≤290",n:"Duplex (austenite + ferrite) for chloride service — about twice the yield of 316L. Check the cert says S32205, not just S31803 (lower N and Mo minimums). Ask for phase-balance / ferrite testing if the PO calls for it. A276 values were not checked — this row is A479.",src:"ASTM A479/A479M-23 (iTeh standard preview) + Rolled Alloys 2205 sheet + Total Materia A479 + Alleima bar data (agreeing)",st:"SPEC"},
 {f:"Stainless steel (PH)",g:"15-5 PH",s:"ASTM A564",eq:"UNS S15500 · Type XM-12",form:"Bar / shapes",c:"Aged H1025 (1025 °F)",chem:"C ≤0.07; Mn ≤1.00; P ≤0.04; S ≤0.03; Si ≤1.00; Cr 14.00–15.50; Ni 3.50–5.50; Cu 2.50–4.50; Nb 0.15–0.45",ym:1000,yk:145,yb:"min-spec (0.2% offset)",tm:1070,tk:155,el:"12%",hd:"HBW ≥331 / HRC ≥35",n:"H1025 also needs RA ≥45 % (longitudinal). Same heat aged H900 or H1150 gives very different strength, so the cert must state the aging condition and a hardness. A564 writes Nb; many certs report Nb+Ta — enter that value as Nb.",src:"ASTM A564/A564M-19a (iTeh standard preview) + Rolled Alloys 15-5 sheet + UPMET 15-5 sheet (agreeing)",st:"SPEC"},
-{f:"Forgings & flanges",g:"A105",s:"ASTM A105/A105M (forgings for piping)",eq:"ASME SA-105",form:"Flanges, fittings, valve parts (forged)",c:"As forged or heat treated per spec",chem:"C ≤0.35; Mn ≥0.60; P ≤0.035; S ≤0.04; Si 0.10–0.35; Cu ≤0.40; Ni ≤0.40; Cr ≤0.30; Mo ≤0.12; V ≤0.08",ym:250,yk:36,yb:"min-spec (0.2% offset or 0.5% EUL)",tm:485,tk:70,el:"30% (2 in strip) / 22% (4D round)",hd:"HBW ≤187",n:"Mn is 0.60–1.05, but each 0.01 % C below 0.35 lets Mn rise 0.06 % above 1.05, up to 1.35 — the checker scores Mn by that rule. Cu+Ni+Cr+Mo+V ≤1.00 and Cr+Mo ≤0.32 are scored too. RA ≥30 % on round specimens. Newer editions also add a hardness minimum (137 HB per one source) — not loaded until a second source confirms.",src:"ASTM A105/A105M-05 (iTeh standard preview) + Octal Steel A105 spec sheet + projectmaterials A105 summary (agreeing)",st:"SPEC"},
+{f:"Forgings & flanges",g:"A105",s:"ASTM A105/A105M (forgings for piping)",eq:"ASME SA-105",form:"Flanges, fittings, valve parts (forged)",c:"As forged or heat treated per spec",chem:"C ≤0.35; Mn ≥0.60; P ≤0.035; S ≤0.04; Si 0.10–0.35; Cu ≤0.40; Ni ≤0.40; Cr ≤0.30; Mo ≤0.12; V ≤0.08",ym:250,yk:36,yb:"min-spec (0.2% offset or 0.5% EUL)",tm:485,tk:70,el:"30% (2 in strip) / 22% (4D round)",hd:"HBW 137–197",n:"Mn is 0.60–1.05, but each 0.01 % C below 0.35 lets Mn rise 0.06 % above 1.05, up to 1.35 — the checker scores Mn by that rule. Cu+Ni+Cr+Mo+V ≤1.00 and Cr+Mo ≤0.32 are scored too. RA ≥30 % on round specimens. Hardness 137–197 HBW per the current edition (A105/A105M-18, -21 and -23 texts agree; the -05 and -14 editions said 187 max, 137–187) — verified 2026-11-20.",src:"ASTM A105/A105M-05 (iTeh standard preview) + Octal Steel A105 spec sheet + projectmaterials A105 summary (agreeing)",st:"SPEC"},
 {f:"Alloy steel bar",g:"Nitralloy 135M",s:"AMS 6470 (nitriding steel)",eq:"Nitralloy 135 Modified · Cr-Mo-Al nitriding steel",form:"Bar / forgings / tubing",c:"Chemistry only",chem:"C 0.38–0.43; Mn 0.50–0.80; Si 0.20–0.40; P ≤0.025; S ≤0.025; Ni ≤0.25; Cr 1.40–1.80; Mo 0.30–0.40; Al 0.95–1.30; Cu ≤0.35",ym:null,yk:null,yb:"not loaded — core strength comes from the Q&T before nitriding; put it on the PO",tm:null,tk:null,el:"—",hd:"—",n:"The ~1.1 % Al is what makes the nitrided case so hard (and brittle) — Al outside 0.95–1.30 changes case response. Watch white-layer thickness on nitrided parts. Mechanical figures on distributor sheets disagree, so none are loaded.",src:"AMS 6470 chemistry via UPMET Nitralloy 135 sheet + Titanium Industries 135M sheet (agreeing); SAE Mobilus title confirms C 0.38–0.43",st:"SPEC"},
 {f:"Tube",g:"SAE J524",s:"SAE J524 (seamless hydraulic tube)",eq:"Seamless low-carbon hydraulic line tube",form:"Seamless tube, cold drawn",c:"Cold drawn + annealed",chem:"C ≤0.18; Mn 0.30–0.60; P ≤0.04; S ≤0.05",ym:null,yk:null,yb:"not loaded — sources conflict",tm:310,tk:45,el:"35% (30% for OD ≤3/8 in or wall ≤0.035 in)",hd:"—",n:"Hydraulic LINE tubing made for bending and flaring — not a cylinder-barrel material. Expect flare and flattening tests on the cert.",src:"SAE J524 via Chicago Tube + TW Metals + Alro (agreeing on chemistry, tensile and elongation)",st:"SPEC"},
 {f:"Tube",g:"SAE J525",s:"SAE J525 (welded + cold-drawn hydraulic tube)",eq:"Welded & cold-drawn low-carbon hydraulic line tube",form:"Welded tube, cold drawn",c:"Cold drawn + annealed",chem:"C ≤0.18; Mn 0.30–0.60; P ≤0.04; S ≤0.05",ym:170,yk:25,yb:"min-spec",tm:310,tk:45,el:"35% (30% for 3/8 in OD and/or 0.035 in wall)",hd:"HRB ≤65",n:"Welded counterpart of J524 with the same chemistry and strength. Cold drawing works the seam in, but flare/flatten tests across the seam are still worth checking. One source shows C 0.06 min; not loaded.",src:"SAE J525 via Chicago Tube + precision-steeltube supplier listing (agreeing)",st:"SPEC"},
@@ -1531,7 +1544,7 @@ const DATA=[
 {f:"Alloy steel bar",g:"42CrMo4",s:"EN ISO 683-2:2018",eq:"Steel number 1.7225 · AISI 4140 near (not identical) · JIS SCM440 near",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section 16 < d ≤ 40 mm",chem:"C 0.38–0.45; Si 0.10–0.40 (EN 10083-3:2006 printed ≤0.40 only; checker scores the 0.40 max); Mn 0.60–0.90; P ≤0.025; S ≤0.035; Cr 0.90–1.20; Mo 0.15–0.30",ym:750,yk:null,yb:"min-spec (Rp0.2)",tm:"1000–1200",tk:null,el:"11%",hd:"—",n:"Reduction of area Z ≥ 45%; impact KV ≥ 35 J (room temperature).",src:"EN ISO 683-2:2018 mechanical table as reproduced (M-EX EN 10083-3 Table 8 + steelforgepieces Table 5, round 4) — two agreeing; values identical in withdrawn EN 10083-3:2006",st:"SPEC"},
 {f:"Alloy steel bar",g:"42CrMo4",s:"EN ISO 683-2:2018",eq:"Steel number 1.7225 · AISI 4140 near (not identical) · JIS SCM440 near",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section 40 < d ≤ 100 mm",chem:"C 0.38–0.45; Si 0.10–0.40 (EN 10083-3:2006 printed ≤0.40 only; checker scores the 0.40 max); Mn 0.60–0.90; P ≤0.025; S ≤0.035; Cr 0.90–1.20; Mo 0.15–0.30",ym:650,yk:null,yb:"min-spec (Rp0.2)",tm:"900–1100",tk:null,el:"12%",hd:"—",n:"Reduction of area Z ≥ 50%; impact KV ≥ 35 J (room temperature).",src:"EN ISO 683-2:2018 mechanical table as reproduced (M-EX EN 10083-3 Table 8 + steelforgepieces Table 5, round 4) — two agreeing; values identical in withdrawn EN 10083-3:2006",st:"SPEC"},
 {f:"Alloy steel bar",g:"42CrMo4",s:"EN ISO 683-2:2018",eq:"Steel number 1.7225 · AISI 4140 near (not identical) · JIS SCM440 near",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section 100 < d ≤ 160 mm",chem:"C 0.38–0.45; Si 0.10–0.40 (EN 10083-3:2006 printed ≤0.40 only; checker scores the 0.40 max); Mn 0.60–0.90; P ≤0.025; S ≤0.035; Cr 0.90–1.20; Mo 0.15–0.30",ym:550,yk:null,yb:"min-spec (Rp0.2)",tm:"800–950",tk:null,el:"13%",hd:"—",n:"Reduction of area Z ≥ 50%; impact KV ≥ 35 J (room temperature).",src:"EN ISO 683-2:2018 mechanical table as reproduced (M-EX EN 10083-3 Table 8 + steelforgepieces Table 5, round 4) — two agreeing; values identical in withdrawn EN 10083-3:2006",st:"SPEC"},
-{f:"Alloy steel bar",g:"42CrMo4",s:"EN ISO 683-2:2018",eq:"Steel number 1.7225 · AISI 4140 near (not identical) · JIS SCM440 near",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section 160 < d ≤ 250 mm",chem:"C 0.38–0.45; Si 0.10–0.40 (EN 10083-3:2006 printed ≤0.40 only; checker scores the 0.40 max); Mn 0.60–0.90; P ≤0.025; S ≤0.035; Cr 0.90–1.20; Mo 0.15–0.30",ym:500,yk:null,yb:"min-spec (Rp0.2)",tm:"750–900",tk:null,el:"14%",hd:"—",n:"The standard table sets NO reduction-of-area requirement at this ruling section; impact KV ≥ 35 J (room temperature).",src:"EN ISO 683-2:2018 mechanical table as reproduced (M-EX EN 10083-3 Table 8 + steelforgepieces Table 5, round 4) — two agreeing; values identical in withdrawn EN 10083-3:2006",st:"SPEC"},
+{f:"Alloy steel bar",g:"42CrMo4",s:"EN ISO 683-2:2018",eq:"Steel number 1.7225 · AISI 4140 near (not identical) · JIS SCM440 near",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section 160 < d ≤ 250 mm",chem:"C 0.38–0.45; Si 0.10–0.40 (EN 10083-3:2006 printed ≤0.40 only; checker scores the 0.40 max); Mn 0.60–0.90; P ≤0.025; S ≤0.035; Cr 0.90–1.20; Mo 0.15–0.30",ym:500,yk:null,yb:"min-spec (Rp0.2)",tm:"750–900",tk:null,el:"14%",hd:"—",n:"Reduction of area Z ≥ 55%; impact KV ≥ 35 J (room temperature). (Corrected 2026-11-20: an earlier note said this ruling section has no RA requirement.)",src:"EN ISO 683-2:2018 mechanical table as reproduced (M-EX EN 10083-3 Table 8 + steelforgepieces Table 5, round 4) — two agreeing; values identical in withdrawn EN 10083-3:2006. Z ≥ 55 % re-verified 2026-11-20 against Rodacciai and Lucefin (ISO 683-2:2018), Stahlwerk Augustfehn (DIN EN ISO 683-2 09/2018), IMS France and steelforgepieces",st:"SPEC"},
 {f:"Alloy steel bar",g:"34CrNiMo6",s:"EN ISO 683-2:2018",eq:"Steel number 1.6582 · AISI 4340 cross-reference ONLY — not an equivalent (bands disjoint, D42)",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section d ≤ 16 mm",chem:"C 0.30–0.38; Si ≤0.40; Mn 0.50–0.80; P ≤0.025; S ≤0.035; Cr 1.30–1.70; Mo 0.15–0.30; Ni 1.30–1.70",ym:1000,yk:null,yb:"min-spec (Rp0.2)",tm:"1200–1400",tk:null,el:"9%",hd:"—",n:"Reduction of area Z ≥ 40%. The standard table sets NO impact (KV) requirement at this ruling section — a cert showing KV here is above-spec, not a pass/fail line. (Tables printing KV 35 J at this section trace to the superseded EN 10083:1996-era table — see staging file diff log 683-D4.)",src:"EN ISO 683-2:2018 mechanical table as reproduced from EN 10083-3:2006 Table 8 — Lucefin 1.6582 card + GRSE Table 8 transcription + Heye/Fushun 'as per EN10083' table agree on every staged cell",st:"SPEC"},
 {f:"Alloy steel bar",g:"34CrNiMo6",s:"EN ISO 683-2:2018",eq:"Steel number 1.6582 · AISI 4340 cross-reference ONLY — not an equivalent (bands disjoint, D42)",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section 16 < d ≤ 40 mm",chem:"C 0.30–0.38; Si ≤0.40; Mn 0.50–0.80; P ≤0.025; S ≤0.035; Cr 1.30–1.70; Mo 0.15–0.30; Ni 1.30–1.70",ym:900,yk:null,yb:"min-spec (Rp0.2)",tm:"1100–1300",tk:null,el:"10%",hd:"—",n:"Reduction of area Z ≥ 45%; impact KV ≥ 45 J (room temperature).",src:"EN ISO 683-2:2018 mechanical table as reproduced from EN 10083-3:2006 Table 8 — Lucefin 1.6582 card + Heye/Fushun + steelforgepieces agree",st:"SPEC"},
 {f:"Alloy steel bar",g:"34CrNiMo6",s:"EN ISO 683-2:2018",eq:"Steel number 1.6582 · AISI 4340 cross-reference ONLY — not an equivalent (bands disjoint, D42)",form:"Bar (heat-treatable steel)",c:"+QT quenched & tempered — ruling section 40 < d ≤ 100 mm",chem:"C 0.30–0.38; Si ≤0.40; Mn 0.50–0.80; P ≤0.025; S ≤0.035; Cr 1.30–1.70; Mo 0.15–0.30; Ni 1.30–1.70",ym:800,yk:null,yb:"min-spec (Rp0.2)",tm:"1000–1200",tk:null,el:"11%",hd:"—",n:"Reduction of area Z ≥ 50%; impact KV ≥ 45 J (room temperature).",src:"EN ISO 683-2:2018 mechanical table as reproduced from EN 10083-3:2006 Table 8 — Lucefin 1.6582 card + Heye/Fushun + steelforgepieces agree",st:"SPEC"},
@@ -1721,7 +1734,7 @@ const EDITIONS={
 "S355J2|EN 10025-2 (hot-rolled structural steel)":"EN 10025-2:2019",
 "2205|ASTM A479 (bar/shapes)":"ASTM A479/A479M-23",
 "15-5 PH|ASTM A564":"ASTM A564/A564M-19a",
-"A105|ASTM A105/A105M (forgings for piping)":"ASTM A105/A105M (limits per the -05 text; current-edition secondary sources agree)",
+"A105|ASTM A105/A105M (forgings for piping)":"ASTM A105/A105M (limits per the -05 text; current-edition secondary sources agree; hardness 137–197 HBW per the -18 / -21 / -23 texts)",
 "Nitralloy 135M|AMS 6470 (nitriding steel)":"AMS 6470 (revision not stated by the chemistry sources)",
 "SAE J524|SAE J524 (seamless hydraulic tube)":"SAE J524 (edition not verified)",
 "SAE J525|SAE J525 (welded + cold-drawn hydraulic tube)":"SAE J525 (edition not verified)",
@@ -4239,7 +4252,7 @@ function mechLimits(r){
   L.y=null;L.t=null;
   /* yield */
   if(/^n\/a|^no |^—|not loaded|proof|has no specified/i.test(L.yb)||r.ym==null)L.yNone=L.yb||"no yield minimum in the data";
-  else if(num(r.ym)!=null){L.y={min:r.ym,ksi:num(r.yk),method:/0\.5\s*%\s*extension/i.test(L.yb)?"eul":/0\.2\s*%\s*offset|Rp0\.2/i.test(L.yb)?"off":/ReH/.test(L.yb)?"reh":"ns"};}
+  else if(num(r.ym)!=null){L.y={min:r.ym,ksi:num(r.yk),method:/offset|Rp0\.2/i.test(L.yb)&&/EUL|extension/i.test(L.yb)?"any":/0\.5\s*%\s*extension/i.test(L.yb)?"eul":/0\.2\s*%\s*offset|Rp0\.2/i.test(L.yb)?"off":/ReH/.test(L.yb)?"reh":"ns"};}
   /* tensile */
   if(num(r.tm)!=null)L.t={min:r.tm,max:null,ksi:num(r.tk)};
   else if(typeof r.tm==="string"){const m=r.tm.match(/^(\d+)\s*[–-]\s*(\d+)$/);if(m)L.t={min:+m[1],max:+m[2],ksi:null};}
@@ -4252,10 +4265,16 @@ function mechLimits(r){
   L.h=di?{ok:false,why:"A536 sets no hardness in Table 1",text:String(r.hd||"")}:mechParseHard(r);
   return L;
 }
-const MECH_YM={ns:"not stated",off:"0.2 % offset",eul:"0.5 % EUL",reh:"yield point / ReH"};
+const MECH_YM={ns:"not stated",off:"0.2 % offset",eul:"0.5 % EUL",reh:"yield point / ReH",any:"0.2 % offset or 0.5 % EUL"};
 const MECH_SP={ns:"not stated",r4:"round 4D",r5:"round 5D",f2:"flat 2 in",f8:"flat 8 in"};
 let mechLast=null;
-function mechRow(){return chkGrade.value?gradeByKey[chkGrade.value]||null:null;}
+function mechBase(){return chkGrade.value?gradeByKey[chkGrade.value]||null:null;}
+function mechRow(){const b=mechBase();if(!b)return null;const v=$("mechCond").value;const r=v!==""?DATA[+v]:null;return r&&r.g===b.g&&r.s===b.s?r:b;}
+function mechCondFill(){const b=mechBase(),sel=$("mechCond");sel.innerHTML="";if(!b){$("mechCondBox").hidden=true;return;}
+  const rows=DATA.map((r,i)=>[r,i]).filter(([r])=>r.g===b.g&&r.s===b.s);
+  rows.forEach(([r,i])=>sel.appendChild(new Option(r.c+(r.form?" · "+r.form:""),String(i))));
+  sel.value=String(DATA.indexOf(b));$("mechCondBox").hidden=rows.length<2;
+  $("mechCondNote").textContent=rows.length>1?rows.length+" conditions / size bands for "+b.g+" in "+b.s+". Pick the one that matches the cert and the delivered size.":"";}
 function mechLimitsHTML(L){
   const r=L.row,fmt=(a,b)=>b!=null?a+"–"+b:"≥ "+a;
   const rows=[];
@@ -4265,9 +4284,10 @@ function mechLimitsHTML(L){
   const z=L.z;rows.push("<tr><td>Reduction of area</td><td class='num'>"+(!z?"—":z.any!=null?"≥ "+z.any+" %":(z.flat!=null?"flat ≥ "+z.flat+" % · ":"")+(z.round!=null?"round ≥ "+z.round+" %":""))+"</td><td>"+(z&&z.note?esc(z.note):z&&z.roundOnly?"round specimen only":"")+"</td></tr>");
   rows.push("<tr><td>Hardness</td><td class='num'>"+esc(L.h.text||"—")+"</td><td>"+(L.h.ok?"scored on the same scale only":L.h.none?"":"not scored — "+esc(L.h.why||""))+"</td></tr>");
   const tag=L.spec?'<span class="badge b-spec">SPEC MIN</span>':'<span class="badge b-typ">'+(r.st==="TYP"?"TYPICAL":"MANUFACTURER")+' — NOT FOR ACCEPTANCE</span>';
-  return '<p class="note">'+tag+' Limits for <strong>'+esc(r.g)+'</strong> · '+esc(r.c)+' · '+esc(L.basis)+'</p><div class="tscroll"><table class="mechtbl"><thead><tr><th>Property</th><th>Requirement</th><th>Basis</th></tr></thead><tbody>'+rows.join("")+'</tbody></table></div>';
+  return '<p class="note">'+tag+' Limits for <strong>'+esc(r.g)+'</strong> · '+esc(r.c)+' · '+esc(L.basis)+'</p><div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="mechtbl"><thead><tr><th>Property</th><th>Requirement</th><th>Basis</th></tr></thead><tbody>'+rows.join("")+'</tbody></table></div>';
 }
 function mechSync(){
+  if($("mechCond").dataset.base!==chkGrade.value){$("mechCond").dataset.base=chkGrade.value;mechCondFill();}
   const r=mechRow();mechLast=null;$("mechOut").innerHTML="";
   if(!r){$("mechRowLine").textContent="Select the grade-condition named on the cert in Step 1 — the mechanical limits load from the same row.";$("mechLimits").innerHTML="";return;}
   $("mechRowLine").textContent="";
@@ -4303,14 +4323,15 @@ function mechRun(){
     let c,shown;
     if(refNote){res(name,specTxt,certTxt,"warn",refNote);return;}
     if((unit==="ksi"||unit==="psi")&&lim.ksi!=null&&lim.max==null&&astmLike){const vk=unit==="psi"?v/1000:v;c=cmp(vk,lim.ksi,null,0);shown=(unit==="psi"?"= "+vk+" ksi, ":"")+"vs "+lim.ksi+" ksi";}
-    else{const vm=mechToMPa(v,unit);c=cmp(vm,lim.min,lim.max,0.5);shown=unit!=="MPa"?"= "+vm.toFixed(0)+" MPa":"";}
+    else{const vm=mechToMPa(v,unit);c=cmp(vm,lim.min,lim.max,0.5);shown=unit!=="MPa"?"= "+vm.toFixed(0)+" MPa":"";
+      if(!c.okMin&&/\/[AB]\d+M\b/.test(String(r.s))&&lim.ksi!=null&&vm>=lim.min*0.99){res(name,specTxt,certTxt+(shown?" ("+shown+")":""),"warn","BORDERLINE — within 1 % below "+lim.min+" MPa, which is "+lim.ksi+" ksi converted. Dual-unit ASTM specs print rounded metric minimums in the …M edition (e.g. A193M B7: 860 / 720 MPa vs 125 / 105 ksi). Check which unit system the PO and cert certify to.");return;}}
     res(name,specTxt,certTxt+(shown?" ("+shown+")":""),c.ok?"pass":"fail",c.ok?"PASS":(c.okMin?"FAIL — above maximum":"FAIL — below minimum"));
   };
   /* yield method trap */
   let yNote=null;
   if(L.y&&ys!=null){
     if((L.y.method==="eul"&&ym==="off")||(L.y.method==="off"&&ym==="eul"))yNote="NOT SCORED — spec yield is "+MECH_YM[L.y.method]+", cert is "+MECH_YM[ym]+". The methods give different numbers; retest or get the "+MECH_YM[L.y.method]+" value.";
-    else if(ym==="ns"&&L.y.method!=="ns")flags.push("Yield method not stated on the cert; the spec basis is "+MECH_YM[L.y.method]+". Confirm the method (checklist item 6).");
+    else if(ym==="ns"&&L.y.method!=="ns"&&L.y.method!=="any")flags.push("Yield method not stated on the cert; the spec basis is "+MECH_YM[L.y.method]+". Confirm the method (checklist item 6).");
     else if(L.y.method==="eul"&&ym==="reh"||L.y.method==="off"&&ym==="reh")flags.push("Cert yield is a yield point / ReH; the spec basis is "+MECH_YM[L.y.method]+". Accept only if the spec permits it.");
   }
   strength("Yield",ys,L.y,yNote);
@@ -4370,7 +4391,7 @@ function mechRun(){
   const sym=cls==="v-pass"?vSym("pass"):cls==="v-fail"?vSym("fail"):"";
   mechLast={r,L,lines,flags,disp,unit,ym,sp,hs};
   $("mechOut").innerHTML='<div class="verdict '+cls+'">'+sym+esc(disp)+' — '+esc(r.g)+' ('+esc(r.c)+')</div>'+
-    '<div class="tscroll"><table class="mechtbl"><thead><tr><th>Property</th><th>Spec</th><th>Cert</th><th>Result</th></tr></thead><tbody>'+
+    '<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="mechtbl"><thead><tr><th>Property</th><th>Spec</th><th>Cert</th><th>Result</th></tr></thead><tbody>'+
     lines.map(x=>"<tr><td><strong>"+x.name+"</strong></td><td class='num'>"+x.spec+"</td><td class='num'>"+esc(x.cert)+"</td><td class='"+(x.cls==="warn"?"mwarn":x.cls)+"'>"+(x.cls==="pass"?vSym("pass"):x.cls==="fail"?vSym("fail"):x.cls==="warn"?vSym("warn"):"")+x.txt+"</td></tr>").join("")+
     '</tbody></table></div>'+
     (flags.length?'<div class="verdict v-warn">'+flags.map(esc).join("<br>")+'</div>':'')+
@@ -4390,6 +4411,7 @@ function mechReport(){
 }
 ["mechYs","mechTs","mechEl","mechRa","mechHv","mechUnit","mechYm","mechSp","mechHs","mechRef"].forEach(id=>$(id).addEventListener("input",()=>{if(mechLast){mechLast=null;$("mechOut").innerHTML='<div class="verdict v-none">Values changed — press “Check mechanicals” again.</div>';}}));
 $("mechRun").addEventListener("click",mechRun);
+$("mechCond").addEventListener("change",()=>{mechLast=null;mechSync();setTimeout(a11yTables,0);});
 $("mechClear").addEventListener("click",()=>{["mechYs","mechTs","mechEl","mechRa","mechHv"].forEach(id=>$(id).value="");$("mechUnit").value="MPa";$("mechRef").value="ns";$("mechYm").value="ns";$("mechSp").value="ns";$("mechHs").value="";mechLast=null;$("mechOut").innerHTML="";});
 $("mechFill").addEventListener("click",()=>{
   const t=$("chkPaste").value;if(!t.trim()){$("mechOut").innerHTML='<div class="verdict v-none">The paste box in Step 1 is empty — paste or load the cert there first.</div>';return;}
@@ -4411,6 +4433,21 @@ $("mechFill").addEventListener("click",()=>{
 chkGrade.addEventListener("change",mechSync);
 mechSync();
 $("mechPanel").addEventListener("focusin",()=>{const r=mechRow(),k=r?chkGrade.value:"";if($("mechPanel").dataset.k!==k){$("mechPanel").dataset.k=k;if(!mechLast)mechSync();}});
+
+/* 2026-11-20 accessibility: ARIA tabs keyboard pattern (arrows, Home, End) */
+(function(){const tabs=[...document.querySelectorAll('nav.tabs button[role="tab"]')];
+  const sync=()=>tabs.forEach(t=>t.tabIndex=t.getAttribute("aria-selected")==="true"?0:-1);
+  tabs.forEach((t,i)=>{t.addEventListener("click",sync);
+    t.addEventListener("keydown",e=>{let j=null;if(e.key==="ArrowRight")j=(i+1)%tabs.length;else if(e.key==="ArrowLeft")j=(i-1+tabs.length)%tabs.length;else if(e.key==="Home")j=0;else if(e.key==="End")j=tabs.length-1;
+      if(j!=null){e.preventDefault();tabs[j].click();sync();tabs[j].focus();}});});sync();})();
+
+/* 2026-11-20 accessibility: give every scrollable table region a unique name */
+function a11yTables(){const seen={};document.querySelectorAll('.tscroll[role="region"]').forEach(el=>{
+  const card=el.closest("details"),t=card&&card.querySelector(".ltitle")?card.querySelector(".ltitle").textContent:(el.closest(".panel")&&el.closest(".panel").querySelector("h2")?el.closest(".panel").querySelector("h2").textContent:"Table");
+  const base=t.trim()+(el.closest("#mechLimits")?" — limits":el.closest("#mechOut")?" — results":"");seen[base]=(seen[base]||0)+1;el.setAttribute("aria-label",base+" table "+seen[base]);});}
+a11yTables();
+["mechRun","mechClear"].forEach(id=>$(id).addEventListener("click",()=>setTimeout(a11yTables,0)));
+chkGrade.addEventListener("change",()=>setTimeout(a11yTables,0));
 </script>
 </body>
 </html>

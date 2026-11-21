@@ -683,6 +683,7 @@ td.mwarn{color:var(--amber);font-weight:600}
   <h2 class="sr-only">Results</h2>
   <p class="count" id="count"></p>
   <p class="learnhint" id="learnHint" hidden></p>
+  <p class="learnhint" id="secHint" hidden></p>
   <div id="results"></div>
 </section>
 
@@ -1363,6 +1364,33 @@ td.mwarn{color:var(--amber);font-weight:600}
 <li><strong>Not included yet:</strong> EN 10243-1 die-forging dimensional tolerances (large, graded tables — held until two clean sources are found).</li>
 </ul>
 <p class="src">Basis: A668/A668M-14 Table 2 (standard preview) + Portland Bolt; A788/A788M-24 and A388/A388M-26 scope / significance texts (astm.org, ANSI webstore). Checked 2026-11-21.</p>
+</div></details>
+<details class="card lt" id="tl-ht"><summary><span class="lnum">7</span><span class="ltitle">Heat treat &amp; hardness — case depth and valid readings</span><span class="lkey">SAE J423 · ISO 18203 · ASTM E18</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> A case-depth number means nothing without its <strong>definition</strong> (effective or total, and to what hardness), and a hardness reading means nothing if the <strong>test itself</strong> was invalid. Both are below.</p>
+<h3>Effective case depth — the hardness it is measured to (SAE J423)</h3>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Carbon content of the steel</th><th class="num">Effective case depth is measured to</th></tr>
+<tr><td>0.28–0.32 %</td><td class="num">35 HRC</td></tr>
+<tr><td>0.33–0.42 %</td><td class="num">40 HRC</td></tr>
+<tr><td>0.43–0.52 %</td><td class="num">45 HRC</td></tr>
+<tr><td>0.53 % and over</td><td class="num">50 HRC</td></tr>
+</table></div>
+<ul class="coatlist">
+<li><strong>Why it matters for induction-hardened rod:</strong> a 1045 chrome rod (0.43–0.50 % C) has its effective case measured to <strong>45 HRC</strong>, not 50. The same traverse read to 50 HRC gives a shallower number — make sure the drawing, the heat treater and your lab use the same criterion.</li>
+<li><strong>Carburized cases</strong> are normally read to <strong>50 HRC</strong> (≈513 HV). <strong>Total case depth</strong> is deeper — where case and core can no longer be told apart. J423 reports effective or total case on hardened parts, and only total case on unhardened ones; methods are chemical, mechanical (hardness traverse) or visual.</li>
+<li><strong>ISO drawings:</strong> case hardening depth (CHD) is the depth to <strong>550 HV</strong> unless another limit is agreed. The ISO method is ISO 18203, which replaced ISO 2639, 3754 and 4970; its 2026 second edition added standard test loads and rules for core hardness — check the edition named on the drawing.</li>
+</ul>
+<h3>Is the hardness reading valid? (ASTM E18 Rockwell)</h3>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Check</th><th>Requirement</th></tr>
+<tr><td>Spacing between readings</td><td>Centre to centre at least <strong>3 ×</strong> the indentation diameter</td></tr>
+<tr><td>Distance from an edge</td><td>Centre to edge at least <strong>2.5 ×</strong> the indentation diameter</td></tr>
+<tr><td>Test-piece thickness</td><td>Steel: per the E18 Annex A5 tables. Other metals: more than <strong>10 ×</strong> the indentation depth. No mark should show on the back.</td></tr>
+<tr><td>Round parts (convex)</td><td>Apply the Annex A6 cylinder corrections — required, not optional. Diameters smaller than the Annex A6 tables are <strong>not acceptable</strong>. Report that the value was corrected.</td></tr>
+<tr><td>Case-hardened parts</td><td>Uniform-hardness thickness rules do not apply to hardness gradients; choose the Rockwell scale by agreement (E18 points to SAE J417 for the minimum effective case per scale).</td></tr>
+</table></div>
+<p class="note">Example: HRC on a 0.5 in chrome rod reads <em>low</em> uncorrected — the curved surface lets the indenter sink further. Use the correction (or a flat), and never go below the smallest diameter E18 tabulates.</p>
+<p class="src">Basis: SAE J423 (2023, stabilized) abstract; effective-case hardness table as reproduced by Engineers Edge, Suranaree University of Technology (citing J423 Feb 1998) and JLCPCB — all agree; 50 HRC ≈ 513 HV per Heat Treating Progress. ISO 18203 scope / replacement and 2026 changes from the ISO, iTeh and ANSI pages; 550 HV CHD from the EN ISO 18203:2022 summary and Heat Treat Today. ASTM E18-22 clauses 6.3, 6.4, 7.9 (standard text), matching lab references; current edition E18-25. Checked 2026-11-21.</p>
 </div></details>
 </section>
 
@@ -3079,6 +3107,7 @@ function render(){
   if(hasQ)rows.sort((a,b)=>a.rank-b.rank);   /* Array.sort is stable: the chosen sort holds within a tier */
   $("count").textContent=rows.length+" of "+DATA.length+" grade-condition rows";
   learnHint(hasQ?$("q").value.trim():"");
+  secHint(hasQ?$("q").value.trim():"");
   let html="";
   const famOrder=[...new Set(DATA.map(r=>r.f))];
   if(hasQ){const best={};rows.forEach(x=>{best[x.r.f]=Math.min(best[x.r.f]??9,x.rank);});famOrder.sort((a,b)=>(best[a]??9)-(best[b]??9));}
@@ -3173,6 +3202,20 @@ document.addEventListener("keydown",e=>{
 });
 /* 2026-11-15 · Browse → Learn bridge: when the search term also appears in
    the lessons, offer a one-tap jump that opens Learn already filtered. */
+/* 2026-11-21 · Browse search also finds the Tolerances & acceptance and Coatings cards
+   (stock tolerances, castings, forgings, heat treat, plating) — one click opens the card. */
+function secHint(q){
+  const el=$("secHint");if(!el)return;
+  const v=q.toLowerCase().trim();
+  if(v.length<3){el.hidden=true;el.innerHTML="";return;}
+  const words=v.split(/\s+/).filter(w=>w.length>=2);
+  const cards=[...document.querySelectorAll("#view-tol details.lt, #view-coat details.lt")];
+  const hits=cards.filter(d=>{const t=d.textContent.toLowerCase();return words.every(w=>t.includes(w));});
+  if(!hits.length){el.hidden=true;el.innerHTML="";return;}
+  el.hidden=false;
+  el.innerHTML='Also in '+(hits.some(d=>d.closest("#view-tol"))?"Tolerances":"Coatings")+': '+hits.slice(0,4).map((d,i)=>'<button type="button" class="lgo" data-sec="'+i+'">'+esc(d.querySelector(".ltitle").textContent)+' →</button>').join(" ")+(hits.length>4?" +"+(hits.length-4)+" more":"");
+  el.querySelectorAll("[data-sec]").forEach(b=>b.addEventListener("click",()=>{const d=hits[+b.dataset.sec];const view=d.closest(".view").id.replace("view-","");const t=document.querySelector('nav.tabs button[data-view="'+view+'"]');if(t)t.click();d.open=true;setTimeout(()=>d.scrollIntoView({behavior:"smooth",block:"start"}),60);}));
+}
 function learnHint(q){
   const el=$("learnHint");if(!el)return;
   const v=q.toLowerCase();

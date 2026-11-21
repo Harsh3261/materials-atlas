@@ -1,3 +1,20 @@
+# Note for Muse — heat treat & hardness card + cross-tab search (2026-11-21, cache v104)
+
+1. Tolerances & acceptance card 7 (no data rows changed):
+   - SAE J423 effective-case criterion by carbon: 0.28–0.32 % → 35 HRC, 0.33–0.42 → 40, 0.43–0.52 → 45,
+     ≥0.53 → 50 (Engineers Edge, Suranaree Univ. citing J423-1998, JLCPCB — all agree). Example: 1045
+     induction-hardened rod → 45 HRC criterion. Carburized → 50 HRC (≈513 HV). J423-2023 is stabilized.
+   - ISO: CHD to 550 HV (EN ISO 18203:2022 summary + Heat Treat Today). ISO 18203 replaced ISO 2639 /
+     3754 / 4970; 18203:2026 2nd edition revised test loads + core-hardness rules — not in preview, so
+     the card tells the user to check the edition (2026 definitions NOT stated).
+   - ASTM E18-22 validity: spacing ≥3d centre-centre, ≥2.5d to edge (7.9); thickness per Annex A5 for
+     steel, >10× depth otherwise (6.3); convex corrections mandatory, smaller-than-tabulated diameters
+     not acceptable (6.4). E18-25 current.
+2. Browse search: new secHint() — query words found in any Tolerances or Coatings card show
+   "Also in …" buttons that switch tab, open and scroll to the card (porosity, DOM wall, case depth,
+   zinc nickel, 4140, A519 tested). Learn hint unchanged.
+Smoke: 222 checker grades, 0 page errors at 1280/390.
+
 # Note for Muse — castings, forgings, ASTM A668 (2026-11-21, R13, cache v103)
 
 DATA CHANGE — re-pin golden.json. DATAREV → R13 · 389 rows · 1238 chemistry limits (footer + README synced).

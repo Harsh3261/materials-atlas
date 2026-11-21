@@ -1,3 +1,17 @@
+# Note for Muse — bar finder + tube finder takes any two of OD / ID / wall (2026-11-21, cache v107)
+
+1. "Find a bar size (rounds)": hot-rolled (A29), cold-finished (A108 carbon / alloy), ground & polished.
+   Data BAR generated from tl-hr / tl-cf tables (hot-rolled fractions kept exact, 1/64" etc.);
+   barFindCheck() = 0. Cold-finished column chosen from the grade's MAX carbon — the grade box reads
+   it from the Atlas's own chemistry rows (e.g. 1045 → 0.50, 4140 → 0.43 + alloy table, 12L14 → 0.15)
+   or accepts a max C % directly; condition (as CF / SR-annealed after CF / Q&T-N&T). Plain-language
+   "What this means": band/column and why, minus-only default, out-of-round (HR table; CF = half the
+   tolerance), straightness (HR), ends, A36 → A6, flagged alloy cell, PO governs.
+2. Tube finder: any two of OD, ID, wall (third derived and shown); inconsistent triple rejected;
+   explains that A513/A519 select tolerances by OD range (so ID-led searches still land correctly).
+19 hand-worked cases pass (tube 6, bar 13). Inputs constrained to card width on phones.
+Smoke 222 grades, 0 page errors.
+
 # Note for Muse — "Find a tube size" lookup (2026-11-21, cache v106)
 
 Harsh asked to search tubes and get a plain explanation of the result. Tolerances tab, top panel:

@@ -607,7 +607,8 @@ a{color:var(--teal)}
 #view-tol .tubefind{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
 #view-tol .tubefind h3{margin-top:0}
 #view-tol .tfrow{display:flex;flex-wrap:wrap;gap:10px}
-#view-tol .tfrow label{display:flex;flex-direction:column;gap:4px;font-size:13px;flex:1 1 180px}
+#view-tol .tfrow label{display:flex;flex-direction:column;gap:4px;font-size:13px;flex:1 1 180px;min-width:0}
+#view-tol .tfrow input,#view-tol .tfrow select{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
 #view-tol .tfrow input,#view-tol .tfrow select{font:inherit;font-size:16px;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
 #view-tol .tfplain{margin-top:10px;padding:10px 12px;border-left:3px solid var(--teal);background:var(--panel)}
 #view-tol .tfplain h4{margin:0 0 4px;font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--teal)}
@@ -1170,10 +1171,25 @@ td.mwarn{color:var(--amber);font-weight:600}
 <h3>Find a tube size</h3>
 <div class="tfrow">
 <label>Tube<select id="tfType"><option value="dom">DOM — ASTM A513 Type 5</option><option value="hfs">Hot-finished seamless — ASTM A519</option></select></label>
-<label>OD (in)<input id="tfOD" type="number" step="any" inputmode="decimal" placeholder="e.g. 4.000"></label>
-<label><select id="tfBy" aria-label="Second dimension"><option value="wall">Wall (in)</option><option value="id">ID (in)</option></select><input id="tfDim" type="number" step="any" inputmode="decimal" placeholder="e.g. 0.250"></label>
+<label>OD (in)<input id="tfOD" type="number" step="any" inputmode="decimal" placeholder="e.g. 3.000"></label>
+<label>ID (in)<input id="tfID" type="number" step="any" inputmode="decimal" placeholder="e.g. 2.500"></label>
+<label>Wall (in)<input id="tfWall" type="number" step="any" inputmode="decimal" placeholder="e.g. 0.250"></label>
 </div>
+<p class="note" style="margin:6px 0 0">Enter any two of OD, ID and wall — the third is worked out.</p>
 <div id="tfOut" aria-live="polite"></div>
+</div>
+<div class="tubefind" id="barFind">
+<h3>Find a bar size (rounds)</h3>
+<div class="tfrow">
+<label>Bar<select id="bfType"><option value="hr">Hot-rolled — ASTM A29</option><option value="cf" selected>Cold-finished (cold drawn or turned &amp; polished) — ASTM A108</option><option value="gp">Ground &amp; polished</option></select></label>
+<label>Diameter (in)<input id="bfSize" type="number" step="any" inputmode="decimal" placeholder="e.g. 1.000"></label>
+</div>
+<div class="tfrow" id="bfCF">
+<label>Grade or max C %<input id="bfGrade" type="text" autocomplete="off" placeholder="e.g. 1045, 4140, 12L14 or 0.50"></label>
+<label>Steel<select id="bfSteel"><option value="carbon">Carbon</option><option value="alloy">Alloy</option></select></label>
+<label>Condition<select id="bfCond"><option value="cf">As cold finished</option><option value="sr">Stress relieved or annealed after cold finishing</option><option value="qt">Quenched &amp; tempered or normalized &amp; tempered</option></select></label>
+</div>
+<div id="bfOut" aria-live="polite"></div>
 </div>
 </div>
 <details class="card lt" id="tl-hr" open><summary><span class="lnum">1</span><span class="ltitle">Hot-rolled rounds</span><span class="lkey">ASTM A29/A29M Table A1.1 · carbon &amp; alloy, hot-wrought</span></summary><div class="ldetail">
@@ -3287,16 +3303,21 @@ function tubeLookup(type,od,wall){
   return r;
 }
 function tubeFindRender(){
-  const type=$("tfType").value,od=parseFloat($("tfOD").value),dim=parseFloat($("tfDim").value),by=$("tfBy").value;
-  const out=$("tfOut");
-  if(!(od>0)){out.innerHTML='<p class="note">Enter the OD — and the wall or ID — to see the limits and what they mean.</p>';return;}
-  let wall=null;
-  if(dim>0)wall=by==="wall"?dim:(od-dim)/2;
+  const type=$("tfType").value,out=$("tfOut");
+  let od=parseFloat($("tfOD").value),idv=parseFloat($("tfID").value),wall=parseFloat($("tfWall").value);
+  const has=x=>x>0,given=[has(od),has(idv),has(wall)].filter(Boolean).length,derived=[];
+  if(given<2&&!(has(od)&&type==="dom")){out.innerHTML='<p class="note">Enter any two of OD, ID and wall to see the limits and what they mean'+(type==="dom"?' (or just the OD for the OD tolerance)':"")+'.</p>';return;}
+  if(given===3&&Math.abs(od-idv-2*wall)>0.0005){out.innerHTML='<p class="note">These don\'t add up: OD − ID = '+(od-idv).toFixed(3)+'", which needs a wall of '+((od-idv)/2).toFixed(3)+'". Clear one of the three.</p>';return;}
+  if(!has(od)){od=idv+2*wall;derived.push("OD = ID + 2 × wall = "+od.toFixed(3)+'"');}
+  else if(!has(wall)&&has(idv)){wall=(od-idv)/2;derived.push("wall = (OD − ID) ÷ 2 = "+wall.toFixed(3)+'"');}
+  if(!has(wall))wall=null;
   if(wall!==null&&!(wall>0)){out.innerHTML='<p class="note">The ID must be smaller than the OD.</p>';return;}
   const r=tubeLookup(type,od,wall),f=v=>v.toFixed(3)+'"',tol=t=>t[0]===t[1]?"±"+t[0].toFixed(3)+'"':"+"+t[0].toFixed(3)+'" / −'+t[1].toFixed(3)+'"';
   if(r.out){out.innerHTML='<p class="note">'+esc(r.out)+'</p>';return;}
   if(r.needWall){out.innerHTML='<p class="note">Over 5.549" OD the DOM tolerance depends on how thick the wall is compared with the OD — enter the wall or ID too.</p>';return;}
   const rows=[],plain=[];
+  if(derived.length)plain.push("<strong>Worked out:</strong> "+derived.join("; ")+".");
+  plain.push("<strong>How the row is chosen:</strong> "+(type==="dom"?"A513 picks the OD and ID tolerance by the tube's OD size range, and the wall tolerance by OD range and wall":"A519 picks the OD tolerance by OD range, and the wall tolerance by OD range and wall ÷ OD")+" — so the bore you need still lands on the right row through the OD.");
   const odLo=od-r.odTol[1],odHi=od+r.odTol[0];
   rows.push(["OD",f(odLo)+" to "+f(odHi),tol(r.odTol)]);
   plain.push("<strong>OD:</strong> must be between <strong>"+f(odLo)+"</strong> and <strong>"+f(odHi)+"</strong>."+(r.odTol[1]===0?" It may be bigger than ordered, never smaller.":"")+(type==="dom"?" Measure at least 2\" from the tube ends. A513 also allows some extra out-of-round on DOM as long as the <em>average</em> OD stays inside these limits — see the ovality note in the DOM card.":""));
@@ -3327,8 +3348,91 @@ function tubeFindCheck(){
   h[0].forEach((r,i)=>{if(num(r[1])!==TUBE_HFS[i].od)bad++;});
   return bad;
 }
-["tfType","tfOD","tfBy","tfDim"].forEach(id=>{$(id).addEventListener("input",tubeFindRender);$(id).addEventListener("change",tubeFindRender);});
+["tfType","tfOD","tfID","tfWall"].forEach(id=>{$(id).addEventListener("input",tubeFindRender);$(id).addEventListener("change",tubeFindRender);});
 tubeFindRender();
+/* ==== BEGIN DATA: BARFIND (generated from the Tolerances tab tables tl-hr / tl-cf — barFindCheck()
+   re-reads those tables and must match; hot-rolled fraction tolerances kept exact, e.g. 1/64"). ==== */
+const BAR={"hr": [{"hi": 0.3125, "lab": "To 5/16\"", "over": 0.005, "under": 0.005, "oor": 0.008}, {"hi": 0.4375, "lab": "Over 5/16\" to 7/16\"", "over": 0.006, "under": 0.006, "oor": 0.009}, {"hi": 0.625, "lab": "Over 7/16\" to 5/8\"", "over": 0.007, "under": 0.007, "oor": 0.01}, {"hi": 0.875, "lab": "Over 5/8\" to 7/8\"", "over": 0.008, "under": 0.008, "oor": 0.012}, {"hi": 1.0, "lab": "Over 7/8\" to 1\"", "over": 0.009, "under": 0.009, "oor": 0.013}, {"hi": 1.125, "lab": "Over 1\" to 1-1/8\"", "over": 0.01, "under": 0.01, "oor": 0.015}, {"hi": 1.25, "lab": "Over 1-1/8\" to 1-1/4\"", "over": 0.011, "under": 0.011, "oor": 0.016}, {"hi": 1.375, "lab": "Over 1-1/4\" to 1-3/8\"", "over": 0.012, "under": 0.012, "oor": 0.018}, {"hi": 1.5, "lab": "Over 1-3/8\" to 1-1/2\"", "over": 0.014, "under": 0.014, "oor": 0.021}, {"hi": 2.0, "lab": "Over 1-1/2\" to 2\"", "over": 0.015625, "under": 0.015625, "oor": 0.023}, {"hi": 2.5, "lab": "Over 2\" to 2-1/2\"", "over": 0.03125, "under": 0.0, "oor": 0.023}, {"hi": 3.5, "lab": "Over 2-1/2\" to 3-1/2\"", "over": 0.046875, "under": 0.0, "oor": 0.035}, {"hi": 4.5, "lab": "Over 3-1/2\" to 4-1/2\"", "over": 0.0625, "under": 0.0, "oor": 0.046}, {"hi": 5.5, "lab": "Over 4-1/2\" to 5-1/2\"", "over": 0.078125, "under": 0.0, "oor": 0.058}, {"hi": 6.5, "lab": "Over 5-1/2\" to 6-1/2\"", "over": 0.125, "under": 0.0, "oor": 0.07}, {"hi": 8.25, "lab": "Over 6-1/2\" to 8-1/4\"", "over": 0.15625, "under": 0.0, "oor": 0.085}, {"hi": 9.5, "lab": "Over 8-1/4\" to 9-1/2\"", "over": 0.1875, "under": 0.0, "oor": 0.1}, {"hi": 10.0, "lab": "Over 9-1/2\" to 10\"", "over": 0.25, "under": 0.0, "oor": 0.12}], "cf": [{"hi": 1.5, "lab": "To 1-1/2\" (coils or cut lengths)", "c": [0.002, 0.003, 0.004, 0.005]}, {"hi": 2.5, "lab": "Over 1-1/2\" to 2-1/2\"", "c": [0.003, 0.004, 0.005, 0.006]}, {"hi": 4.0, "lab": "Over 2-1/2\" to 4\"", "c": [0.004, 0.005, 0.006, 0.007]}, {"hi": 6.0, "lab": "Over 4\" to 6\"", "c": [0.005, 0.006, 0.007, 0.008]}, {"hi": 8.0, "lab": "Over 6\" to 8\"", "c": [0.006, 0.007, 0.008, 0.009]}, {"hi": 9.0, "lab": "Over 8\" to 9\"", "c": [0.007, 0.008, 0.009, 0.01]}], "al": [{"hi": 1.5, "lab": "Up to 1-1/2\"", "c": [0.003, 0.004, 0.005, 0.006]}, {"hi": 2.5, "lab": "Over 1-1/2\" to 2-1/2\"", "c": [0.004, 0.005, 0.006, 0.007]}, {"hi": 4.0, "lab": "Over 2-1/2\" to 4\"", "c": [0.005, 0.006, 0.007, 0.008]}, {"hi": 6.0, "lab": "Over 4\" to 6\"", "c": [0.006, 0.007, 0.008, 0.008]}, {"hi": 8.0, "lab": "Over 6\" to 8\"", "c": [0.007, 0.008, 0.009, 0.01]}, {"hi": 9.0, "lab": "Over 8\" to 9\"", "c": [0.008, 0.009, 0.01, 0.011]}], "gp": [{"hi": 1.5, "lab": "Up to 1-1/2\"", "t": 0.001}, {"hi": 2.5, "lab": "Over 1-1/2\" to 2-1/2\"", "t": 0.0015}, {"hi": 3.0, "lab": "Over 2-1/2\" to 3\"", "t": 0.002}, {"hi": 4.0, "lab": "Over 3\" to 4\"", "t": 0.003}]};
+/* ==== END DATA: BARFIND ==== */
+const BAR_FR={0.015625:"1/64",0.03125:"1/32",0.046875:"3/64",0.0625:"1/16",0.078125:"5/64",0.125:"1/8",0.15625:"5/32",0.1875:"3/16",0.25:"1/4"};
+function barGrade(q){ /* grade name → max carbon from the Atlas's own chemistry rows */
+  const k=String(q||"").trim().toUpperCase();if(!k)return null;
+  const n=parseFloat(k);if(/^\d*\.\d+$/.test(k)&&n<2)return {cmax:n,src:"entered max C"};
+  const rows=DATA.filter(r=>/steel bar/i.test(r.f)&&String(r.g).toUpperCase().split(/[\s—–(]/)[0]===k);
+  const cs=[];rows.forEach(r=>{const m=String(r.chem||"").match(/C\s*(?:(\d*\.\d+)\s*[–-]\s*(\d*\.\d+)|≤\s*(\d*\.\d+))/);if(m)cs.push(parseFloat(m[2]||m[3]));});
+  if(!cs.length)return null;
+  const cmax=Math.max(...cs);
+  return {cmax,alloy:rows.some(r=>/alloy|case-hardening/i.test(r.f)),grade:rows[0].g.split(/[\s—–(]/)[0],src:rows[0].s,mixed:new Set(cs).size>1};
+}
+function barLookup(kind,size,cmax,alloy,cond){
+  const r={kind,size};
+  const pick=t=>t.find(x=>size<=x.hi+1e-9)||null;
+  if(kind==="hr"){const row=pick(BAR.hr);if(!row){r.out='Over 10" — outside the A29 table.';return r;}r.row=row;r.lo=size-row.under;r.hi=size+row.over;r.oor=row.oor;return r;}
+  if(kind==="gp"){const row=pick(BAR.gp);if(!row){r.out='Over 4" — ground & polished tolerances are only verified to 4" here.';return r;}r.row=row;r.lo=size-row.t;r.hi=size;r.tol=row.t;return r;}
+  const t=alloy?BAR.al:BAR.cf,row=pick(t);
+  if(!row){r.out='Over 9" — outside the A108 table shown here.';return r;}
+  if(!(cmax>0)){r.needC=true;return r;}
+  let col,why;
+  if(cond==="qt"){col=3;why=alloy?"quenched & tempered / normalized & tempered before cold finishing":"quenched & tempered / normalized & tempered";}
+  else if(cmax>0.55){col=3;why="max carbon over 0.55 %";}
+  else if(cond==="sr"){col=2;why="max carbon ≤0.55 % and stress relieved / annealed after cold finishing";}
+  else if(cmax<=0.28){col=0;why="max carbon ≤0.28 %, as cold finished";}
+  else {col=1;why="max carbon over 0.28 to 0.55 %, as cold finished";}
+  r.row=row;r.col=col;r.why=why;r.tol=row.c[col];r.lo=size-r.tol;r.hi=size;r.flag=alloy&&row.hi===6&&col===3;
+  return r;
+}
+function barFindRender(){
+  const kind=$("bfType").value,size=parseFloat($("bfSize").value),out=$("bfOut");
+  $("bfCF").hidden=kind!=="cf";
+  if(!(size>0)){out.innerHTML='<p class="note">Enter the bar diameter to see the limits and what they mean.</p>';return;}
+  let cmax=null,alloy=$("bfSteel").value==="alloy",g=null;
+  if(kind==="cf"){g=barGrade($("bfGrade").value);
+    if(g){cmax=g.cmax;if(g.alloy!==undefined&&$("bfSteel").dataset.user!=="1"){alloy=g.alloy;$("bfSteel").value=alloy?"alloy":"carbon";}}}
+  const r=barLookup(kind,size,cmax,alloy,$("bfCond").value),f=v=>v.toFixed(kind==="hr"?4:4).replace(/0$/,"")+'"';
+  if(r.out){out.innerHTML='<p class="note">'+esc(r.out)+'</p>';return;}
+  if(r.needC){out.innerHTML='<p class="note">Enter the grade (e.g. 1045, 4140, 12L14) or its maximum carbon % — cold-finished tolerance depends on it.'+($("bfGrade").value.trim()?' "'+esc($("bfGrade").value.trim())+'" was not found in the Atlas — type its max C % instead.':"")+'</p>';return;}
+  const tolTxt=v=>BAR_FR[v]?BAR_FR[v]+'" ('+v.toFixed(4)+'")':v.toFixed(v<0.001?4:(String(v).split(".")[1]||"").length>3?4:3)+'"';
+  const rows=[],plain=[];
+  if(kind==="hr"){
+    rows.push(["Diameter",f(r.lo)+" to "+f(r.hi),"+"+tolTxt(r.row.over)+" / −"+(r.row.under?tolTxt(r.row.under):'0"')]);
+    rows.push(["Out-of-round (max − min)","≤ "+r.oor.toFixed(3)+'"',""]);
+    plain.push("<strong>Diameter:</strong> every reading must be between <strong>"+f(r.lo)+"</strong> and <strong>"+f(r.hi)+"</strong>."+(r.row.under===0?" Over 2\" hot-rolled bar is plus only — it is never under the size you ordered.":""));
+    plain.push("<strong>Out-of-round:</strong> at any one cross-section, the biggest minus the smallest diameter may be at most <strong>"+r.oor.toFixed(3)+'"</strong> — a bar can be inside the size band and still fail this.');
+    plain.push('<strong>Straightness</strong> (standard): 1/4" in any 5 ft. It does not apply after any later heating or controlled cooling.');
+    plain.push("Sheared or hot-sawn ends can be distorted out of tolerance; order machine-cut ends if that matters. A36 bar is governed by ASTM A6, not A29.");
+  } else if(kind==="cf"){
+    rows.push(["Diameter",f(r.lo)+" to "+f(r.hi),"−"+r.tol.toFixed(3)+'" / +0"']);
+    rows.push(["Out-of-round (cold drawn)","≤ "+(r.tol/2).toFixed(4)+'"',"half the tolerance"]);
+    if(g&&g.grade)plain.push("<strong>Grade:</strong> "+esc(g.grade)+" — max carbon <strong>"+g.cmax.toFixed(2)+" %</strong> from the Atlas chemistry ("+esc(g.src)+"), "+(alloy?"alloy":"carbon")+" steel table."+(g.mixed?" (Atlas rows differ on carbon; the highest max was used — check your cert's spec.)":""));
+    plain.push("<strong>Column used:</strong> "+esc(r.why)+". The column depends on the grade's <em>maximum</em> carbon (top of its range), not the cert value.");
+    plain.push("<strong>Diameter:</strong> between <strong>"+f(r.lo)+"</strong> and <strong>"+f(r.hi)+"</strong> — cold-finished bar is minus-only by default (never oversize). The order may ask for all-plus or split ±, keeping the same "+r.tol.toFixed(3)+'" total band.');
+    plain.push("<strong>Out-of-round:</strong> a cold-drawn round may be out-of-round by no more than half the size tolerance ("+(r.tol/2).toFixed(4)+'").');
+    if(r.flag)plain.push("<strong>Note:</strong> for this cell the two sources disagree (0.008\" vs 0.009\"); the stricter 0.008\" is shown.");
+    plain.push("Shear-cut ends can be distorted out of tolerance; a saw cut removes it. Need tighter? That's ground & polished bar.");
+  } else {
+    rows.push(["Diameter",f(r.lo)+" to "+f(r.hi),"−"+r.tol.toFixed(4)+'" / +0"']);
+    plain.push("<strong>Diameter:</strong> between <strong>"+f(r.lo)+"</strong> and <strong>"+f(r.hi)+"</strong> — ground & polished bar is minus-only and the same for carbon or alloy, any heat treatment.");
+  }
+  plain.push("<strong>Out of tolerance?</strong> Outside these limits the bar does not meet the standard's tolerance — treat it as nonconforming (reject, or raise a deviation). If your PO or drawing states its own tolerance, that governs instead.");
+  let h='<div class="tscroll" tabindex="0" role="region" aria-label="Bar limits"><table><tr><th>Dimension</th><th class="num">Accept</th><th class="num">Tolerance</th></tr>'+rows.map(x=>'<tr><td>'+x[0]+'</td><td class="num">'+x[1]+'</td><td class="num">'+x[2]+'</td></tr>').join("")+'</table></div>';
+  h+='<div class="tfplain"><h4>What this means</h4><ul class="coatlist">'+plain.map(x=>"<li>"+x+"</li>").join("")+"</ul></div>";
+  h+='<p class="src">From the '+(kind==="hr"?"hot-rolled (A29)":kind==="cf"?"cold-finished "+(alloy?"alloy":"carbon")+" (A108)":"ground & polished")+' table below — the same verified values.</p>';
+  out.innerHTML=h;
+}
+function barFindCheck(){ /* 0 = lookup data equals the tables on the page */
+  const rd=id=>[...document.querySelectorAll("#"+id+" table")].map(t=>[...t.querySelectorAll("tr")].map(tr=>[...tr.querySelectorAll("td")].map(td=>td.textContent.trim())).filter(r=>r.length));
+  const v=c=>{const m=c.match(/\(([\d.]+)"\)/);if(m)return parseFloat(m[1]);const x=parseFloat(c.replace(/["*]/g,""));return isNaN(x)?null:x;};
+  const near=(a,b)=>a===null?b===null:Math.abs(a-b)<0.00006;
+  const h=rd("tl-hr")[0],cf=rd("tl-cf");let bad=0;
+  h.forEach((r,i)=>{const b=BAR.hr[i];if(!near(v(r[1]),b.over)||!near(v(r[2]),b.under)||!near(v(r[3]),b.oor))bad++;});
+  [["cf",0],["al",1]].forEach(([k,ti])=>cf[ti].forEach((r,i)=>r.slice(1,5).forEach((c,j)=>{if(!near(v(c),BAR[k][i].c[j]))bad++;})));
+  cf[2].forEach((r,i)=>{if(!near(v(r[1]),BAR.gp[i].t))bad++;});
+  return bad;
+}
+["bfType","bfSize","bfGrade","bfCond"].forEach(id=>{$(id).addEventListener("input",barFindRender);$(id).addEventListener("change",barFindRender);});
+$("bfSteel").addEventListener("change",()=>{$("bfSteel").dataset.user="1";barFindRender();});
+$("bfGrade").addEventListener("input",()=>{$("bfSteel").dataset.user="";});
+barFindRender();
 /* ---- RENDER › COMPARE ---- */
 /* ============ compare ============ */
 const cmpA=$("cmpA"),cmpB=$("cmpB");

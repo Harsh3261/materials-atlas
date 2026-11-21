@@ -1,3 +1,19 @@
+# Note for Muse — Tolerances tab: alloy + G&P bar, DOM wall, A519 HFS (2026-11-21, cache v102)
+
+Harsh's "full blazing" list, item 1 (tube & bar machining tolerances). Tolerances tab only:
+1. Cold-finished card now covers alloy rounds (cold drawn / T&P, 6 size rows × 4 columns): CSW
+   guide + EMJ "Tolerances and Machining Allowances" — 23/24 agree; over 4–6 in, last column
+   0.008 (EMJ) vs 0.009 (CSW) → 0.008 shown per the stricter rule, marked with *. Rows only one
+   source carries (≤1 in coils; over 9 in) left out.
+   Ground & polished rounds to 4 in (0.0010/0.0015/0.0020/0.0030): EMJ + Alro Metals Guide agree;
+   over 4 in single source, left out.
+2. DOM card: A513 Type 5 wall table, 0.035–0.650 in × 4 OD columns (+/−): Chicago Tube = CSW on
+   every cell; CSW's 0.028 row left out (one source).
+3. New card 4: A519 hot-finished seamless — OD (6 rows) + wall % (2×3) from the A519-96 text,
+   = Chicago Tube page on every cell; OD also = CSW and the A519-23 preview. Footnotes A–C carried.
+   Not included: A519 cold-worked table (complex, not two-source clean yet), >10.750 in.
+Smoke: 6 tabs, 209 checker grades, 0 page errors at 1280/390.
+
 # Note for Muse — DOM tube over 5.5 in OD + footer counts (2026-11-21, cache v101)
 
 Harsh asked for the large DOM sizes once verified. DATA CHANGE (Tolerances tab only):

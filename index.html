@@ -1190,7 +1190,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 </ul>
 <p class="src">Basis: ASTM A29/A29M-05 text, Table A1.1 and Table A1.10 (straightness). Cross-checked: Portland Bolt's round-bar tolerance table (all 18 rows agree; straightness agrees). A third reproduction (MSCI) agrees except three cells that are visibly mistyped on its page.</p>
 </div></details>
-<details class="card lt" id="tl-cf"><summary><span class="lnum">2</span><span class="ltitle">Cold-finished carbon rounds</span><span class="lkey">ASTM A108 Table A1.1 · Level One · cold drawn or turned &amp; polished</span></summary><div class="ldetail">
+<details class="card lt" id="tl-cf"><summary><span class="lnum">2</span><span class="ltitle">Cold-finished rounds — carbon, alloy, ground &amp; polished</span><span class="lkey">ASTM A108 · cold drawn · turned &amp; polished · ground &amp; polished</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> Cold-finished bar tolerances used to sit in A29; they are now in <strong>A108</strong>. The column depends on the grade's <em>maximum</em> carbon (the top of its range, not the cert value) and its heat treatment.</p>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Size</th><th class="num">C max ≤0.28 %</th><th class="num">C max over 0.28 to 0.55 %</th><th class="num">C max ≤0.55 %, stress relieved or annealed after cold finishing</th><th class="num">C max over 0.55 %, or Q&amp;T / N&amp;T before or after cold finishing</th></tr>
@@ -1201,15 +1201,35 @@ td.mwarn{color:var(--amber);font-weight:600}
 <tr><td>Over 6 to 8</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.009</td></tr>
 <tr><td>Over 8 to 9</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.009</td><td class="num">0.010</td></tr>
 </table></div>
+<h3>Alloy steel (e.g. 4140, 4340) — cold drawn or turned &amp; polished, minus</h3>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Size</th><th class="num">C max ≤0.28 %</th><th class="num">C max over 0.28 to 0.55 %</th><th class="num">C max ≤0.55 %, annealed or stress relieved after cold finishing</th><th class="num">C max over 0.55 %, or Q&amp;T / N&amp;T before cold finishing</th></tr>
+<tr><td>Up to 1-1/2</td><td class="num">0.003</td><td class="num">0.004</td><td class="num">0.005</td><td class="num">0.006</td></tr>
+<tr><td>Over 1-1/2 to 2-1/2</td><td class="num">0.004</td><td class="num">0.005</td><td class="num">0.006</td><td class="num">0.007</td></tr>
+<tr><td>Over 2-1/2 to 4</td><td class="num">0.005</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td></tr>
+<tr><td>Over 4 to 6</td><td class="num">0.006</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.008<span class="small">*</span></td></tr>
+<tr><td>Over 6 to 8</td><td class="num">0.007</td><td class="num">0.008</td><td class="num">0.009</td><td class="num">0.010</td></tr>
+<tr><td>Over 8 to 9</td><td class="num">0.008</td><td class="num">0.009</td><td class="num">0.010</td><td class="num">0.011</td></tr>
+</table></div>
+<p class="note">* Sources disagree on this one cell (0.008 vs 0.009). The stricter 0.008 is shown, per the Atlas rule. Alloy tolerances run 0.001 looser than carbon at the same size — a 1.000 in cold-drawn 4140 (C max 0.43) is 0.996 to 1.000 in.</p>
+<h3>Ground &amp; polished (or turned, ground &amp; polished) — carbon or alloy, minus</h3>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Size</th><th class="num">Minus tolerance (all grades)</th></tr>
+<tr><td>Up to 1-1/2</td><td class="num">0.0010</td></tr>
+<tr><td>Over 1-1/2 to 2-1/2</td><td class="num">0.0015</td></tr>
+<tr><td>Over 2-1/2 to 3</td><td class="num">0.0020</td></tr>
+<tr><td>Over 3 to 4</td><td class="num">0.0030</td></tr>
+</table></div>
+<p class="note">This is the tight-tolerance option for shafting and pins — the size is the same for every carbon / heat-treat column. Over 4 in: only one source found, not included.</p>
 <ul class="coatlist">
 <li><strong>Minus only by default:</strong> a 1.000 in cold-drawn 1045 round (C max 0.50) may be 0.997 to 1.000 in. The order can ask for all-plus or split plus/minus, as long as the total band stays the same.</li>
 <li><strong>Roundness</strong> of a cold-drawn round: no more than half the size tolerance at any cross-section.</li>
-<li><strong>Tighter than this</strong> means ground &amp; polished bar (A108 Table A1.3) — not included here. Alloy-steel bars have their own A108 table, also not included yet.</li>
+<li><strong>Tighter than this</strong> means ground &amp; polished bar — table above.</li>
 <li>Shear-cut ends can be distorted out of tolerance; a saw cut removes it.</li>
 </ul>
-<p class="src">Basis: ASTM A108-18 text, Table A1.1 (rounds) with footnotes. Cross-checked: CSW "Product Guide – Carbon &amp; Alloy Steel Bars" (all 24 cells agree).</p>
+<p class="src">Basis: carbon — ASTM A108-18 text, Table A1.1, cross-checked with CSW "Product Guide – Carbon &amp; Alloy Steel Bars" (all 24 cells agree). Alloy — CSW guide and EMJ "Tolerances and Machining Allowances" (23 of 24 cells agree; one marked). Ground &amp; polished — EMJ and the Alro Metals Guide agree to 4 in.</p>
 </div></details>
-<details class="card lt" id="tl-dom"><summary><span class="lnum">3</span><span class="ltitle">DOM tube (cylinder tube stock)</span><span class="lkey">ASTM A513 Type 5 · drawn over mandrel · OD up to 14.999 in</span></summary><div class="ldetail">
+<details class="card lt" id="tl-dom"><summary><span class="lnum">3</span><span class="ltitle">DOM tube (cylinder tube stock)</span><span class="lkey">ASTM A513 Type 5 · drawn over mandrel · OD, ID &amp; wall</span></summary><div class="ldetail">
 <p><span class="badge b-spec">SOURCE CHECKED</span> Type 5 is ERW tube drawn over a mandrel. Up to 5.549 in OD its OD tolerance is <strong>plus only</strong> and its ID tolerance <strong>minus only</strong> — the tube is never smaller outside or bigger inside than ordered. Measure at least 2 in from the ends.</p>
 <div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
 <tr><th>Outside diameter</th><th class="num">OD over</th><th class="num">OD under</th><th class="num">ID over</th><th class="num">ID under</th></tr>
@@ -1244,13 +1264,72 @@ td.mwarn{color:var(--amber);font-weight:600}
 <tr><td>13.000–13.999</td><td class="num">±0.037</td><td class="num">±0.037</td></tr>
 <tr><td>14.000–14.999</td><td class="num">±0.038</td><td class="num">±0.038</td></tr>
 </table></div>
+<h3>Wall thickness — plus / minus, in</h3>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Wall</th><th>BWG</th><th class="num">OD 3/8 to 7/8</th><th class="num">OD over 7/8 to 1-7/8</th><th class="num">OD over 1-7/8 to 3-3/4</th><th class="num">OD over 3-3/4 to 15</th></tr>
+<tr><td>0.035</td><td>20</td><td class="num">0.002/0.002</td><td class="num">0.002/0.002</td><td class="num">0.002/0.002</td><td class="num">—</td></tr>
+<tr><td>0.049</td><td>18</td><td class="num">0.002/0.002</td><td class="num">0.002/0.003</td><td class="num">0.002/0.003</td><td class="num">—</td></tr>
+<tr><td>0.065</td><td>16</td><td class="num">0.002/0.002</td><td class="num">0.002/0.003</td><td class="num">0.002/0.003</td><td class="num">0.004/0.004</td></tr>
+<tr><td>0.083</td><td>14</td><td class="num">0.002/0.002</td><td class="num">0.002/0.003</td><td class="num">0.003/0.003</td><td class="num">0.004/0.005</td></tr>
+<tr><td>0.095</td><td>13</td><td class="num">0.002/0.002</td><td class="num">0.002/0.003</td><td class="num">0.003/0.003</td><td class="num">0.004/0.005</td></tr>
+<tr><td>0.109</td><td>12</td><td class="num">0.002/0.003</td><td class="num">0.002/0.004</td><td class="num">0.003/0.003</td><td class="num">0.005/0.005</td></tr>
+<tr><td>0.120</td><td>11</td><td class="num">0.003/0.003</td><td class="num">0.002/0.004</td><td class="num">0.003/0.003</td><td class="num">0.005/0.005</td></tr>
+<tr><td>0.134</td><td>10</td><td class="num">—</td><td class="num">0.002/0.004</td><td class="num">0.003/0.003</td><td class="num">0.005/0.005</td></tr>
+<tr><td>0.148</td><td>9</td><td class="num">—</td><td class="num">0.002/0.004</td><td class="num">0.003/0.003</td><td class="num">0.005/0.005</td></tr>
+<tr><td>0.165</td><td>8</td><td class="num">—</td><td class="num">0.003/0.004</td><td class="num">0.003/0.004</td><td class="num">0.005/0.006</td></tr>
+<tr><td>0.180</td><td>7</td><td class="num">—</td><td class="num">0.004/0.004</td><td class="num">0.003/0.005</td><td class="num">0.006/0.006</td></tr>
+<tr><td>0.203</td><td>6</td><td class="num">—</td><td class="num">0.004/0.005</td><td class="num">0.004/0.005</td><td class="num">0.006/0.007</td></tr>
+<tr><td>0.220</td><td>5</td><td class="num">—</td><td class="num">0.004/0.006</td><td class="num">0.004/0.006</td><td class="num">0.007/0.007</td></tr>
+<tr><td>0.238</td><td>4</td><td class="num">—</td><td class="num">0.005/0.006</td><td class="num">0.005/0.006</td><td class="num">0.007/0.007</td></tr>
+<tr><td>0.259</td><td>3</td><td class="num">—</td><td class="num">0.005/0.006</td><td class="num">0.005/0.006</td><td class="num">0.007/0.007</td></tr>
+<tr><td>0.284</td><td>2</td><td class="num">—</td><td class="num">0.005/0.006</td><td class="num">0.005/0.006</td><td class="num">0.007/0.007</td></tr>
+<tr><td>0.300</td><td>1</td><td class="num">—</td><td class="num">0.006/0.006</td><td class="num">0.006/0.006</td><td class="num">0.008/0.008</td></tr>
+<tr><td>0.320</td><td>—</td><td class="num">—</td><td class="num">0.007/0.007</td><td class="num">0.007/0.007</td><td class="num">0.008/0.008</td></tr>
+<tr><td>0.344</td><td>—</td><td class="num">—</td><td class="num">0.008/0.008</td><td class="num">0.008/0.008</td><td class="num">0.009/0.009</td></tr>
+<tr><td>0.375</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.009/0.009</td><td class="num">0.009/0.009</td></tr>
+<tr><td>0.400</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.010/0.010</td><td class="num">0.010/0.010</td></tr>
+<tr><td>0.438</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.011/0.011</td><td class="num">0.011/0.011</td></tr>
+<tr><td>0.460</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.012/0.012</td><td class="num">0.012/0.012</td></tr>
+<tr><td>0.480</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.012/0.012</td><td class="num">0.012/0.012</td></tr>
+<tr><td>0.531</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.013/0.013</td><td class="num">0.013/0.013</td></tr>
+<tr><td>0.563</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.013/0.013</td><td class="num">0.013/0.013</td></tr>
+<tr><td>0.580</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.014/0.014</td><td class="num">0.014/0.014</td></tr>
+<tr><td>0.600</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.015/0.015</td><td class="num">0.015/0.015</td></tr>
+<tr><td>0.625</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.016/0.016</td><td class="num">0.016/0.016</td></tr>
+<tr><td>0.650</td><td>—</td><td class="num">—</td><td class="num">—</td><td class="num">0.017/0.017</td><td class="num">0.017/0.017</td></tr>
+</table></div>
+<p class="note">Read "0.002/0.003" as +0.002 / −0.003. A dash means the size is not in the table. Example: 4.000 OD × 0.250 wall (nearest listed wall 0.259) — wall 0.243 to 0.257. Your wall is what is left after honing, so check it at the thinnest point.</p>
 <ul class="coatlist">
 <li><strong>Example:</strong> 3.000 OD × 2.500 ID DOM — OD 3.000 to 3.009, ID 2.491 to 2.500. If you hone the bore, plan stock removal from 2.491.</li>
 <li><strong>Ovality:</strong> A513 allows extra ovality on Types 3–6 (0.010 in up to 2 in OD, 0.015 over 2 to 3, 0.020 over 3 to 4, and more above), as long as the <em>mean</em> OD stays in the table above. Check the standard for when it applies.</li>
 <li><strong>Large-tube example:</strong> 7.000 OD × 0.500 wall (7.1 % of OD, so the "6 % and over" column) — OD and ID each ±0.013.</li>
-<li>Wall-thickness tolerance is a separate A513 table — not included here.</li>
 </ul>
-<p class="src">Basis: Chicago Tube &amp; Iron A513 Type 5 product data and CSW "Product Guide – Steel Tubing &amp; Pipe" (DOM table) — all 26 rows agree (one source prints the first large band as 5.500–5.999, overlapping its own 5.300–5.549 row; 5.550 is used here). Ovality rows: Chicago Tube and the A513/A513M-20 text agree. Current edition A513/A513M-25.</p>
+<p class="src">Basis: Chicago Tube &amp; Iron A513 Type 5 product data and CSW "Product Guide – Steel Tubing &amp; Pipe" (DOM table) — all 26 rows agree (one source prints the first large band as 5.500–5.999, overlapping its own 5.300–5.549 row; 5.550 is used here). Wall table: Chicago Tube and the CSW guide agree on every cell from 0.035 to 0.650 in (CSW also lists 0.028 in — one source, left out). Ovality rows: Chicago Tube and the A513/A513M-20 text agree. Current edition A513/A513M-25.</p>
+</div></details>
+<details class="card lt" id="tl-smls"><summary><span class="lnum">4</span><span class="ltitle">Hot-finished seamless tube</span><span class="lkey">ASTM A519 · mechanical tubing · OD &amp; wall</span></summary><div class="ldetail">
+<p><span class="badge b-spec">SOURCE CHECKED</span> Hot-finished seamless (HFS) is pierced and rolled, not drawn — far looser than DOM. It is bought to OD and wall; anything that matters gets machined.</p>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Outside diameter</th><th class="num">OD over</th><th class="num">OD under</th></tr>
+<tr><td>Up to 2.999</td><td class="num">0.020</td><td class="num">0.020</td></tr>
+<tr><td>3.000–4.499</td><td class="num">0.025</td><td class="num">0.025</td></tr>
+<tr><td>4.500–5.999</td><td class="num">0.031</td><td class="num">0.031</td></tr>
+<tr><td>6.000–7.499</td><td class="num">0.037</td><td class="num">0.037</td></tr>
+<tr><td>7.500–8.999</td><td class="num">0.045</td><td class="num">0.045</td></tr>
+<tr><td>9.000–10.750</td><td class="num">0.050</td><td class="num">0.050</td></tr>
+</table></div>
+<h3>Wall thickness — percent over and under nominal</h3>
+<div class="tscroll" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table>
+<tr><th>Wall as % of OD</th><th class="num">OD 2.999 and smaller</th><th class="num">OD 3.000–5.999</th><th class="num">OD 6.000–10.750</th></tr>
+<tr><td>Under 15 %</td><td class="num">±12.5 %</td><td class="num">±10.0 %</td><td class="num">±10.0 %</td></tr>
+<tr><td>15 % and over</td><td class="num">±10.0 %</td><td class="num">±7.5 %</td><td class="num">±10.0 %</td></tr>
+</table></div>
+<ul class="coatlist">
+<li><strong>Not for heat-treated tube:</strong> the OD tolerances do not apply to normalized &amp; tempered or quenched &amp; tempered tube.</li>
+<li><strong>Thin walls:</strong> the wall tolerances may not apply to walls 0.199 in and less — the standard says to consult the mill.</li>
+<li><strong>Example:</strong> 5.000 OD × 0.750 wall (15 % of OD) — OD 4.969 to 5.031, wall 0.694 to 0.806 (±7.5 %). That spread is why HFS gets turned and bored.</li>
+<li>Over 10.750 in OD: ask the mill. Cold-worked (cold-drawn) seamless has a separate, more complex A519 table — not included yet.</li>
+</ul>
+<p class="src">Basis: ASTM A519-96 text (OD and wall tables, footnotes A–C). Cross-checked: Chicago Tube &amp; Iron A519 hot-finished page (every cell agrees); OD rows also match the CSW guide and the A519/A519M-23 preview. Current edition A519/A519M-23.</p>
 </div></details>
 </section>
 

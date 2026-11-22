@@ -1,3 +1,7 @@
+# Note for Muse — cross-search index refreshed (2026-11-22, v112)
+
+- SPC_TOOLS regenerated from SPC Tools TOOLS: adds "Thread masters (ISO 1502)"; surface finish keywords extended.
+
 # Note for Muse — one search across both apps (2026-11-21)
 
 Harsh: "make it easier to access data and search across different types".

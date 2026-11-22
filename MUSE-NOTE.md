@@ -1,3 +1,22 @@
+# Note for Muse — gap wave 4 (2026-11-22): coating limits — NOT FILLABLE here, no data change
+
+Gap 2 (plating / coating thickness tables). The live Coatings tab already carries every thickness table its
+standards define (B633 SC1–4, B841 grades, B840 grades, B733 SC0–4, MIL-PRF-8625 classes; B689 and AMS 2460
+set no thickness classes — the drawing does). The one open coating gap is the nCoP card's spec limits:
+- MIL-DTL-32502 (14 Jul 2014, Notice 1 validation 2019): EverySpec / ASSIST PDF
+  (everyspec.com/MIL-SPECS/MIL-SPECS-MIL-DTL/download.php?spec=MIL-DTL-32502.051441.pdf) comes through as
+  unreadable binary in this workspace; the shell can't reach the site.
+- SAE AMS 2428A: paywalled (SAE MOBILUS).
+- DTIC AD1064242 (ESTCP WP-200936 final report) gives only Joint Test Protocol TARGETS (e.g. 1–2 wt% P,
+  >530 VHN threshold, grain <20 nm, 0.002 in min test thickness) and says nothing of the spec's own limits —
+  not usable as either source.
+Unfilled, reason: the governing text could not be read. If you can open the ASSIST PDF (it is free), send
+§3 (P %, hardness + load, thickness, grain size, adhesion) and I'll pair it with a second source.
+Candidate addition (not done — needs your go-ahead, since it is new scope rather than a gap): ASTM F1941/F1941M
+fastener zinc thickness, which the B633 card points readers to.
+
+---
+
 # Note for Muse — gap wave 1 (2026-11-22, cache v115, DATA REV R15)
 
 ## Gap 7 — A354-26 BD bands: NOT SETTLEABLE from public sources (no data change)

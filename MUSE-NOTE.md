@@ -1,3 +1,44 @@
+# Note for Muse — gap wave 1 (2026-11-22, cache v115, DATA REV R15)
+
+## Gap 7 — A354-26 BD bands: NOT SETTLEABLE from public sources (no data change)
+Checked: ASTM store page for A354-26 (scope 1.1–1.2 and Note 2 only; no tables, redline not shown);
+mystandards.biz A354-26 listing (annotation only); ANSI webstore; iTeh (no -26 preview exists — the
+newest iTeh preview is A354-17e2). The open work item WK91003 (initiated 2024-06-02, "Will Reballot")
+is the only published A354 revision rationale: studs per ASME B18.31.2, B18.12 terminology, stud
+marking ≥3/8 in, title change. It names no mechanical-property change — but the -26 store page still
+carries the OLD title, so WK91003 may not be what became -26. Conclusion: no evidence the BD band
+changed; no proof it didn't. Live stays at A354-17 standard text (150–173 / 130 / proof 120 / HRC 33–38,
+all sizes), labelled "-26 tables not freely viewable". Unfilled gap, reason: -26 tables paywalled.
+
+## Gap 3 — ASTM B148 aluminium bronzes: FILLED (15 rows, 11 chemistry datasets)
+Sources (two per value):
+- Mechanicals: ASTM B148-18 Table 2, standard text (iTeh preview
+  cdn.standards.iteh.ai/samples/101367/61b5b69c978f4686a28b4d27d5b68d8a/ASTM-B148-18.pdf)
+  × LFP Foundry B148 table (lfpco.com/astm-b148.html). Every tensile / yield / elongation / HB cell agrees.
+- Chemistry: B148-14 chemical-requirements table, standard text (iTeh preview
+  .../87647/561463df5fa343a5a6227a0e46ca6b1d/ASTM-B148-14.pdf) × LFP Foundry. Every cell agrees.
+  B148-97(2009) preview also agrees on Cu/Al/Fe/Mn/Ni (its Si/Pb rows extract one column shifted;
+  the -14 × LFP alignment is the one that matches the B505 roster already live, e.g. C95600 Si 1.8–3.2).
+- -24 (Jul 2024) is current; its tables and redline are not public. ASTM store confirms the same 11
+  alloys. Rows labelled "B148-18 values; B148-24 current". -14→-18 redline shows no chemistry or
+  Table 2 value change (only C95800 temper-anneal wording 1250±50 °F → 1200–1300 °F, 6 h min).
+Rows: as cast C95200, C95300, C95400, C95410, C95500, C95600, C95700, C95800 (as cast or temper
+annealed), C95820; HT C95300, C95400, C95410, C95500, C95520 (HT only); C95900 annealed (HB 241 min,
+no tensile). Yield basis 0.5 % EUL except C95520 / C95820 (0.2 % offset, footnote). HB values are
+"information only" (footnote G) → displayed, not scored; C95520 HRC 25 min and C95900 HB 241 min scored.
+NOT loaded (unfilled, reasons in the rows' notes and STDNOTES["ASTM B148"]):
+- C95820 tin: -97 and LFP print Sn ≤0.02; the -14 redline changes this footnote and the text is garbled
+  ("0.020.20") — may now be 0.20. Left blank. Zn ≤0.20 agrees and is loaded.
+- Cu + named elements floors (§7.1.3): only the standard prints them (-97e1 and -18 agree with each
+  other, but that is one source). Not in SUMMIN.
+- Fe ≤ Ni for C95800: note only (as for B505).
+Wiring: DATA (s "ASTM B148 (sand castings)"), EDITIONS, CHEMROWS (63 limits), CHEMSTD, STD_LABEL_BY_S,
+STDNOTES. Header comments updated (the D47 exclusion note replaced). selftest/golden.json is in your
+files, not the repo — please re-pin the DATA, EDITIONS, CHEMROWS, CHEMSTD and STDNOTES hashes.
+Tested headless: 15 rows, checker dataset found, mechanical check reads HRC 25 min, 0 page errors.
+
+---
+
 # Note for Muse — reply on the two corrections (2026-11-22, cache v114, DATA REV R14)
 
 **2. A668 Class E, over 8–12 in — AGREED and shipped.** Row now 83 ksi / 572 MPa tensile, 43 ksi / 296 MPa

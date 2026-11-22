@@ -1,3 +1,51 @@
+# Note for Muse — iOS crash-loop: v116 KILL-SWITCH (diagnostic step 1) (2026-11-22)
+
+Symptom (Harsh, real Safari): "A problem repeatedly occurred". After clearing website data: first visit LOADS, every
+reload crashes. SPC Tools fine on the same phone.
+
+## Shipped (v116) — the service worker is removed, nothing else changed
+- sw.js is now a kill-switch: install → skipWaiting; activate → delete caches named materials-atlas-* → unregister.
+  No fetch handler, no clients.claim, no forced navigation (avoids any reload loop of its own).
+- index.html no longer registers a worker; on load it unregisters any registration whose scope ends /materials-atlas/
+  and deletes materials-atlas-* caches. SPC Tools' registration and caches are left alone (same github.io origin).
+- Page content, data (DATAREV R15), CSS: unchanged — so the test isolates the service worker.
+- Consequence: the Atlas is ONLINE-ONLY until step 2.
+Verified in Chromium: v115 worker installed → deploy v116 → reload 1: worker gone, Atlas caches gone, SPC cache kept;
+reloads 2–3: page not controlled, loads from network, 0 page errors. WebKit itself could not be run here
+(Playwright's WebKit download is blocked), so Harsh's phone is the real test.
+
+## What Harsh should do
+Open the Atlas, then reload 3–4 times. The first reload may still be served by the old v115 worker one last time;
+from the second reload on, nothing intercepts. Expected: no crash on any reload. If it still crashes with no worker,
+the cause is page content (see "If v116 does NOT fix it").
+
+## Bug found on the way (fixed by v116, matters for step 2)
+The v115 worker's activate step deleted EVERY cache on the origin that was not its own — including SPC Tools'
+offline cache (both apps live on harsh3261.github.io). SPC Tools' own worker correctly deletes only spc-tools-*.
+Step 2 will only touch materials-atlas-* caches.
+
+## Analysis so far
+- The navigation handler (fetch cache:'no-store' + cache.put) is IDENTICAL in SPC Tools, which works → not by itself
+  the cause. Atlas-only SW differences: the ~2.5 MB install precache (pdf.js 1.4 MB + 12 woff2) and fonts / fonts.css
+  served cache-first from Cache Storage on every controlled load. Prime suspect if v116 fixes it: fonts served from
+  the cache via respondWith (only happens on controlled loads = exactly the crashing loads).
+- Everything on the first suspect list (self-hosted fonts, pdf.js precache, backdrop-filter, scroll-timeline) has
+  been live since Nov 15, when the app still worked. What grew Nov 21→22: browse cards 370→433, DOM 10.1k→12.5k
+  elements, page 104k→122k px tall (mobile). Each card runs a fade-in animation at load (433 animated layers).
+
+## Step 2 plan (after Harsh confirms v116 survives reloads)
+1. Worker with NO install precache; navigation network-only with cache fallback only when offline; no cache.put of
+   navigations (cache the page via a separate same-URL fetch after load, or not at all).
+2. Fonts and pdf.js cached on first use (runtime), pdf.js only when the cert reader is first used.
+3. Re-test on Harsh's phone: first load AND reloads. If fonts-from-cache is the trigger, fonts go network-only.
+
+## If v116 does NOT fix it (content cause)
+Light build candidates, in order: drop the per-card load fade (433 animations) — keep the open-reveal; remove the
+scroll-driven shadow (@supports animation-timeline — activates only in newer Safari); replace the two backdrop-filter
+rules with opaque backgrounds; add a boot-failure safe mode (no animations/blur after an unfinished load).
+
+---
+
 # Note for Muse — gap wave 4 (2026-11-22): coating limits — NOT FILLABLE here, no data change
 
 Gap 2 (plating / coating thickness tables). The live Coatings tab already carries every thickness table its

@@ -1,3 +1,20 @@
+# Note for Muse — one search across both apps (2026-11-21)
+
+Harsh: "make it easier to access data and search across different types".
+- SPC Tools "Find a tool or topic": keyword matches first; then tools whose visible text contains the
+  words ("· mentioned inside", e.g. 3/4-16 → Fitting torque, Hydraulic ports); then "In Materials
+  Atlas" — matching Atlas cards (ATLAS_TOPICS, generated from the Atlas: card id, title, tab, subtitle,
+  sub-headings) and always "Search Materials Atlas for “…”".
+- Atlas Browse search: new #spcHint line "In SPC Tools: …" from SPC_TOOLS (generated copy of SPC's
+  TOOLS finder list).
+- Links: Atlas #q=<text> runs a Browse search, #open=<card id> opens a Learn/Coatings/Tolerances card.
+  SPC Tools #tool=<id> opens a tool, #q=<text> fills the finder. Cross links are relative
+  (../materials-atlas/, ../spc-tools/) — they work on harsh3261.github.io; under file:// they don't
+  resolve a folder to index.html (test over HTTP: tests/cross.e2e.js in spc-tools).
+- REGENERATE the two indexes when Atlas cards or SPC tools change (script in the session: titles,
+  .lkey, h3/h4/th text; element names for lt-elements; <li> for lt-cert).
+- Wording: remaining Learn card subtitles and element-card titles made plain (no taglines).
+
 # Note for Muse — wording pass (2026-11-21)
 
 Harsh: "the Atlas rule" wording felt catchy — make all text professional but understandable.

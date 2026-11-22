@@ -1,3 +1,12 @@
+# Note for Muse — wording pass (2026-11-21)
+
+Harsh: "the Atlas rule" wording felt catchy — make all text professional but understandable.
+Atlas: "per the Atlas rule" → "the stricter value(s) … shown"; "trap(s)" → "common errors" / "example" /
+"note"; "Red flags:" → "Watch for:"; "workhorse" → "most common"; "discipline", "bite", "honestly",
+"fake passes", "classic", "hugely" reworded. Meaning unchanged; no data values touched.
+SPC Tools: one phrase ("The costly mistake") → "A common error". Keep new text in this register:
+plain, specific, no slogans or nicknames for rules.
+
 # Note for Muse — edition re-checks + cold-finished hex / square / flat (2026-11-21, cache v108)
 
 1. A668: all 38 rows re-compared, by script, with the current A668/A668M-23 Table 2 (iTeh preview):

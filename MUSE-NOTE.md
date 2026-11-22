@@ -1,3 +1,9 @@
+# Note for Muse — v118 phone result (2026-11-22 17:31)
+Harsh, directly: "its working" on his iPhone (Safari) with v118. Crash-loop considered fixed. Not yet stated
+separately: the offline step (airplane mode reopen) and whether the safe-mode note showed — please confirm with him.
+
+---
+
 # Note for Muse — v118: offline restored + iOS-engineered motion (2026-11-22)
 
 Rendering and service worker only. DATA R15 untouched (diff: CSS, the boot script, the SW registration, one pdf.js

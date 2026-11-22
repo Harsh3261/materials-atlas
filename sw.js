@@ -3,7 +3,7 @@
 // this worker removes the Atlas's own caches and unregisters itself. It intercepts nothing, so every load comes
 // straight from the network. Offline support is rebuilt in step 2 once the crash is confirmed gone.
 // Only caches named materials-atlas-* are deleted: the SPC Tools caches share this github.io origin.
-const CACHE = 'materials-atlas-v116-killswitch';
+const CACHE = 'materials-atlas-v117-light';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => {
   e.waitUntil(

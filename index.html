@@ -3,6 +3,19 @@
 <head>
 <!-- Built by Harsh Patel -->
 <meta charset="utf-8" />
+<script>
+/* v117 boot check (iOS crash-loop fix). A flag is set before the page renders and cleared 4 s after it has loaded.
+   If a load finds the flag still set, the previous load died: safe display mode switches on and stays on
+   (no animations, transitions, filters, shadows, gradient text or sticky filter strips). ?safe=1 turns it on, ?safe=0 off. */
+(function(){try{var L=localStorage,q=location.search,d=document.documentElement;
+var off=/[?&]safe=0\b/.test(q);
+if(L.getItem("atlas.boot")==="1"&&!off)L.setItem("atlas.safe","1");
+if(/[?&]safe(=1)?\b/.test(q)&&!off)L.setItem("atlas.safe","1");
+if(off)L.removeItem("atlas.safe");
+if(L.getItem("atlas.safe")==="1")d.classList.add("safe");
+L.setItem("atlas.boot","1");
+window.addEventListener("load",function(){setTimeout(function(){try{L.removeItem("atlas.boot");}catch(e){}},4000);});}catch(e){}})();
+</script>
 <meta name="author" content="Harsh Patel" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="dark" />
@@ -317,7 +330,7 @@ body{background:transparent}
 @keyframes v62Fade{from{opacity:0}to{opacity:1}}
 @keyframes v62Grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 section.view.on{animation:v62In 180ms ease}
-.card{animation:v62Fade 180ms ease}
+/* v117: card load fade removed (see v117 note) */
 #chkOut .verdict,#chkOut table,#idOut .idcand,#idOut .idnear,#ceOut .verdict{animation:v62In 180ms ease}
 .g-win{transform-origin:left center;animation:v62Grow 200ms ease}
 .g-tick,.g-margin,.idstdnote{animation:v62Fade 200ms ease}
@@ -414,7 +427,7 @@ th,td{padding-top:11px;padding-bottom:11px}
 @keyframes v621Fade{from{opacity:0}to{opacity:1}}
 @keyframes v621FailTint{from{background-color:transparent}to{background-color:#FF4D5A}}
 section.view.on{animation:v621In 160ms var(--ease)}
-.card{animation:v621Fade var(--dur-base) var(--ease)}
+/* v117: no load-time fade on cards (433 simultaneous animated layers; iOS crash-loop fix) */
 #chkOut .verdict,#ceOut .verdict{animation:v621Badge var(--dur-base) ease-out}
 #idOut .idcand,#idOut .idnear{animation:v621In var(--dur-base) var(--ease)}
 #chkOut td.fail{animation:v621FailTint 240ms var(--ease)}
@@ -425,11 +438,7 @@ button,.sh-route,.check-item,.card{transition:background-color 160ms var(--ease)
 button:active,.sh-route:active,.chips button:active,.modetoggle button:active,nav.tabs button:active{transform:scale(.97)}
 /* v62.1 L13 accordion reveal (no height animation) */
 .card[open] > :not(summary){animation:v621In var(--dur-base) var(--ease)}
-/* v62.1 L14 scroll-driven shadow on the sticky Browse strip (progressive enhancement) */
-@supports (animation-timeline: scroll()){
-  @keyframes v621Shadow{from{box-shadow:0 0 0 rgba(0,0,0,0)}to{box-shadow:0 10px 18px rgba(0,0,0,.35)}}
-  #view-browse > .controls{animation:v621Shadow linear both;animation-timeline:scroll()}
-}
+/* v117: scroll-driven shadow on the sticky Browse strip removed (iOS crash-loop fix) */
 /* v62.1 L15 reduced motion — must stay the last rules in this block */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -523,7 +532,7 @@ h1 .atlas{background:var(--grad);-webkit-background-clip:text;background-clip:te
 .starthere .sh-title{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;display:inline-block}
 .sh-route:hover,.sh-route:focus-visible{border-color:var(--teal);box-shadow:0 0 0 1px rgba(255,122,26,.25),0 6px 22px rgba(255,122,26,.10)}
 /* tabs and pressed controls: gradient fill, dark text */
-nav.tabs{background:rgba(20,16,23,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top-color:transparent;border-image:none}
+nav.tabs{background:rgb(20,16,23);border-top-color:transparent;border-image:none}
 nav.tabs::before{content:"";position:absolute;left:0;right:0;top:-3px;height:3px;background:var(--grad)}
 @media (min-width:1024px){nav.tabs{border-bottom-color:transparent;border-radius:12px}nav.tabs::before{top:auto;bottom:-3px;left:10px;right:10px;border-radius:3px}}
 nav.tabs button{border-radius:8px}
@@ -599,7 +608,7 @@ a{color:var(--teal)}
   .pr-sign td{border:none;padding-top:22px}
 }
 /* sticky strips: translucent glass instead of a flat black band */
-#view-browse > .controls,#view-compare .grid2{background:rgba(8,7,10,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#view-browse > .controls,#view-compare .grid2{background:rgb(8,7,10)} /* v117: opaque, no backdrop blur */
 @media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(8,7,10,.0)}}
 /* ===== 2026-11-20 coatings & finishes tab ===== */
 #view-coat .tscroll,#view-tol .tscroll{overflow-x:auto;margin:10px 0}
@@ -635,6 +644,14 @@ td.mwarn{color:var(--amber);font-weight:600}
 .skiplink{position:absolute;left:-9999px;top:0;z-index:100;background:var(--teal);color:#191007;padding:10px 14px;font-weight:700;border-radius:0 0 6px 0}
 .skiplink:focus{left:0}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+<style>
+/* v117 safe display mode (see boot check in <head>) */
+html.safe *,html.safe *::before,html.safe *::after{animation:none!important;transition:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;filter:none!important}
+html.safe .starthere .sh-title{background:none!important;-webkit-text-fill-color:var(--teal)!important;color:var(--teal)!important}
+html.safe #view-browse > .controls,html.safe #view-compare .grid2{position:static!important}
+#safeNote{display:none}
+html.safe #safeNote{display:block;margin:10px 0;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -1461,6 +1478,7 @@ td.mwarn{color:var(--amber);font-weight:600}
 </main>
 <!-- FOOTER: publish-audited lines — the DATA REV line must match the DATAREV
      constant in the script; the © line and maker's mark stay verbatim. -->
+<p id="safeNote">Safe display mode is on: animations and visual effects are off because an earlier load of this page did not finish. The data is the same. <a href="?safe=0">Turn safe mode off</a>.</p>
 <footer>
   <p>Materials Atlas — 389 grade-condition rows, two-source verified or flagged. Data status key: <strong>SPEC MIN</strong> = guaranteed minimum (or specified range) from the governing standard's published table · <strong>TYPICAL</strong> = published average, not a guarantee, never for acceptance · <strong>MANUFACTURER</strong> = the maker's own published data. Bar-steel typicals carry their publisher's own warning: mill-lab averages on 1-in bars, a guide only — not a basis for acceptance or rejection. Section size matters throughout: GB/T 3077 minimums are 25 mm reference-bar values (15 mm for 20Mn2); Q&amp;T properties fall off in heavy sections.</p>
   <p class="tuesday">Below a spec minimum is a rejection. Below a typical is just a Tuesday.</p>

@@ -1,3 +1,41 @@
+# Note for Muse — iOS crash-loop: v117 LIGHT build (content fallback, per the agreed fork) (2026-11-22)
+
+v116 result (Harsh, via Satureday): NEGATIVE — with no service worker, first load works, reloads still crash.
+So the cause is page content. v117 = rendering-only changes, in Satureday's priority order. Data R15, values untouched
+(diff touches only CSS, one inline boot script and one note paragraph). Service worker stays removed (online-only).
+
+## Changes
+1. Card load fade REMOVED. Two rules applied it to every card (.card{animation:v62Fade} line 332 and
+   .card{animation:v621Fade} from the v62.1 layer) → 433 cards animating at once on every load.
+   Animated elements at load (mobile, Chromium count): 447 → 14 (the open-card reveal, the view fade-in and the
+   9 small bar-growth animations remain).
+2. Backdrop blur REMOVED from the bottom tab bar and the sticky Browse / Compare strips (opaque colours instead);
+   scroll-driven shadow (@supports animation-timeline: scroll()) REMOVED. backdrop-filter elements: 0.
+3. SAFE MODE (no worker needed): inline script at the top of <head>, before any render, sets localStorage
+   "atlas.boot"=1 and clears it 4 s after the load event. If a load finds the flag still set, the previous load
+   died → "atlas.safe"=1 is stored and html.safe applied: no animations, transitions, filters, box-shadows,
+   gradient text; the two sticky filter strips become static. A note above the footer says safe mode is on, with a
+   "Turn safe mode off" link (?safe=0). ?safe=1 forces it on — Harsh can use
+   https://harsh3261.github.io/materials-atlas/?safe=1 directly if the automatic switch doesn't catch the crash.
+   Limitation: WebKit writes localStorage asynchronously; if the process dies within a fraction of a second of the
+   flag being set, the flag may not be saved and the automatic switch won't trigger. ?safe=1 covers that.
+Verified (Chromium, iPhone viewport, DPR 3): load + 3 reloads clean, 0 page errors, 433 cards, R15 shown;
+simulated failed load → safe mode on, note shown; ?safe=0 → off again.
+
+## Reload-only clue, recorded for the next step
+What differs between a clean first visit and a reload, with no worker: localStorage state. On first visit
+"atlas.startSeen" is unset (Start here box open); on every later load the box is collapsed (.sh-min — its title is
+gradient text via background-clip:text with a changing ::after). Also restored: recently viewed grades
+(atlas.recent), saved checks, unit choice, Safari's scroll restoration. All of these date from Nov 16 and the app
+worked until Nov 21, so none is proven — but if v117 still crashes on reload, the next test is: open with ?safe=1
+(gradient text off), then clear only that site's data and reload once without tapping anything (isolates
+startSeen from atlas.recent).
+
+## Gate
+Harsh: first load, then 3–4 reloads — all must survive. Please also report whether the safe-mode note appears.
+
+---
+
 # Note for Muse — iOS crash-loop: v116 KILL-SWITCH (diagnostic step 1) (2026-11-22)
 
 Symptom (Harsh, real Safari): "A problem repeatedly occurred". After clearing website data: first visit LOADS, every

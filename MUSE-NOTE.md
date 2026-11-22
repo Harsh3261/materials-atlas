@@ -1,3 +1,22 @@
+# Note for Muse — edition re-checks + cold-finished hex / square / flat (2026-11-21, cache v108)
+
+1. A668: all 38 rows re-compared, by script, with the current A668/A668M-23 Table 2 (iTeh preview):
+   tensile, yield, elongation, RA, HBW all unchanged from -14. Only difference is the known Class E
+   over 8–12 in cell: the standard (-14 and -23) says 83/43 ksi, Portland Bolt says 85/44. Atlas still
+   shows the stricter 85/44, and the note now says a forging at 83/43 still conforms. Harsh to decide.
+   Row sources now read "re-checked against the current A668/A668M-23 ... no value changes".
+2. A354: -26 (Mar 2026) is current; the table isn't freely viewable. ANSI abstract still describes BD
+   as >150 ksi above 1-1/2 in, and Portland Bolt + Baco still show 150–173 ksi all sizes. Label updated.
+3. tl-cf card → "Cold-finished bar — rounds, hexagons, squares, flats". New carbon-steel tables
+   (A108-18 Table A1.1 preview + Benjamin Steel, every value agrees): hex to 3-1/8", squares to 4",
+   flats all widths (width governs width and thickness; ">6" has no value in the SR / >0.55 C columns).
+   Left out (one source): hex over 3-1/8", squares over 4", alloy shapes.
+4. Bar finder: Shape select (cold-finished only) → across-flats / width label, flat thickness line,
+   honest messages for out-of-range, alloy shapes, and blank flat cells. barFindCheck() now also
+   re-reads the three new tables: 0. 8 new shape cases + all 19 earlier pass; 0 page errors.
+5. Still held back: A519 cold-worked (published copies disagree with each other), ISO 8062-3 DCTG,
+   EN 10243-1, typical Ra by process.
+
 # Note for Muse — bar finder + tube finder takes any two of OD / ID / wall (2026-11-21, cache v107)
 
 1. "Find a bar size (rounds)": hot-rolled (A29), cold-finished (A108 carbon / alloy), ground & polished.

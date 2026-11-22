@@ -1,3 +1,51 @@
+# Note for Muse — v118: offline restored + iOS-engineered motion (2026-11-22)
+
+Rendering and service worker only. DATA R15 untouched (diff: CSS, the boot script, the SW registration, one pdf.js
+callback line, the reveal script; no DATA / CHEMROWS / STDNOTES lines). Gates run here: Chromium, iPhone viewport.
+
+## 1. Offline support (step 2) — sw.js materials-atlas-v118-motion
+- Install precaches only the shell: index.html, manifest.json, icon.svg. No fonts, pdf.js or OCR at install.
+- Navigations: NETWORK-FIRST (plain fetch of the request, no RequestInit); the copy is stored under ./index.html and
+  served only when the network fails.
+- Fonts, pdf.js, OCR: cache-first after first use. Files the page used BEFORE the worker controlled it (first visit)
+  are handed over by postMessage ("cache-used", vendor/ URLs inside the Atlas scope only, max 60).
+- pdf.js still loads only when the cert reader needs it; when it loads, pdf.min.js + pdf.worker.min.js are cached so
+  PDF certs read offline afterwards.
+- Cleanup: only materials-atlas-* caches other than the current one. No clients.claim (takes over from the next load).
+- Range requests and other origins are never intercepted.
+Checked: load 1 (uncontrolled) → cache holds shell + 9 font files; reloads 2–4 controlled, 0 errors; pdf.js NOT
+requested at load, requested on use, then in cache; OFFLINE reload: page, 404 cards, fonts "loaded", R15 shown;
+pdf.worker available offline.
+
+## 2. Motion, engineered for iOS WebKit
+- Browse cards: content-visibility:auto + contain-intrinsic-size:auto 288px (median closed card) → below-fold cards
+  are skipped for layout and paint. Off in safe mode and print.
+- Reveal on scroll: IntersectionObserver; each card fades + rises 10 px (opacity/transform only, 320 ms) the first
+  time it enters the viewport, 40 ms stagger. HARD CAP: at most 6 cards animating at any moment; beyond that a card
+  just appears (transition suppressed). Measured during a fast fling: max 6 animated elements at once
+  (v115: 433 at load). At load: 0 animations (cards start below the Start-here box).
+- Found and fixed on the way: the old .card rule has a 160 ms transform transition, so arming cards would have started
+  404 transitions at once. Arming is now transition:none; only the reveal animates.
+- Re-renders caused by the user typing in the filters are not animated (real, trusted input only).
+- Failsafes: no IntersectionObserver / reduced motion / safe mode → no arming, cards plainly visible; if a card in
+  view is still hidden after 2.5 s the reveal switches itself off; print shows everything.
+- Sticky Browse strip: near-opaque background (no backdrop blur anywhere); a soft shadow fades in when it is stuck
+  (opacity on a pseudo-element, IntersectionObserver sentinel — replaces the scroll-driven animation).
+- Backdrop blur NOT brought back: it can't be proven on the phone with margin from here; the solid look is used.
+
+## 3. Safe mode — kept, and a v117 flaw fixed
+v117 cleared the boot flag 4 s after load. A reload within 4 s therefore counted as a crash and switched safe mode on
+for good — Harsh's quick reload test would have tripped it. v118 also clears the flag on pagehide (fires on every
+normal reload/navigation, never on a crash). Checked: 4 reloads 0.5 s apart → safe mode stays off.
+?safe=1 on / ?safe=0 off unchanged.
+
+## Gate for Harsh (unchanged)
+First load, 3–4 reloads, then offline: load once online, wait ~5 s, airplane mode, reopen. Also scroll the Browse
+list — cards should drift in; the strip shadow appears once it sticks.
+If safe mode was switched on by v117 on his phone, the note above the footer will show — tap "Turn safe mode off".
+
+---
+
 # Note for Muse — iOS crash-loop: v117 LIGHT build (content fallback, per the agreed fork) (2026-11-22)
 
 v116 result (Harsh, via Satureday): NEGATIVE — with no service worker, first load works, reloads still crash.

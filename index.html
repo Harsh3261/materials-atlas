@@ -14,7 +14,10 @@ if(/[?&]safe(=1)?\b/.test(q)&&!off)L.setItem("atlas.safe","1");
 if(off)L.removeItem("atlas.safe");
 if(L.getItem("atlas.safe")==="1")d.classList.add("safe");
 L.setItem("atlas.boot","1");
-window.addEventListener("load",function(){setTimeout(function(){try{L.removeItem("atlas.boot");}catch(e){}},4000);});}catch(e){}})();
+var clr=function(){try{L.removeItem("atlas.boot");}catch(e){}};
+window.addEventListener("load",function(){setTimeout(clr,4000);});
+/* v118: a normal reload or navigation fires pagehide (a crash does not), so a quick reload never counts as a failed load */
+window.addEventListener("pagehide",clr);}catch(e){}})();
 </script>
 <meta name="author" content="Harsh Patel" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -608,7 +611,7 @@ a{color:var(--teal)}
   .pr-sign td{border:none;padding-top:22px}
 }
 /* sticky strips: translucent glass instead of a flat black band */
-#view-browse > .controls,#view-compare .grid2{background:rgb(8,7,10)} /* v117: opaque, no backdrop blur */
+#view-browse > .controls,#view-compare .grid2{background:rgba(8,7,10,.965)} /* v118: near-opaque, no backdrop blur (iOS) */
 @media (min-width:1024px){nav.tabs{box-shadow:0 -16px 0 rgba(8,7,10,.0)}}
 /* ===== 2026-11-20 coatings & finishes tab ===== */
 #view-coat .tscroll,#view-tol .tscroll{overflow-x:auto;margin:10px 0}
@@ -652,6 +655,23 @@ html.safe .starthere .sh-title{background:none!important;-webkit-text-fill-color
 html.safe #view-browse > .controls,html.safe #view-compare .grid2{position:static!important}
 #safeNote{display:none}
 html.safe #safeNote{display:block;margin:10px 0;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--muted)}
+</style>
+<style>
+/* ===== v118 motion system — engineered for iOS WebKit =====
+   Rules: transform / opacity only; only cards entering the viewport animate, a few at a time (IntersectionObserver);
+   below-fold cards are skipped for layout and paint (content-visibility); nothing animates under reduced motion or
+   in safe mode (html.mo is only set when motion is allowed). */
+#results > details.card{content-visibility:auto;contain-intrinsic-size:auto 288px}
+html.mo #results > details.card.rv{opacity:0;transform:translate3d(0,10px,0);transition:none} /* arming is instant: no transition into the hidden state */
+html.mo #results > details.card.rv.in{opacity:1;transform:none;
+  transition:opacity .32s cubic-bezier(.2,.7,.2,1),transform .32s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0ms)}
+/* sticky Browse strip: soft shadow fades in once it is stuck (opacity on a pseudo-element, no repaint of the strip) */
+#view-browse > .controls::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px;pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,0));opacity:0;transition:opacity .22s ease}
+#view-browse > .controls.stuck::after{opacity:1}
+@media (prefers-reduced-motion: reduce){#view-browse > .controls::after{transition:none}}
+@media print{html.mo #results > details.card.rv{opacity:1;transform:none}#results > details.card{content-visibility:visible}}
+html.safe #results > details.card{content-visibility:visible}
 </style>
 </head>
 <body>
@@ -3834,7 +3854,7 @@ let pdfjsReady=null;
 function loadPdfJs(){
   if(pdfjsReady)return pdfjsReady;
   pdfjsReady=new Promise((ok,bad)=>{const sc=document.createElement("script");sc.src="vendor/pdf.min.js";
-    sc.onload=()=>{try{window.pdfjsLib.GlobalWorkerOptions.workerSrc="vendor/pdf.worker.min.js";ok(window.pdfjsLib);}catch(e){bad(e);}};
+    sc.onload=()=>{try{window.pdfjsLib.GlobalWorkerOptions.workerSrc="vendor/pdf.worker.min.js";ok(window.pdfjsLib);setTimeout(()=>{window.swCacheUsed&&window.swCacheUsed(["vendor/pdf.min.js","vendor/pdf.worker.min.js"]);},1500);}catch(e){bad(e);}};
     sc.onerror=()=>{pdfjsReady=null;bad(new Error("PDF reader could not load (are you offline?)"));};document.head.appendChild(sc);});
   return pdfjsReady;
 }
@@ -4783,10 +4803,15 @@ $("elGrid").innerHTML=ELEMENTS.map(e=>'<div class="elcard"><span class="sym">'+e
 /* 2026-11-15 · offline: sw.js existed but was never registered, so the
    atlas never worked offline. It is registered now (cache-first; bump CACHE
    in sw.js on every publish). The PDF reader in vendor/ is pre-cached. */
-/* v116 KILL-SWITCH (iOS crash-loop diagnosis, step 1): no service worker. Remove this app's own registration and caches;
-   leave SPC Tools' (same github.io origin) alone. Offline support returns in step 2. */
-if("serviceWorker" in navigator){window.addEventListener("load",()=>{try{navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>{if(/\/materials-atlas\/$/.test(r.scope))r.unregister();})).catch(()=>{});
-  if(window.caches)caches.keys().then(ks=>ks.forEach(k=>{if(k.indexOf("materials-atlas")===0)caches.delete(k);})).catch(()=>{});}catch(e){}});}
+/* v118 service worker (offline): small shell precache only; the page is network-first; fonts, pdf.js and OCR files are
+   cached when first used. After each load, files this page actually used from vendor/ are handed to the worker. */
+function swCacheUsed(extra){try{if(!("serviceWorker" in navigator)||!navigator.serviceWorker.ready)return;
+  const urls=performance.getEntriesByType("resource").map(e=>e.name).filter(u=>u.indexOf(location.origin)===0&&/\/vendor\//.test(u))
+    .concat((extra||[]).map(u=>new URL(u,location.href).href));
+  if(!urls.length)return;navigator.serviceWorker.ready.then(r=>{if(r.active)r.active.postMessage({type:"cache-used",urls:urls});}).catch(()=>{});}catch(e){}}
+window.swCacheUsed=swCacheUsed;
+if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)){window.addEventListener("load",()=>{try{
+  navigator.serviceWorker.register("sw.js").then(()=>setTimeout(swCacheUsed,1500)).catch(()=>{});}catch(e){}});}
 </script>
 <script>
 /* Start here: open on the first visit, collapsed to its title afterwards (remembered on this device only). */
@@ -5192,6 +5217,38 @@ function a11yTables(){const seen={};document.querySelectorAll('.tscroll[role="re
 a11yTables();
 ["mechRun","mechClear"].forEach(id=>$(id).addEventListener("click",()=>setTimeout(a11yTables,0)));
 chkGrade.addEventListener("change",()=>setTimeout(a11yTables,0));
+</script>
+<script>
+/* v118 reveal-on-scroll for Browse cards + stuck shadow. Cards are armed (hidden) only when motion is allowed and the
+   observer exists; each card animates once, when it first enters the viewport; at most 6 cards animate at any moment
+   (40 ms stagger), the rest appear instantly. A re-render caused by typing in the filters is not animated. Any failure leaves cards plainly visible. */
+(function(){
+  var d=document.documentElement,R=document.getElementById("results");if(!R)return;
+  var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!("IntersectionObserver" in window)||reduce||d.classList.contains("safe"))return;
+  try{
+    var lastInput=0;["input","change","keydown"].forEach(function(t){document.addEventListener(t,function(ev){if(ev.isTrusted)lastInput=Date.now();},true);}); /* real user input only */
+    var active=0;
+    var io=new IntersectionObserver(function(es){var k=0;
+      es.forEach(function(e){if(!e.isIntersecting)return;var c=e.target;io.unobserve(c);
+        if(active>=6){c.style.transition="none";c.classList.remove("rv");requestAnimationFrame(function(){requestAnimationFrame(function(){c.style.removeProperty("transition");});});return;} /* never more than 6 cards animating at once: extras show instantly */
+        var dl=(k++)*40;active++;setTimeout(function(){active=Math.max(0,active-1);},dl+380);
+        c.style.setProperty("--d",dl+"ms");requestAnimationFrame(function(){c.classList.add("in");});});
+    },{rootMargin:"0px 0px -4% 0px"});
+    R.addEventListener("transitionend",function(ev){var c=ev.target;if(ev.propertyName==="transform"&&c.classList&&c.classList.contains("in")){c.classList.remove("rv","in");c.style.removeProperty("--d");}});
+    var arm=function(){io.disconnect();if(Date.now()-lastInput<900)return;
+      var cs=R.querySelectorAll(":scope > details.card");for(var i=0;i<cs.length;i++){cs[i].classList.add("rv");io.observe(cs[i]);}};
+    new MutationObserver(arm).observe(R,{childList:true});
+    d.classList.add("mo");arm();
+    /* safety: if a card is in view but still hidden after 2.5 s (observer stalled), show everything */
+    setTimeout(function(){var c=R.querySelector(":scope > details.card.rv:not(.in)");if(c){var b=c.getBoundingClientRect();
+      if(b.top<innerHeight&&b.bottom>0){d.classList.remove("mo");}}},2500);
+  }catch(err){d.classList.remove("mo");}
+  /* stuck shadow on the sticky Browse strip */
+  try{var C=document.querySelector("#view-browse > .controls");if(C){var s=document.createElement("div");s.style.cssText="height:1px;margin-bottom:-1px";
+    C.parentNode.insertBefore(s,C);var top=parseFloat(getComputedStyle(C).top)||0;
+    new IntersectionObserver(function(es){C.classList.toggle("stuck",!es[0].isIntersecting&&es[0].boundingClientRect.top<top+1);},{rootMargin:"-"+(top+1)+"px 0px 0px 0px"}).observe(s);}}catch(e){}
+})();
 </script>
 </body>
 </html>

@@ -1,3 +1,30 @@
+# Note for Muse — reply on the two corrections (2026-11-22, cache v114, DATA REV R14)
+
+**2. A668 Class E, over 8–12 in — AGREED and shipped.** Row now 83 ksi / 572 MPa tensile, 43 ksi / 296 MPa
+yield (same metric as the 12–20 in row). Confirmed independently against the A668/A668M-02 standard text
+(iTeh preview, Table 2: "Over 8 to 12 — 83 000 [570] / 43 000 [295] / 23 / 37"), which matches your -23
+reading and the -14 check. Portland Bolt's 85/44 looks like a slip (it repeats the up-to-8 in cells). Note
+reworded to say the standard governs; the "stricter value shown" wording is gone for this row. The A668
+edition labels ("-23 current, not yet checked") now read "re-checked against -23 Table 2" (true since R13).
+El 23 %, RA 37 %, HBW 174–217 unchanged.
+
+**1. A354 Grade BD — NOT changed. Pushing back with the standard text.** The two bands are real, but they are
+the A354-11-and-earlier structure. The A354-17 standard text (iTeh preview of "Designation: A354 − 17"):
+- Table 2 hardness: BC has two bands (1/4–2½: HRC 26–36; over 2½: HRC 22–33); **BD: "All sizes" HBW 311–352, HRC 33–38.**
+- Table 3 footnotes: BC is "125 000 psi for sizes 1/4 to 2½ … 115 000 psi for sizes over 2½ to 4"; **BD tensile
+  "150 000 psi for all sizes", max "173 00[0] psi for all sizes" (typo in the standard), proof "120 000 psi for
+  all sizes", yield "130 000 psi for all sizes".**
+So -17 (reapproved 2025 as A354-17(2025)) dropped the BD 140 ksi band and added the 173 ksi max and HRC 38
+cap. Your five sources (A354-11 text, Ferrobend, the A354-07a hardness table on Haydon, Wikipedia from -07a,
+Portland's proof-load table) all trace to -07a/-11. Portland's and Baco's current mechanical tables
+(150–173, HRC 33–38, all sizes) match -17. Live values therefore stay: 150–173 / 130 / proof 120 / HRC 33–38.
+What changed: both BD rows' src now cite the A354-17 standard text directly (re-sourced, as you asked, rather
+than relying on Portland/Baco); the over-2¼ note now gives the old band's numbers (140/115/105) and warns
+that older certs and catalogue tables may still show them. Open gap: A354-26 tables not freely viewable.
+If you have the -26 text showing two bands again, send the table and I'll change it.
+
+---
+
 # Note for Muse — cross-search index refreshed (2026-11-22, v112)
 
 - SPC_TOOLS regenerated from SPC Tools TOOLS: adds "Thread masters (ISO 1502)"; surface finish keywords extended.

@@ -1,3 +1,28 @@
+# Note for Muse — v119 interface pass (2026-11-26)
+
+Interface only. DATA R15 untouched (diff: one CSS block, one closing script, the Browse filter markup moved into a
+<details>, two intro paragraphs rewritten). sw.js: cache name bumped only, logic unchanged.
+
+## Changes
+- Browse: the sticky strip holds only the search box; standard, sort, strength and element filters sit in "More filters"
+  (closed on phones, open on wide screens, opens itself and shows "N on" when a filter is active). Family chips are one
+  horizontally scrolling row on phones. First result moved up by about 700 px on an iPhone screen.
+- Compare: duplicate intro sentence removed.
+- Check a cert: the three steps shown as a short numbered list; intro shortened.
+- Phone tables (≤ 640 px): tables of 4+ columns and ≤ 20 rows in Coatings / Tolerances / Learn become one block per row
+  (row name, then each value under its column label). Applied once per view on first open. The 31-row DOM wall grid
+  stays a scrolling table on purpose.
+
+## iOS crash guard (22 Nov crash-loop) — kept
+No animation, transition, blur, gradient or :has() added; nothing iterates over the 433 Browse cards.
+Measured (Chromium, iPhone viewport, DPR 3), before → after: elements 12 523 → 12 531; animations at load 0 → 0;
+backdrop-filter 0 → 0; gradient text 2 → 2; max running animations during a fast fling 2 → 2; 4 reloads 0.5 s apart:
+safe mode stays off, 0 page errors. Tab-switch animations identical with and without this change (tab colour + the
+existing 160 ms view fade). WebKit still cannot be run here — Harsh's iPhone remains the real test.
+
+## Gate for Harsh
+On the iPhone: open the Atlas, reload 3–4 times quickly; then Browse → More filters → set a yield; open Tolerances.
+
 # Note for Muse — v118 phone result (2026-11-22 17:31)
 Harsh, directly: "its working" on his iPhone (Safari) with v118. Crash-loop considered fixed. Not yet stated
 separately: the offline step (airplane mode reopen) and whether the safe-mode note showed — please confirm with him.

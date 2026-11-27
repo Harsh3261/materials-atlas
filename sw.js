@@ -5,7 +5,7 @@
 //   vendor files it used before this worker controlled it (message "cache-used").
 // - Cleanup touches only caches named materials-atlas-* (SPC Tools shares this github.io origin).
 // - No clients.claim(): the worker takes over from the next load, never mid-page.
-const CACHE = 'materials-atlas-v118-motion';
+const CACHE = 'materials-atlas-v119-ui';
 const SHELL = ['./index.html', './manifest.json', './icon.svg'];
 const PAGE = new URL('./index.html', self.location).href;
 const SCOPE = self.registration.scope;
